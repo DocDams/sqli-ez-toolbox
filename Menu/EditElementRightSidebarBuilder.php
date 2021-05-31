@@ -13,7 +13,7 @@ use EzSystems\EzPlatformAdminUi\Menu\MenuItemFactory;
 use InvalidArgumentException;
 use Knp\Menu\ItemInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class EditElementRightSidebarBuilder extends AbstractBuilder
 {
