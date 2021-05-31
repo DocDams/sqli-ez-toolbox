@@ -9,7 +9,7 @@ use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\Repository;
 use eZ\Publish\API\Repository\Values\Content\Location;
 use eZ\Publish\API\Repository\Values\Content\LocationQuery;
-use eZ\Publish\Core\QueryType\ArrayQueryTypeRegistry;
+use eZ\Publish\Core\Query\QueryFactoryInterface;
 use eZ\Publish\Core\Repository\SearchService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -23,8 +23,8 @@ class ChildrenMoveCommand extends Command
     protected $repository;
     /** @var LocationService */
     protected $locationService;
-    /** @var ArrayQueryTypeRegistry */
-    protected $queryTypeRegistry;
+    /** @var QueryFactoryInterface */
+    protected $queryFactory;
     /** @var SearchService */
     protected $searchService;
     /** @var int */
@@ -33,10 +33,10 @@ class ChildrenMoveCommand extends Command
     private $newParentLocationID;
 
     public function __construct(
-        ArrayQueryTypeRegistry $queryTypeRegistry,
+        QueryFactoryInterface $queryFactory,
         Repository $repository
     ) {
-        $this->queryTypeRegistry = $queryTypeRegistry;
+        $this->queryFactory = $queryFactory;
         $this->repository = $repository;
         $this->searchService = $repository->getSearchService();
         $this->locationService = $this->repository->getLocationService();
@@ -74,9 +74,11 @@ class ChildrenMoveCommand extends Command
         $output->writeln("");
 
         // Retrieve children to move
-        $childrenQueryType = $this->queryTypeRegistry->getQueryType('SQLI:LocationChildren');
         /** @var LocationQuery $childrenQuery */
-        $childrenQuery = $childrenQueryType->getQuery(['parent_location_id' => $this->currentParentLocationID]);
+        $childrenQuery = $this->queryFactory->create(
+            'SQLI:LocationChildren',
+            ['parent_location_id' => $this->currentParentLocationID]
+        );
         $childrenToMove = $this->searchService->findLocations($childrenQuery);
 
         $output->writeln("Task list :");
