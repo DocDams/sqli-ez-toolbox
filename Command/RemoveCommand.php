@@ -4,101 +4,140 @@ namespace SQLI\EzToolboxBundle\Command;
 
 use eZ\Publish\API\Repository\ContentService;
 use eZ\Publish\API\Repository\Exceptions\InvalidArgumentException;
+use eZ\Publish\API\Repository\Exceptions\NotFoundException;
 use eZ\Publish\API\Repository\Exceptions\UnauthorizedException;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\Repository;
 use eZ\Publish\API\Repository\Values\Content\Content;
 use eZ\Publish\API\Repository\Values\Content\Query;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
-class RemoveCommand extends ContainerAwareCommand
+class RemoveCommand extends Command
 {
     /** @var Repository */
-    private $repository;
+    protected $repository;
     /** @var ContentService */
-    private $contentService;
+    protected $contentService;
     /** @var LocationService */
-    private $locationService;
+    protected $locationService;
 
-    public function initialize( InputInterface $input, OutputInterface $output )
+    public function __construct(Repository $repository)
     {
-        $output->setDecorated( true );
+        $this->repository = $repository;
+        $this->contentService = $repository->getContentService();
+        $this->locationService = $repository->getLocationService();
+        parent::__construct('sqli:object:remove');
+    }
 
-        $this->repository      = $this->getContainer()->get( 'ezpublish.api.repository' );
-        $this->contentService  = $this->getContainer()->get( 'ezpublish.api.service.content' );
-        $this->locationService = $this->getContainer()->get( 'ezpublish.api.service.inner_location' );
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @throws NotFoundException
+     */
+    public function initialize(InputInterface $input, OutputInterface $output): void
+    {
+        $output->setDecorated(true);
 
         // Load and set Administrator User
-        $administratorUser = $this->repository->getUserService()->loadUser( 14 );
-        $this->repository->getPermissionResolver()->setCurrentUserReference( $administratorUser );
+        $administratorUser = $this->repository->getUserService()->loadUserByLogin('admin');
+        $this->repository->getPermissionResolver()->setCurrentUserReference($administratorUser);
     }
 
-    protected function configure()
+    protected function configure(): void
     {
-        $this->setName( 'sqli:object:remove' )
-            ->setDescription( 'Remove a content, a location or all contents of a content type' )
-            ->addOption( 'content', null, InputOption::VALUE_OPTIONAL, "ContentID to remove" )
-            ->addOption( 'location', null, InputOption::VALUE_OPTIONAL, "LocationID to remove" )
-            ->addOption( 'contenttype', null, InputOption::VALUE_OPTIONAL|InputOption::VALUE_REQUIRED, "Remove Contents of this Content Type identifier" );
+        $this
+            ->setDescription('Remove a content, a location or all contents of a content type')
+            ->addOption(
+                'content',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                "ContentID to remove"
+            )
+            ->addOption(
+                'location',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                "LocationID to remove"
+            )
+            ->addOption(
+                'contenttype',
+                null,
+                InputOption::VALUE_OPTIONAL | InputOption::VALUE_REQUIRED,
+                "Remove Contents of this Content Type identifier"
+            );
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
-     * @return int|null|void
+     * @throws InvalidArgumentException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
      */
-    protected function execute( InputInterface $input, OutputInterface $output )
+    protected function execute(InputInterface $input, OutputInterface $output): void
     {
-        if( $contentID = intval( $input->getOption( 'content' ) ) )
-        {
-            $output->write( "Remove contentID $contentID : " );
-            $this->removeContent( $output, $contentID );
+        if ($contentID = intval($input->getOption('content'))) {
+            $output->write("Remove contentID $contentID : ");
+            $this->removeContent($output, $contentID);
         }
-        if( $locationID = $input->getOption( 'location' ) )
-        {
-            $output->write( "Remove locationID $locationID : " );
-            $this->removeLocation( $output, $locationID );
+        if ($locationID = $input->getOption('location')) {
+            $output->write("Remove locationID $locationID : ");
+            $this->removeLocation($output, $locationID);
         }
-        if( $contentType = $input->getOption( 'contenttype' ) )
-        {
-            $output->write( "Remove Contents of this Content Type $contentType : " );
-            $this->removeContentTypeContents( $input, $output, $contentType );
+        if ($contentType = $input->getOption('contenttype')) {
+            $output->write("Remove Contents of this Content Type $contentType : ");
+            $this->removeContentTypeContents($input, $output, $contentType);
         }
-    }
-
-    private function removeContent( OutputInterface $output, $contentID )
-    {
-        $content     = $this->contentService->loadContentInfo( $contentID );
-        $contentName = $content->name;
-        $this->contentService->deleteContent( $content );
-        $output->writeln( "<info>" . $contentName . "</info>" );
-    }
-
-    private function removeLocation( OutputInterface $output, $locationID )
-    {
-        $location    = $this->locationService->loadLocation( $locationID );
-        $contentName = $location->getContent()->getName();
-        $this->locationService->deleteLocation( $location );
-        $output->writeln( "<info>" . $contentName . "</info>" );
     }
 
     /**
-     * @param InputInterface  $input
      * @param OutputInterface $output
-     * @param string          $contentTypeIdentifier
+     * @param int $contentID
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     */
+    private function removeContent(OutputInterface $output, int $contentID): void
+    {
+        $content = $this->contentService->loadContentInfo($contentID);
+        $contentName = $content->name;
+        $this->contentService->deleteContent($content);
+        $output->writeln("<info>" . $contentName . "</info>");
+    }
+
+    /**
+     * @param OutputInterface $output
+     * @param int $locationID
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     */
+    private function removeLocation(OutputInterface $output, int $locationID): void
+    {
+        $location = $this->locationService->loadLocation($locationID);
+        $contentName = $location->getContent()->getName();
+        $this->locationService->deleteLocation($location);
+        $output->writeln("<info>" . $contentName . "</info>");
+    }
+
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @param string $contentTypeIdentifier
      * @throws InvalidArgumentException
      * @throws UnauthorizedException
      */
-    private function removeContentTypeContents(InputInterface $input, OutputInterface $output, $contentTypeIdentifier)
-    {
-        $query         = new Query();
-        $query->query  = new Query\Criterion\ContentTypeIdentifier($contentTypeIdentifier);
+    private function removeContentTypeContents(
+        InputInterface $input,
+        OutputInterface $output,
+        string $contentTypeIdentifier
+    ) {
+        $query = new Query();
+        $query->query = new Query\Criterion\ContentTypeIdentifier($contentTypeIdentifier);
         $searchResults = $this->repository->getSearchService()->findContent($query);
-        $totalCount    = $searchResults->totalCount;
+        $totalCount = $searchResults->totalCount;
         unset($searchResults);
 
         $output->writeln(sprintf("Number of contents to remove : <info>%s</info>", $totalCount));
@@ -123,14 +162,14 @@ class RemoveCommand extends ContainerAwareCommand
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      */
-    private function askConfirmation(InputInterface $input, OutputInterface $output)
+    private function askConfirmation(InputInterface $input, OutputInterface $output): void
     {
         // Ask confirmation
         $output->writeln("");
-        $helper   = $this->getHelper('question');
+        $helper = $this->getHelper('question');
         $question = new ConfirmationQuestion(
             '<question>Are you sure you want to proceed [y/N]?</question> ',
             false

@@ -10,43 +10,50 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ContentChildrenQueryType extends OptionsResolverBasedQueryType implements QueryType
 {
+    /**
+     * {@inheritdoc}
+     */
     public static function getName()
     {
         return 'FetchContentChildren';
     }
 
-    protected function doGetQuery( array $parameters )
+    /**
+     * {@inheritdoc}
+     */
+    protected function doGetQuery(array $parameters)
     {
         $criteria =
             [
-                new Query\Criterion\Visibility( Query\Criterion\Visibility::VISIBLE )
+                new Query\Criterion\Visibility(Query\Criterion\Visibility::VISIBLE)
             ];
-        if( isset( $parameters['content_types'] ) )
-        {
-            $criteria[] = new Query\Criterion\ContentTypeIdentifier( $parameters['content_types'] );
+        if (isset($parameters['content_types'])) {
+            $criteria[] = new Query\Criterion\ContentTypeIdentifier($parameters['content_types']);
         }
 
-        if( isset( $parameters['parent_location_id'] ) )
-        {
-            $criteria[] = new Query\Criterion\ParentLocationId( $parameters['parent_location_id'] );
+        if (isset($parameters['parent_location_id'])) {
+            $criteria[] = new Query\Criterion\ParentLocationId($parameters['parent_location_id']);
         }
 
-        return new LocationQuery( [
-                                      'filter'      => new Query\Criterion\LogicalAnd( $criteria ),
-                                      'sortClauses' =>
-                                          [
-                                              new Query\SortClause\DatePublished()
-                                          ],
-                                      'limit'       => $parameters['limit'],
-                                  ] );
+        return new LocationQuery([
+            'filter' => new Query\Criterion\LogicalAnd($criteria),
+            'sortClauses' =>
+                [
+                    new Query\SortClause\DatePublished()
+                ],
+            'limit' => $parameters['limit'],
+        ]);
     }
 
-    protected function configureOptions( OptionsResolver $resolver )
+    /**
+     * {@inheritdoc}
+     */
+    protected function configureOptions(OptionsResolver $optionsResolver)
     {
-        $resolver->setDefined( [ 'parent_location_id', 'content_types', 'limit' ] );
-        $resolver->setAllowedTypes( 'parent_location_id', 'int' );
-        $resolver->setAllowedTypes( 'content_types', 'string' );
-        $resolver->setAllowedTypes( 'limit', 'int' );
-        $resolver->setDefault( 'limit', 10 );
+        $optionsResolver->setDefined(['parent_location_id', 'content_types', 'limit']);
+        $optionsResolver->setAllowedTypes('parent_location_id', 'int');
+        $optionsResolver->setAllowedTypes('content_types', 'string');
+        $optionsResolver->setAllowedTypes('limit', 'int');
+        $optionsResolver->setDefault('limit', 10);
     }
 }

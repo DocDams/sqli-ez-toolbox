@@ -2,14 +2,14 @@
 
 namespace SQLI\EzToolboxBundle\Services\Core;
 
-use SQLI\EzToolboxBundle\Services\Core\Signal\PrepublishVersionSignal;
 use eZ\Publish\API\Repository\Values\Content\Language;
 use eZ\Publish\API\Repository\Values\Content\VersionInfo;
 use eZ\Publish\Core\SignalSlot\ContentService as ContentServiceBase;
+use SQLI\EzToolboxBundle\Services\Core\Signal\PrepublishVersionSignal;
 
 class ContentService extends ContentServiceBase
 {
-    public function publishVersion( VersionInfo $versionInfo, array $translations = Language::ALL )
+    public function publishVersion(VersionInfo $versionInfo, array $translations = Language::ALL)
     {
         $this->signalDispatcher->emit(
             new PrepublishVersionSignal(
@@ -21,6 +21,6 @@ class ContentService extends ContentServiceBase
             )
         );
 
-        return parent::publishVersion( $versionInfo, $translations );
+        return parent::publishVersion($versionInfo, $translations);
     }
 }

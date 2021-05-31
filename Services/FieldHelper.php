@@ -15,16 +15,16 @@ class FieldHelper
     /** @var TranslationHelper */
     private $translationHelper;
 
-    public function __construct( EzFieldHelper $fieldHelper, TranslationHelper $translationHelper )
+    public function __construct(EzFieldHelper $fieldHelper, TranslationHelper $translationHelper)
     {
-        $this->fieldHelper       = $fieldHelper;
+        $this->fieldHelper = $fieldHelper;
         $this->translationHelper = $translationHelper;
     }
 
     /**
-     * @param Content      $content
+     * @param Content $content
      * @param Field|string $fieldDefIdentifier Field or Field Identifier to get the value from.
-     * @param string       $forcedLanguage Locale we want the content name translation in (e.g. "fre-FR").
+     * @param string $forcedLanguage Locale we want the content name translation in (e.g. "fre-FR").
      *                                     Null by default (takes current locale).
      *
      * @return bool
@@ -34,21 +34,19 @@ class FieldHelper
      * This method accepts field as Objects or by identifiers.
      *
      */
-    public function isEmptyField( Content $content, $fieldDefIdentifier, $forcedLanguage = null )
+    public function isEmptyField(Content $content, $fieldDefIdentifier, $forcedLanguage = null): bool
     {
-        if( $fieldDefIdentifier instanceof Field )
-        {
+        if ($fieldDefIdentifier instanceof Field) {
             $fieldDefIdentifier = $fieldDefIdentifier->fieldDefIdentifier;
         }
 
         // Check if field exist in content type definition
-        if( $content->getContentType()->getFieldDefinition( $fieldDefIdentifier ) === null )
-        {
+        if ($content->getContentType()->getFieldDefinition($fieldDefIdentifier) === null) {
             return true;
         }
 
         // Field exists, check if value is empty
-        return $this->fieldHelper->isFieldEmpty( $content, $fieldDefIdentifier, $forcedLanguage );
+        return $this->fieldHelper->isFieldEmpty($content, $fieldDefIdentifier, $forcedLanguage);
     }
 
 
@@ -56,31 +54,29 @@ class FieldHelper
      * Return value of the selected option for an attribute 'ezselection'
      *
      * @param Content $content
-     * @param string  $fieldDefIdentifier
-     * @param null    $forcedLanguage
+     * @param string $fieldDefIdentifier
+     * @param null $forcedLanguage
      * @return string|null
      */
-    public function ezselectionSelectedOptionValue( Content $content, $fieldDefIdentifier, $forcedLanguage = null )
-    {
-        $fieldDefinition = $content->getContentType()->getFieldDefinition( $fieldDefIdentifier );
-        if( $fieldDefinition->fieldTypeIdentifier == "ezselection" )
-        {
-            $fieldValue = $content->getFieldValue( $fieldDefIdentifier, $forcedLanguage );
-            if( $fieldValue instanceof Value )
-            {
+    public function ezselectionSelectedOptionValue(
+        Content $content,
+        string $fieldDefIdentifier,
+        $forcedLanguage = null
+    ): ?string {
+        $fieldDefinition = $content->getContentType()->getFieldDefinition($fieldDefIdentifier);
+        if ($fieldDefinition->fieldTypeIdentifier == "ezselection") {
+            $fieldValue = $content->getFieldValue($fieldDefIdentifier, $forcedLanguage);
+            if ($fieldValue instanceof Value) {
                 $selectedValue = $fieldValue->selection;
-                $selectedValue = reset( $selectedValue );
+                $selectedValue = reset($selectedValue);
 
-                if( $selectedValue !== false )
-                {
+                if ($selectedValue !== false) {
                     // Search selected value in field definition
                     $fieldSettings = $fieldDefinition->getFieldSettings();
-                    if( array_key_exists( 'options', $fieldSettings ) )
-                    {
+                    if (array_key_exists('options', $fieldSettings)) {
                         $selectionDefinition = $fieldSettings['options'];
 
-                        if( array_key_exists( $selectedValue, $selectionDefinition ) )
-                        {
+                        if (array_key_exists($selectedValue, $selectionDefinition)) {
                             return $selectionDefinition[$selectedValue];
                         }
                     }

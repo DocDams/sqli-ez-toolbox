@@ -25,26 +25,26 @@ class Configuration implements ConfigurationInterface
         // more information on that topic.
         $rootNode
             ->children()
-                ->arrayNode( 'entities' )
-                    ->prototype('array')
-                        ->children()
-                            ->scalarNode( 'directory' )->isRequired()->end()
-                            ->scalarNode( 'namespace' )->defaultNull()->end()
-                        ->end()
-                    ->end()
-                ->end() // entities
-                ->arrayNode( 'admin_logger' )
-                    ->addDefaultsIfNotSet()
-                    ->children()
-                        ->scalarNode( 'enabled' )->isRequired()->defaultFalse()->end()
-                    ->end()
-                ->end() // admin logger
-                ->arrayNode( 'storage_filename_cleaner' )
-                    ->addDefaultsIfNotSet()
-                    ->children()
-                        ->scalarNode( 'enabled' )->isRequired()->defaultFalse()->end()
-                    ->end()
-                ->end() // end storage_filename_cleaner
+            ->arrayNode('entities')
+            ->prototype('array')
+            ->children()
+            ->scalarNode('directory')->isRequired()->end()
+            ->scalarNode('namespace')->defaultNull()->end()
+            ->end()
+            ->end()
+            ->end() // entities
+            ->arrayNode('admin_logger')
+            ->addDefaultsIfNotSet()
+            ->children()
+            ->scalarNode('enabled')->isRequired()->defaultFalse()->end()
+            ->end()
+            ->end() // admin logger
+            ->arrayNode('storage_filename_cleaner')
+            ->addDefaultsIfNotSet()
+            ->children()
+            ->scalarNode('enabled')->isRequired()->defaultFalse()->end()
+            ->end()
+            ->end() // end storage_filename_cleaner
             ->end();
 
         return $treeBuilder;

@@ -12,7 +12,7 @@ class SQLIEzToolboxPolicyProvider extends YamlPolicyProvider
      *
      * @return array
      */
-    public function getFiles()
+    public function getFiles(): array
     {
         return array(
             __DIR__ . '/../../Resources/config/policies.yml',

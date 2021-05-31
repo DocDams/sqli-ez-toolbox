@@ -12,31 +12,27 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class EditElementType extends AbstractType
 {
-    public function buildForm( FormBuilderInterface $builder, array $options )
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $element = $options['entity'];
 
-        foreach( $element['class']['properties'] as $propertyName => $propertyInfos )
-        {
+        foreach ($element['class']['properties'] as $propertyName => $propertyInfos) {
             // If property can be visible, add it to formbuilder
-            if( $propertyInfos['visible'] )
-            {
+            if ($propertyInfos['visible']) {
                 // FormType parameters
                 $params = [];
 
-                if( $propertyInfos['readonly'] )
-                {
+                if ($propertyInfos['readonly']) {
                     // Readonly attribute for this attribute
                     $params['attr']['readonly'] = true;
-                    $params['attr']['class']    = 'bg-transparent';
+                    $params['attr']['class'] = 'bg-transparent';
                 }
 
                 // Is a required field ?
                 $params['required'] = $propertyInfos['required'];
 
                 // Add attribute step=any if it's a float field
-                switch( $propertyInfos['type'] )
-                {
+                switch ($propertyInfos['type']) {
                     case "decimal":
                     case "float":
                         $params['attr']['step'] = 'any';
@@ -44,54 +40,50 @@ class EditElementType extends AbstractType
                 }
 
                 // If a description defined for property, add it in 'title' attribute of field
-                if( !empty( $propertyInfos['description'] ) )
-                {
+                if (!empty($propertyInfos['description'])) {
                     $params['attr']['title'] = $propertyInfos['description'];
                 }
 
                 $formType = null;
-                if( is_array( $propertyInfos['choices'] ) && !empty( $propertyInfos['choices'] ) )
-                {
-                    $formType          = ChoiceType::class;
+                if (is_array($propertyInfos['choices']) && !empty($propertyInfos['choices'])) {
+                    $formType = ChoiceType::class;
                     $params['choices'] = $propertyInfos['choices'];
-                }
-                elseif( $propertyInfos['type'] === "object" || $propertyInfos['type'] === "array" )
-                {
+                } elseif ($propertyInfos['type'] === "object" || $propertyInfos['type'] === "array") {
                     $formType = TextareaType::class;
                 }
 
                 // Add field on Form
-                $builder->add( $propertyName, $formType, $params );
+                $builder->add($propertyName, $formType, $params);
 
                 // Support display of objects and arrays : serialize them before display
-                if( $propertyInfos['type'] === "object" || $propertyInfos['type'] === "array" )
-                {
-                    $builder->get( $propertyName )->addViewTransformer( new CallbackTransformer(
-                                                                            function( $toSerialize )
-                                                                            {
-                                                                                return serialize( $toSerialize );
-                                                                            },
-                                                                            function( $toUnserialize )
-                                                                            {
-                                                                                return unserialize( $toUnserialize );
-                                                                            }
-                                                                        ) );
+                if ($propertyInfos['type'] === "object" || $propertyInfos['type'] === "array") {
+                    $builder->get($propertyName)->addViewTransformer(new CallbackTransformer(
+                        function ($toSerialize) {
+                            return serialize($toSerialize);
+                        },
+                        function ($toUnserialize) {
+                            return unserialize($toUnserialize);
+                        }
+                    ));
                 }
             }
         }
 
         // Add submit button
         $builder
-            ->add( 'submit', SubmitType::class,
-                   [
-                       'label'              => 'form.button.label.submit',
-                       'translation_domain' => 'forms',
-                       'attr'               => [ 'class' => 'd-none' ],
-                   ] );
+            ->add(
+                'submit',
+                SubmitType::class,
+                [
+                    'label' => 'form.button.label.submit',
+                    'translation_domain' => 'forms',
+                    'attr' => ['class' => 'd-none'],
+                ]
+            );
     }
 
-    public function configureOptions( OptionsResolver $resolver )
+    public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setRequired( 'entity' );
+        $resolver->setRequired('entity');
     }
 }

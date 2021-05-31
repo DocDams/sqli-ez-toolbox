@@ -27,7 +27,8 @@
   ],
   "require": {
     "ibexa/oss": "^3.3",
-    "netgen/tagsbundle": "^4.0"
+    "netgen/tagsbundle": "^4.0",
+    "ext-json": "*"
   },
   "suggest": {
     "tanoconsulting/ezmigrationbundle2": "main"
@@ -36,5 +37,8 @@
     "psr-4": {
       "SQLI\\EzToolboxBundle\\": ""
     }
+  },
+  "require-dev": {
+    "squizlabs/php_codesniffer": "^3.6"
   }
 }

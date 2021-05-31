@@ -2,6 +2,7 @@
 
 namespace SQLI\EzToolboxBundle\Services;
 
+use DateTime;
 use SQLI\EzToolboxBundle\Exceptions\DataFormatterException;
 
 /**
@@ -10,120 +11,93 @@ use SQLI\EzToolboxBundle\Exceptions\DataFormatterException;
  */
 class DataFormatterHelper
 {
-    public function __construct()
-    {
-    }
-
     /**
-     * @param      $data
-     * @param      $format
+     * @param mixed $data
+     * @param string $format
      * @param null $pattern
      * @return string
      */
-    public function format( $data, $format, $pattern = null )
+    public function format($data, string $format, $pattern = null): string
     {
-        switch( $format )
-        {
+        switch ($format) {
             case "float":
-                return preg_replace( '#^([0-9\s]+),([0-9]+)$#', '$1.$2', $data );
+                return preg_replace('#^([0-9\s]+),([0-9]+)$#', '$1.$2', $data);
             case "amount":
-                $number = $this->format( $data, "float" );
+                $number = $this->format($data, "float");
 
-                return number_format( (float)$number, 2, ",", " " );
+                return number_format((float)$number, 2, ",", " ");
             case "price":
-                $number = $this->format( $data, "amount" );
+                $number = $this->format($data, "amount");
 
                 return "$number €";
             case "french_date":
-                $pattern = is_null( $pattern ) ? 'l d F à H:i' : $pattern;
-                $data = $this->toDateTime( $data );
+                $pattern = is_null($pattern) ? 'l d F à H:i' : $pattern;
+                $data = $this->toDateTime($data);
 
-                return $this->formatFrenchDate( $data, $pattern );
+                return $this->formatFrenchDate($data, $pattern);
             case "filesize":
-                $pattern = is_int( $pattern ) ? $pattern : 1;
+                $pattern = is_int($pattern) ? $pattern : 1;
 
-                return $this->human_filesize( $data, $pattern );
+                return $this->humanFilesize($data, $pattern);
             case "datetime":
-                return $this->toDateTime( $data );
+                return $this->toDateTime($data);
             case "url":
                 $url = $data;
                 // Check if protocol is in $data
-                if( !preg_match( '#^http(?:s)?://#', $data ) )
-                {
-                    $url = "http://". $data;
+                if (!preg_match('#^http(?:s)?://#', $data)) {
+                    $url = "http://" . $data;
                 }
                 return $url;
             case "slug":
-                return $this->slugify( $data );
+                return $this->slugify($data);
         }
 
-        throw new DataFormatterException( "Unknown format name : $format" );
-    }
-
-    /**
-     * @param string $string
-     * @param string $delimiter
-     * @return string
-     */
-    public function slugify( $string, $delimiter = '-' )
-    {
-        $oldLocale = setlocale( LC_ALL, '0' );
-        setlocale( LC_ALL, 'en_US.UTF-8' );
-        $clean = iconv( 'UTF-8', 'ASCII//TRANSLIT', $string );
-        $clean = preg_replace( "/[^a-zA-Z0-9\/_|+ -]/", '', $clean );
-        $clean = strtolower( $clean );
-        $clean = preg_replace( "/[\/_|+ -]+/", $delimiter, $clean );
-        $clean = trim( $clean, $delimiter );
-        setlocale( LC_ALL, $oldLocale );
-
-        return $clean;
+        throw new DataFormatterException("Unknown format name : $format");
     }
 
     /**
      * Returns a DateTime object from a string
      *
-     * @param \DateTime|string $date Date to convert
-     * @param mixed            $defaultReturn Value to return if cannot create a DateTime
-     * @return \DateTime|false
+     * @param DateTime|string $date Date to convert
+     * @param mixed $defaultReturn Value to return if cannot create a DateTime
+     * @return DateTime|false
      */
-    public function toDateTime( $date, $defaultReturn = false )
+    public function toDateTime($date, $defaultReturn = false)
     {
-        if( !$date instanceof \DateTime )
-        {
+        if (!$date instanceof DateTime) {
             $date = (string)$date;
 
             // Try to build DateTime with format d/m/Y
-            $dateTime = \DateTime::createFromFormat( "d/m/Y", $date, new \DateTimeZone( 'UTC' ) );
+            $dateTime = DateTime::createFromFormat("d/m/Y", $date, new \DateTimeZone('UTC'));
 
-            if( $dateTime === false )
-            {
+            if ($dateTime === false) {
                 // Try to build DateTime with format Y-m-d
-                $dateTime = \DateTime::createFromFormat( "Y-m-d", $date, new \DateTimeZone( 'UTC' ) );
+                $dateTime = DateTime::createFromFormat("Y-m-d", $date, new \DateTimeZone('UTC'));
             }
 
-            if( $dateTime === false )
-            {
+            if ($dateTime === false) {
                 $date != "" ?: $date = "now";
-                try
-                {
-                    $dateTime = new \DateTime( $date, new \DateTimeZone( 'UTC' ) );
-                }
-                catch( \Exception $exception )
-                {
+                try {
+                    $dateTime = new DateTime($date, new \DateTimeZone('UTC'));
+                } catch (\Exception $exception) {
                     $dateTime = $defaultReturn;
                 }
             }
-        }
-        else
-        {
+        } else {
             // Already a DateTime object
             $dateTime = $date;
         }
 
-        return $dateTime instanceof \DateTime ? $dateTime : $defaultReturn;
+        return $dateTime instanceof DateTime ? $dateTime : $defaultReturn;
     }
 
-    private function formatFrenchDate( $date, $pattern = null )
+    /**
+     * @param DateTime|string $date
+     * @param null $pattern
+     * @return string
+     * @throws \Exception
+     */
+    private function formatFrenchDate($date, $pattern = null): string
     {
         $monthEn = [
             "January",
@@ -219,29 +193,47 @@ class DataFormatterHelper
             "Déc"
         ];
 
-        if( !$date instanceof \DateTime )
-        {
-            $date = new \DateTime( $date );
+        if (!$date instanceof DateTime) {
+            $date = new DateTime($date);
         }
 
-        $dateFormatToFrensh = str_replace( $monthEn, $monthFr, $date->format( $pattern ) );
-        $dateFormatToFrensh = str_replace( $dayFullEn, $dayFullFr, $dateFormatToFrensh );
+        $dateFormatToFrensh = str_replace($monthEn, $monthFr, $date->format($pattern));
+        $dateFormatToFrensh = str_replace($dayFullEn, $dayFullFr, $dateFormatToFrensh);
 
-        return str_replace( $dayEn, $dayFr, $dateFormatToFrensh );
+        return str_replace($dayEn, $dayFr, $dateFormatToFrensh);
     }
 
     /**
      * Format filesize (in bytes) into human readable filesize
      *
-     * @param     $bytes
+     * @param int $bytes
      * @param int $decimals
      * @return string
      */
-    private function human_filesize( $bytes, $decimals = 2 )
+    private function humanFilesize(int $bytes, int $decimals = 2): string
     {
-        $sz     = [ "o", "Ko", "Mo", "Go", "To", "Po" ];
-        $factor = (int)floor( ( strlen( $bytes ) - 1 ) / 3 );
+        $sz = ["o", "Ko", "Mo", "Go", "To", "Po"];
+        $factor = (int)floor((strlen($bytes) - 1) / 3);
 
-        return sprintf( "%.{$decimals}f ", $bytes / pow( 1024, $factor ) ) . @$sz[$factor];
+        return sprintf("%.{$decimals}f ", $bytes / pow(1024, $factor)) . @$sz[$factor];
+    }
+
+    /**
+     * @param string $string
+     * @param string $delimiter
+     * @return string
+     */
+    public function slugify(string $string, string $delimiter = '-'): string
+    {
+        $oldLocale = setlocale(LC_ALL, '0');
+        setlocale(LC_ALL, 'en_US.UTF-8');
+        $clean = iconv('UTF-8', 'ASCII//TRANSLIT', $string);
+        $clean = preg_replace("/[^a-zA-Z0-9\/_|+ -]/", '', $clean);
+        $clean = strtolower($clean);
+        $clean = preg_replace("/[\/_|+ -]+/", $delimiter, $clean);
+        $clean = trim($clean, $delimiter);
+        setlocale(LC_ALL, $oldLocale);
+
+        return $clean;
     }
 }

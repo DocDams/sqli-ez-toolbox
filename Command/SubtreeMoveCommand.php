@@ -2,100 +2,125 @@
 
 namespace SQLI\EzToolboxBundle\Command;
 
+use eZ\Publish\API\Repository\Exceptions\InvalidArgumentException;
+use eZ\Publish\API\Repository\Exceptions\NotFoundException;
+use eZ\Publish\API\Repository\Exceptions\UnauthorizedException;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\Repository;
 use eZ\Publish\API\Repository\SearchService;
 use eZ\Publish\Core\QueryType\QueryTypeRegistry;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
-class SubtreeMoveCommand extends ContainerAwareCommand
+class SubtreeMoveCommand extends Command
 {
     /** @var Repository */
-    private $repository;
+    protected $repository;
     /** @var LocationService */
-    private $locationService;
+    protected $locationService;
     /** @var QueryTypeRegistry */
-    private $queryTypeRegistry;
+    protected $queryTypeRegistry;
     /** @var SearchService */
-    private $searchService;
-
+    protected $searchService;
     /** @var int */
     private $currentLocationID;
     /** @var int */
     private $newParentLocationID;
 
-    protected function configure()
+    public function __construct(Repository $repository, QueryTypeRegistry $queryTypeRegistry)
     {
-        $this->setName( 'sqli:move:subtree' )
-            ->setDescription( 'Move "currentParentLocationID" and it\'s subtree under "newParentLocationID"' )
-            ->addArgument( 'current', InputArgument::REQUIRED, "Move this locationID and it's subtree" )
-            ->addArgument( 'new', InputArgument::REQUIRED, "Move children under this locationID" );
+        $this->repository = $repository;
+        $this->searchService = $repository->getSearchService();
+        $this->locationService = $repository->getLocationService();
+        $this->queryTypeRegistry = $queryTypeRegistry;
+        parent::__construct('sqli:move:subtree');
+    }
+
+    protected function configure(): void
+    {
+        $this
+            ->setDescription('Move "currentParentLocationID" and it\'s subtree under "newParentLocationID"')
+            ->addArgument(
+                'current',
+                InputArgument::REQUIRED,
+                "Move this locationID and it's subtree"
+            )
+            ->addArgument(
+                'new',
+                InputArgument::REQUIRED,
+                "Move children under this locationID"
+            );
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
-     * @return int|null|void
-     * @throws \eZ\Publish\API\Repository\Exceptions\InvalidArgumentException
-     * @throws \eZ\Publish\API\Repository\Exceptions\NotFoundException
-     * @throws \eZ\Publish\API\Repository\Exceptions\UnauthorizedException
+     * @throws InvalidArgumentException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
      */
-    protected function execute( InputInterface $input, OutputInterface $output )
+    protected function execute(InputInterface $input, OutputInterface $output): void
     {
         // Retrieve current Location
-        $currentLocation = $this->locationService->loadLocation( $this->currentLocationID );
+        $currentLocation = $this->locationService->loadLocation($this->currentLocationID);
         // Retrieve new Location
-        $newLocation = $this->locationService->loadLocation( $this->newParentLocationID );
+        $newLocation = $this->locationService->loadLocation($this->newParentLocationID);
 
         // Information
-        $output->writeln( sprintf( "Move <comment>%s</comment> under <comment>%s</comment>", $currentLocation->getContentInfo()->name, $newLocation->getContentInfo()->name ) );
-        $output->writeln( "" );
+        $output->writeln(sprintf(
+            "Move <comment>%s</comment> under <comment>%s</comment>",
+            $currentLocation->getContentInfo()->name,
+            $newLocation->getContentInfo()->name
+        ));
+        $output->writeln("");
 
         // Ask confirmation
-        $output->writeln( "" );
-        $helper   = $this->getHelper( 'question' );
+        $output->writeln("");
+        $helper = $this->getHelper('question');
         $question = new ConfirmationQuestion(
             '<question>Are you sure you want to proceed [y/N]?</question> ',
             false
         );
 
-        if( !$helper->ask( $input, $output, $question ) )
-        {
-            $output->writeln( '' );
+        if (!$helper->ask($input, $output, $question)) {
+            $output->writeln('');
 
             return;
         }
 
-        $output->writeln( "" );
-        $output->writeln( "Starting job :" );
+        $output->writeln("");
+        $output->writeln("Starting job :");
 
-        $output->write( sprintf( "[locationID : %s] <comment>%s</comment> moved ", $currentLocation->id, $currentLocation->getContentInfo()->name ) );
-        $this->locationService->moveSubtree( $currentLocation, $newLocation );
-        $output->writeln( "<info>[OK]</info>" );
+        $output->write(sprintf(
+            "[locationID : %s] <comment>%s</comment> moved ",
+            $currentLocation->id,
+            $currentLocation->getContentInfo()->name
+        ));
+        $this->locationService->moveSubtree($currentLocation, $newLocation);
+        $output->writeln("<info>[OK]</info>");
 
-        $output->writeln( "" );
-        $output->writeln( "<info>Job finished !</info>" );
+        $output->writeln("");
+        $output->writeln("<info>Job finished !</info>");
     }
 
-    protected function initialize( InputInterface $input, OutputInterface $output )
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @throws NotFoundException
+     */
+    protected function initialize(InputInterface $input, OutputInterface $output): void
     {
-        $this->queryTypeRegistry = $this->getContainer()->get( 'ezpublish.query_type.registry' );
-        $this->searchService     = $this->getContainer()->get( 'ezpublish.api.service.inner_search' );
-        $this->repository        = $this->getContainer()->get( 'ezpublish.api.repository' );
-        $this->locationService   = $this->repository->getLocationService();
+        $output->setDecorated(true);
+        $input->setInteractive(true);
 
-        $output->setDecorated( true );
-        $input->setInteractive( true );
-
-        $this->currentLocationID = (int)$input->getArgument( 'current' );
-        $this->newParentLocationID     = (int)$input->getArgument( 'new' );
+        $this->currentLocationID = (int)$input->getArgument('current');
+        $this->newParentLocationID = (int)$input->getArgument('new');
 
         // Load and set Administrator User
-        $administratorUser = $this->repository->getUserService()->loadUser( 14 );
-        $this->repository->getPermissionResolver()->setCurrentUserReference( $administratorUser );
+        $administratorUser = $this->repository->getUserService()->loadUserByLogin('admin');
+        $this->repository->getPermissionResolver()->setCurrentUserReference($administratorUser);
     }
 }

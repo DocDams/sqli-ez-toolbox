@@ -2,53 +2,65 @@
 
 namespace SQLI\EzToolboxBundle\Command;
 
+use eZ\Publish\API\Repository\Exceptions\NotFoundException;
+use eZ\Publish\API\Repository\Exceptions\UnauthorizedException;
 use eZ\Publish\API\Repository\LocationService;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use eZ\Publish\API\Repository\Repository;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class LocationUnhideCommand extends ContainerAwareCommand
+class LocationUnhideCommand extends Command
 {
+    /** @var Repository */
+    protected $repository;
     /** @var LocationService */
-    private $locationService;
+    protected $locationService;
 
-    public function initialize( InputInterface $input, OutputInterface $output )
+    public function __construct(Repository $repository)
     {
-        $output->setDecorated( true );
-
-        $repository            = $this->getContainer()->get( 'ezpublish.api.repository' );
-        $this->locationService = $this->getContainer()->get( 'ezpublish.api.service.inner_location' );
-
-        // Load and set Administrator User
-        $administratorUser = $repository->getUserService()->loadUser( 14 );
-        $repository->getPermissionResolver()->setCurrentUserReference( $administratorUser );
-    }
-
-    protected function configure()
-    {
-        $this->setName( 'sqli:object:unhide' )
-            ->setDescription( 'Unhide location' )
-            ->addArgument( 'location', InputArgument::REQUIRED, "LocationID to unhide" );
+        $this->repository = $repository;
+        $this->locationService = $repository->getLocationService();
+        parent::__construct('sqli:object:unhide');
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
-     * @return int|null|void
-     * @throws \eZ\Publish\API\Repository\Exceptions\NotFoundException
-     * @throws \eZ\Publish\API\Repository\Exceptions\UnauthorizedException
+     * @throws NotFoundException
      */
-    protected function execute( InputInterface $input, OutputInterface $output )
+    public function initialize(InputInterface $input, OutputInterface $output): void
     {
-        if( $locationID = $input->getArgument( 'location' ) )
-        {
-            $output->write( "Unhide locationID $locationID : " );
+        $output->setDecorated(true);
 
-            $location    = $this->locationService->loadLocation( $locationID );
+        // Load and set Administrator User
+        $administratorUser = $this->repository->getUserService()->loadUserByLogin('admin');
+        $this->repository->getPermissionResolver()->setCurrentUserReference($administratorUser);
+    }
+
+    protected function configure(): void
+    {
+        $this
+            ->setDescription('Unhide location')
+            ->addArgument('location', InputArgument::REQUIRED, "LocationID to unhide");
+    }
+
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     */
+    protected function execute(InputInterface $input, OutputInterface $output): void
+    {
+        if ($locationID = $input->getArgument('location')) {
+            $output->write("Unhide locationID $locationID : ");
+
+            $location = $this->locationService->loadLocation($locationID);
             $contentName = $location->getContent()->getName();
-            $this->locationService->unhideLocation( $location );
-            $output->writeln( "<info>" . $contentName . "</info>" );
+            $this->locationService->unhideLocation($location);
+            $output->writeln("<info>" . $contentName . "</info>");
         }
     }
 }

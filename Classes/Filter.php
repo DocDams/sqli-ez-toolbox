@@ -2,30 +2,26 @@
 
 namespace SQLI\EzToolboxBundle\Classes;
 
-use Symfony\Component\Validator\Constraints as Assert;
-
 class Filter
 {
-    const OPERANDS_MAPPING =
-        [
-            "="        => "EQ",
-            "!="       => "NEQ",
-            "<"        => "LT",
-            "<="       => "LTE",
-            ">"        => "GT",
-            ">="       => "GTE",
-            "LIKE"     => "LIKE",
-            "NOT LIKE" => "NLIKE",
-        ];
+    public const OPERANDS_MAPPING = [
+        "=" => "EQ",
+        "!=" => "NEQ",
+        "<" => "LT",
+        "<=" => "LTE",
+        ">" => "GT",
+        ">=" => "GTE",
+        "LIKE" => "LIKE",
+        "NOT LIKE" => "NLIKE",
+    ];
 
     protected $columnName;
     protected $operand;
     protected $value;
 
-    public static function create( $columnName, $operand, $value ): ?self
+    public static function create($columnName, $operand, $value): ?self
     {
-        if( array_search( $operand, self::OPERANDS_MAPPING ) )
-        {
+        if (array_search($operand, self::OPERANDS_MAPPING)) {
             $filter = new self();
 
             $filter->columnName = $columnName;
@@ -36,11 +32,6 @@ class Filter
         }
 
         return null;
-    }
-
-    private function getOperandsValues()
-    {
-        return array_values( self::OPERANDS_MAPPING );
     }
 
     /**
@@ -54,7 +45,7 @@ class Filter
     /**
      * @param mixed $columnName
      */
-    public function setColumnName( $columnName ): void
+    public function setColumnName($columnName): void
     {
         $this->columnName = $columnName;
     }
@@ -70,7 +61,7 @@ class Filter
     /**
      * @param mixed $operand
      */
-    public function setOperand( $operand ): void
+    public function setOperand($operand): void
     {
         $this->operand = $operand;
     }
@@ -86,9 +77,13 @@ class Filter
     /**
      * @param mixed $value
      */
-    public function setValue( $value ): void
+    public function setValue($value): void
     {
         $this->value = $value;
     }
 
+    private function getOperandsValues()
+    {
+        return array_values(self::OPERANDS_MAPPING);
+    }
 }

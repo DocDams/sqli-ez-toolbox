@@ -2,10 +2,10 @@
 
 namespace SQLI\EzToolboxBundle;
 
+use SQLI\EzToolboxBundle\DependencyInjection\Compiler\ParameterHandlerTagCompilerPass;
 use SQLI\EzToolboxBundle\DependencyInjection\PolicyProvider\SQLIEzToolboxPolicyProvider;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
-use SQLI\EzToolboxBundle\DependencyInjection\Compiler\ParameterHandlerTagCompilerPass;
 
 class SQLIEzToolboxBundle extends Bundle
 {
@@ -22,6 +22,6 @@ class SQLIEzToolboxBundle extends Bundle
 
         $eZExtension = $container->getExtension('ezpublish');
         $eZExtension->addPolicyProvider(new SQLIEzToolboxPolicyProvider());
-        $container->addCompilerPass( new ParameterHandlerTagCompilerPass() );
+        $container->addCompilerPass(new ParameterHandlerTagCompilerPass());
     }
 }

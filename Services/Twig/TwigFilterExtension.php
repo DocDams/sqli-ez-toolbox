@@ -28,27 +28,30 @@ class TwigFilterExtension extends AbstractExtension
     /** @var ContentExtension */
     private $contentExtension;
 
-    public function __construct( Repository $repository, DataFormatterHelper $dataFormatterHelper,
-                                 ConfigResolverInterface $configResolver, FieldHelper $fieldHelper,
-                                 ContentExtension $contentExtension )
-    {
-        $this->repository          = $repository;
+    public function __construct(
+        Repository $repository,
+        DataFormatterHelper $dataFormatterHelper,
+        ConfigResolverInterface $configResolver,
+        FieldHelper $fieldHelper,
+        ContentExtension $contentExtension
+    ) {
+        $this->repository = $repository;
         $this->dataFormatterHelper = $dataFormatterHelper;
-        $this->configResolver      = $configResolver;
-        $this->fieldHelper         = $fieldHelper;
-        $this->contentExtension    = $contentExtension;
+        $this->configResolver = $configResolver;
+        $this->fieldHelper = $fieldHelper;
+        $this->contentExtension = $contentExtension;
     }
 
     public function getFunctions()
     {
         return
             [
-                new TwigFunction( 'format_data', [ $this->dataFormatterHelper, 'format' ] ),
-                new TwigFunction( 'empty_field', [ $this, 'isEmptyField' ] ),
-                new TwigFunction( 'is_anonymous_user', [ $this, 'isAnonymousUser' ] ),
-                new TwigFunction( 'content_name', [ $this, 'getContentName' ] ),
-                new TwigFunction( 'ez_parameter', [ $this, 'getParameter' ] ),
-                new TwigFunction( 'ez_selection_value', [ $this->fieldHelper, 'ezselectionSelectedOptionValue' ] ),
+                new TwigFunction('format_data', [$this->dataFormatterHelper, 'format']),
+                new TwigFunction('empty_field', [$this, 'isEmptyField']),
+                new TwigFunction('is_anonymous_user', [$this, 'isAnonymousUser']),
+                new TwigFunction('content_name', [$this, 'getContentName']),
+                new TwigFunction('ez_parameter', [$this, 'getParameter']),
+                new TwigFunction('ez_selection_value', [$this->fieldHelper, 'ezselectionSelectedOptionValue']),
             ];
     }
 
@@ -56,10 +59,10 @@ class TwigFilterExtension extends AbstractExtension
     {
         return
             [
-                new TwigFilter( 'format_data', [
+                new TwigFilter('format_data', [
                     $this->dataFormatterHelper,
                     'format'
-                ] ),
+                ]),
             ];
     }
 
@@ -70,14 +73,11 @@ class TwigFilterExtension extends AbstractExtension
      * @param $namespace
      * @return |null
      */
-    public function getParameter( $parameterName, $namespace )
+    public function getParameter($parameterName, $namespace)
     {
-        try
-        {
-            return $this->configResolver->getParameter( $parameterName, $namespace );
-        }
-        catch( \Exception $e )
-        {
+        try {
+            return $this->configResolver->getParameter($parameterName, $namespace);
+        } catch (\Exception $e) {
             return null;
         }
     }
@@ -86,16 +86,16 @@ class TwigFilterExtension extends AbstractExtension
      * Checks if a given field is considered empty.
      * This method accepts field as Objects or by identifiers.
      *
-     * @param Content      $content
+     * @param Content $content
      * @param Field|string $fieldDefIdentifier Field or Field Identifier to get the value from.
-     * @param string       $forcedLanguage Locale we want the content name translation in (e.g. "fre-FR").
+     * @param string $forcedLanguage Locale we want the content name translation in (e.g. "fre-FR").
      *                                     Null by default (takes current locale).
      *
      * @return bool
      */
-    public function isEmptyField( Content $content, $fieldDefIdentifier, $forcedLanguage = null )
+    public function isEmptyField(Content $content, $fieldDefIdentifier, $forcedLanguage = null)
     {
-        return $this->fieldHelper->isEmptyField( $content, $fieldDefIdentifier, $forcedLanguage );
+        return $this->fieldHelper->isEmptyField($content, $fieldDefIdentifier, $forcedLanguage);
     }
 
     /**
@@ -105,22 +105,20 @@ class TwigFilterExtension extends AbstractExtension
      * @return string
      * @throws InvalidArgumentType
      */
-    public function getContentName( $content )
+    public function getContentName($content)
     {
-        if( !$content instanceof Content )
-        {
+        if (!$content instanceof Content) {
             // Load Content
             $content = $this->repository->sudo(
-                function( Repository $repository ) use ( $content )
-                {
+                function (Repository $repository) use ($content) {
                     /* @var $repository \eZ\Publish\Core\Repository\Repository */
-                    return $repository->getContentService()->loadContent( intval( $content ) );
-                } );
+                    return $repository->getContentService()->loadContent(intval($content));
+                }
+            );
         }
 
-        if( $content instanceof Content )
-        {
-            return $this->contentExtension->getTranslatedContentName( $content );
+        if ($content instanceof Content) {
+            return $this->contentExtension->getTranslatedContentName($content);
         }
 
         return "N/A";
@@ -134,11 +132,10 @@ class TwigFilterExtension extends AbstractExtension
     public function isAnonymousUser()
     {
         // Siteaccess anonymous user ID
-        $anonymousUserId = $this->configResolver->getParameter( "anonymous_user_id", "ezsettings" );
+        $anonymousUserId = $this->configResolver->getParameter("anonymous_user_id", "ezsettings");
         // Current user ID
         $currentUserReference = $this->repository->getPermissionResolver()->getCurrentUserReference();
-        if( $currentUserReference instanceof UserReference )
-        {
+        if ($currentUserReference instanceof UserReference) {
             $currentUserId = $currentUserReference->getUserId();
 
             return $currentUserId === $anonymousUserId;

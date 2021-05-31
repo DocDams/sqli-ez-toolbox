@@ -4,6 +4,7 @@ namespace SQLI\EzToolboxBundle\Services;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
+use ReflectionException;
 use SQLI\EzToolboxBundle\Annotations\SQLIAnnotationManager;
 use SQLI\EzToolboxBundle\Classes\Filter;
 
@@ -16,134 +17,140 @@ class EntityHelper
     /** @var FilterEntityHelper */
     private $filterEntityHelper;
 
-    public function __construct( EntityManagerInterface $entityManager, SQLIAnnotationManager $annotationManager,
-                                 FilterEntityHelper $filterEntityHelper )
-    {
-        $this->entityManager      = $entityManager;
-        $this->annotationManager  = $annotationManager;
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        SQLIAnnotationManager $annotationManager,
+        FilterEntityHelper $filterEntityHelper
+    ) {
+        $this->entityManager = $entityManager;
+        $this->annotationManager = $annotationManager;
         $this->filterEntityHelper = $filterEntityHelper;
-    }
-
-    /**
-     * Get all classes annotated with SQLIClassAnnotation interface
-     *
-     * @return array
-     * @throws \ReflectionException
-     */
-    public function getAnnotatedClasses()
-    {
-        $annotatedClasses = $this->annotationManager->getAnnotatedClasses();
-
-        foreach( $annotatedClasses as $annotatedFQCN => &$annotatedClass )
-        {
-            $annotatedClass['count'] = $this->count( $annotatedFQCN );
-        }
-
-        return $annotatedClasses;
-    }
-
-    /**
-     * Get a class annotated with SQLIClassAnnotation interface from her FQCN
-     *
-     * @param $fqcn
-     * @return mixed|null
-     * @throws \ReflectionException
-     */
-    public function getAnnotatedClass( $fqcn )
-    {
-        $annotatedClasses = $this->getAnnotatedClasses();
-
-        return array_key_exists( $fqcn, $annotatedClasses ) ? $annotatedClasses[$fqcn] : null;
     }
 
     /**
      * Get an entity with her information and elements
      *
-     * @param string     $fqcn
-     * @param bool       $fetchElements
+     * @param string $fqcn
+     * @param bool $fetchElements
      * @param bool|array $sort Array( 'column_name' => '', 'order' => 'ASC|DESC' )
      * @return mixed
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
-    public function getEntity( $fqcn, $fetchElements = true, $sort = false )
+    public function getEntity(string $fqcn, $fetchElements = true, $sort = false): array
     {
-        $annotatedClass['fqcn']  = $fqcn;
-        $annotatedClass['class'] = $this->getAnnotatedClass( $fqcn );
+        $annotatedClass['fqcn'] = $fqcn;
+        $annotatedClass['class'] = $this->getAnnotatedClass($fqcn);
 
-        if( $fetchElements )
-        {
+        if ($fetchElements) {
             // Prepare a filter (only properties flagged as visible or without this annotation) for findAll
             $filteredColums = [];
-            foreach( $annotatedClass['class']['properties'] as $propertyName => $propertyInfos )
-            {
-                if( $propertyInfos['visible'] )
-                {
+            foreach ($annotatedClass['class']['properties'] as $propertyName => $propertyInfos) {
+                if ($propertyInfos['visible']) {
                     $filteredColums[] = $propertyName;
                 }
             }
 
             // Get filter in session if exists
-            $filter = $this->filterEntityHelper->getFilter( $fqcn );
+            $filter = $this->filterEntityHelper->getFilter($fqcn);
 
             // Get all elements
-            $annotatedClass['elements'] = $this->findAll( $fqcn, $filteredColums, $filter, $sort );
+            $annotatedClass['elements'] = $this->findAll($fqcn, $filteredColums, $filter, $sort);
         }
 
         return $annotatedClass;
     }
 
     /**
+     * Get a class annotated with SQLIClassAnnotation interface from her FQCN
+     *
+     * @param string $fqcn
+     * @return string
+     * @throws ReflectionException
+     */
+    public function getAnnotatedClass(string $fqcn): ?string
+    {
+        $annotatedClasses = $this->getAnnotatedClasses();
+
+        return array_key_exists($fqcn, $annotatedClasses) ? $annotatedClasses[$fqcn] : null;
+    }
+
+    /**
+     * Get all classes annotated with SQLIClassAnnotation interface
+     *
+     * @return string[]
+     * @throws ReflectionException
+     */
+    public function getAnnotatedClasses(): array
+    {
+        $annotatedClasses = $this->annotationManager->getAnnotatedClasses();
+
+        foreach ($annotatedClasses as $annotatedFQCN => &$annotatedClass) {
+            $annotatedClass['count'] = $this->count($annotatedFQCN);
+        }
+
+        return $annotatedClasses;
+    }
+
+    /**
+     * Count number of element for an entity
+     *
+     * @param string $entityClass FQCN
+     * @return int
+     */
+    public function count(string $entityClass): int
+    {
+        return $this->entityManager->getRepository($entityClass)->count([]);
+    }
+
+    /**
      * Retrieve all lines in SQL table
      *
-     * @param string      $entityClass FQCN
-     * @param array|null  $filteredColums
+     * @param string $entityClass FQCN
+     * @param array|null $filteredColums
      * @param Filter|null $filter
-     * @param bool|array  $sort Array( 'column_name' => '', 'order' => 'ASC|DESC' )
+     * @param bool|array $sort Array( 'column_name' => '', 'order' => 'ASC|DESC' )
      * @return array
      */
-    public function findAll( $entityClass, $filteredColums = null, $filter = null, $sort = false )
+    public function findAll(string $entityClass, $filteredColums = null, $filter = null, $sort = false): array
     {
         /** @var $repository EntityRepository */
-        $repository   = $this->entityManager->getRepository( $entityClass );
-        $queryBuilder = $repository->createQueryBuilder( 'entity' );
+        $repository = $this->entityManager->getRepository($entityClass);
+        $queryBuilder = $repository->createQueryBuilder('entity');
 
         // In case of filtering columns
-        if( is_array( $filteredColums ) )
-        {
-            array_walk( $filteredColums, function( &$columnName )
-            {
+        if (is_array($filteredColums)) {
+            array_walk($filteredColums, function (&$columnName) {
                 $columnName = "entity.$columnName";
-            } );
-            $select = implode( ",", $filteredColums );
+            });
+            $select = implode(",", $filteredColums);
 
             // Change SELECT clause
-            $queryBuilder->select( $select );
+            $queryBuilder->select($select);
         }
 
         // Filter
-        if( !is_null( $filter ) )
-        {
+        if (!is_null($filter)) {
             // Add clause 'where'
-            $queryBuilder->andWhere( sprintf( "entity.%s %s :value",
-                                              $filter->getColumnName(),
-                                              array_search( $filter->getOperand(), Filter::OPERANDS_MAPPING ) ) );
+            $queryBuilder->andWhere(sprintf(
+                "entity.%s %s :value",
+                $filter->getColumnName(),
+                array_search($filter->getOperand(), Filter::OPERANDS_MAPPING)
+            ));
 
             $value = $filter->getValue();
 
             // Add % around value if operand is LIKE or NOT LIKE
-            if( stripos( $filter->getOperand(), 'LIKE' ) !== false )
-            {
+            if (stripos($filter->getOperand(), 'LIKE') !== false) {
                 $value = "%" . $value . "%";
             }
 
             // Bind parameter
-            $queryBuilder->setParameter( 'value', $value );
+            $queryBuilder->setParameter('value', $value);
         }
 
         // Sort
-        if( $sort !== false )
-        {
-            $queryBuilder->orderBy( "entity." . $sort['column_name'], ( $sort['order'] == "ASC" ? "ASC" : "DESC" ) );
+        if ($sort !== false) {
+            $queryBuilder->orderBy("entity." . $sort['column_name'], ($sort['order'] == "ASC" ? "ASC" : "DESC"));
         }
 
         // Return results as array (ignore accessibility of properties)
@@ -151,29 +158,17 @@ class EntityHelper
     }
 
     /**
-     * Count number of element for an entity
-     *
-     * @param string $entityClass FQCN
-     * @return integer
-     */
-    public function count( $entityClass )
-    {
-        return $this->entityManager->getRepository( $entityClass )->count( [] );
-    }
-
-    /**
      * Remove an element
      * $findCriteria = ['columnName' => 'value']
      *
      * @param string $entityClass FQCN
-     * @param array  $findCriteria
+     * @param array $findCriteria
      */
-    public function remove( $entityClass, $findCriteria )
+    public function remove(string $entityClass, array $findCriteria): void
     {
-        $element = $this->findOneBy( $entityClass, $findCriteria );
-        if( !is_null( $element ) )
-        {
-            $this->entityManager->remove( $element );
+        $element = $this->findOneBy($entityClass, $findCriteria);
+        if (!is_null($element)) {
+            $this->entityManager->remove($element);
             $this->entityManager->flush();
         }
     }
@@ -181,30 +176,27 @@ class EntityHelper
     /**
      * Find one element
      *
-     * @param $entityClass
-     * @param $findCriteria
+     * @param string $entityClass
+     * @param array $findCriteria
      * @return object|null
      */
-    public function findOneBy( $entityClass, $findCriteria )
+    public function findOneBy(string $entityClass, array $findCriteria)
     {
-        return $this->entityManager->getRepository( $entityClass )->findOneBy( $findCriteria );
+        return $this->entityManager->getRepository($entityClass)->findOneBy($findCriteria);
     }
 
     /**
      * @param $object
-     * @param $property_name
+     * @param string $property_name
      * @return false|string
      */
-    public function attributeValue( $object, $property_name )
+    public function attributeValue($object, string $property_name)
     {
-        if( $object[$property_name] instanceof \DateTime )
-        {
+        if ($object[$property_name] instanceof \DateTime) {
             // Datetime doesn't have a __toString method
-            return date_format( $object[$property_name], "c" );
-        }
-        else
-        {
-            return strval( $object[$property_name] );
+            return date_format($object[$property_name], "c");
+        } else {
+            return strval($object[$property_name]);
         }
     }
 }

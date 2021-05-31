@@ -16,15 +16,15 @@ trait SiteAccessUtilsTrait
      * autowiring
      *
      * @required
-     * @param SiteAccess            $siteAccess
+     * @param SiteAccess $siteAccess
      * @param ParameterBagInterface $parameterBag
      */
-    public function setSiteAccessSettings(SiteAccess $siteAccess, ParameterBagInterface $parameterBag)
+    public function setSiteAccessSettings(SiteAccess $siteAccess, ParameterBagInterface $parameterBag): void
     {
-        $this->siteAccess           = $siteAccess;
+        $this->siteAccess = $siteAccess;
         $this->siteaccessAdminGroup = [];
         if ($parameterBag->has('ezpublish.siteaccess.groups')) {
-            $siteaccessAdminGroup       = $parameterBag->get('ezpublish.siteaccess.groups');
+            $siteaccessAdminGroup = $parameterBag->get('ezpublish.siteaccess.groups');
             $this->siteaccessAdminGroup = $siteaccessAdminGroup['admin_group'];
         }
     }

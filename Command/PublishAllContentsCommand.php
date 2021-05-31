@@ -2,43 +2,60 @@
 
 namespace SQLI\EzToolboxBundle\Command;
 
+use eZ\Publish\API\Repository\ContentService;
+use eZ\Publish\API\Repository\Exceptions\BadStateException;
+use eZ\Publish\API\Repository\Exceptions\InvalidArgumentException;
+use eZ\Publish\API\Repository\Exceptions\NotFoundException;
+use eZ\Publish\API\Repository\Exceptions\UnauthorizedException;
+use eZ\Publish\API\Repository\Repository;
+use eZ\Publish\API\Repository\SearchService;
 use eZ\Publish\API\Repository\Values\Content\Content;
 use eZ\Publish\API\Repository\Values\Content\LocationQuery;
 use eZ\Publish\API\Repository\Values\Content\Query\Criterion;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
-class PublishAllContentsCommand extends ContainerAwareCommand
+class PublishAllContentsCommand extends Command
 {
-    const FETCH_LIMIT = 25;
-    private $contentClassIdentifier;
-    private $repository;
-    private $searchService;
-    private $contentService;
-    private $totalCount;
+    public const FETCH_LIMIT = 25;
+    /** @var string */
+    protected $contentClassIdentifier;
+    /** @var Repository */
+    protected $repository;
+    /** @var SearchService */
+    protected $searchService;
+    /** @var ContentService */
+    protected $contentService;
+    /** @var int */
+    protected $totalCount;
+
+    public function __construct(Repository $repository)
+    {
+        $this->repository = $repository;
+        $this->searchService = $repository->getSearchService();
+        $this->contentService = $repository->getContentService();
+        parent::__construct('sqli:object:republish');
+    }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
-     * @throws \eZ\Publish\API\Repository\Exceptions\NotFoundException
+     * @throws NotFoundException
+     * @throws InvalidArgumentException
      */
-    public function initialize( InputInterface $input, OutputInterface $output )
+    public function initialize(InputInterface $input, OutputInterface $output): void
     {
-        $output->setDecorated( true );
-        $input->setInteractive( true );
+        $output->setDecorated(true);
+        $input->setInteractive(true);
 
-        $this->contentClassIdentifier = $input->getArgument( 'contentClassIdentifier' );
-
-        $this->repository     = $this->getContainer()->get( 'ezpublish.api.repository' );
-        $this->searchService  = $this->repository->getSearchService();
-        $this->contentService = $this->repository->getContentService();
+        $this->contentClassIdentifier = $input->getArgument('contentClassIdentifier');
 
         // Load and set Administrator User for permissions
-        $administratorUser = $this->repository->getUserService()->loadUser( 14 );
-        $this->repository->getPermissionResolver()->setCurrentUserReference( $administratorUser );
+        $administratorUser = $this->repository->getUserService()->loadUserByLogin('admin');
+        $this->repository->getPermissionResolver()->setCurrentUserReference($administratorUser);
 
         // Count number of contents to update
         $this->totalCount = $this->fetchCount();
@@ -47,83 +64,92 @@ class PublishAllContentsCommand extends ContainerAwareCommand
     /**
      * Returns number of contents who will be updated
      *
-     * @return mixed
+     * @return int
+     * @throws InvalidArgumentException
      */
-    private function fetchCount()
+    private function fetchCount(): int
     {
         $this->searchService = $this->repository->getSearchService();
 
         // Prepare count
         $query = new LocationQuery();
 
-        $query->query        = new Criterion\LogicalAnd( [
-                                                             new Criterion\ContentTypeIdentifier( $this->contentClassIdentifier ),
-                                                         ] );
+        $query->query = new Criterion\LogicalAnd([
+            new Criterion\ContentTypeIdentifier($this->contentClassIdentifier),
+        ]);
         $query->performCount = true;
-        $query->limit        = 0;
-        $results             = $this->searchService->findContent( $query );
+        $query->limit = 0;
+        $results = $this->searchService->findContent($query);
 
-        return $results->totalCount;
+        return (int)$results->totalCount;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
-        $this->setName( 'sqli:object:republish' )
-            ->setDescription( 'Publish all contents of the ContentType with specified identifier' )
-            ->addArgument( 'contentClassIdentifier', InputArgument::REQUIRED, "ContentType identifier" );
+        $this
+            ->setDescription('Publish all contents of the ContentType with specified identifier')
+            ->addArgument('contentClassIdentifier', InputArgument::REQUIRED, "ContentType identifier");
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
-     * @return int|null|void
+     * @throws BadStateException
+     * @throws UnauthorizedException
+     * @throws InvalidArgumentException
      */
-    protected function execute( InputInterface $input, OutputInterface $output )
+    protected function execute(InputInterface $input, OutputInterface $output): void
     {
-        $output->writeln( "Fetching all objects of contentType '<comment>$this->contentClassIdentifier</comment>'" );
+        $output->writeln(sprintf(
+            "Fetching all objects of contentType '<comment>%s</comment>'",
+            $this->contentClassIdentifier
+        ));
 
         // Informations
-        $output->writeln( "<comment>{$this->totalCount}</comment> contents found" );
+        $output->writeln("<comment>{$this->totalCount}</comment> contents found");
 
         // Ask confirmation
-        $output->writeln( "" );
-        $helper   = $this->getHelper( 'question' );
+        $output->writeln("");
+        $helper = $this->getHelper('question');
         $question = new ConfirmationQuestion(
             '<question>Are you sure you want to proceed [y/N]?</question> ',
             false
         );
 
-        if( !$helper->ask( $input, $output, $question ) )
-        {
-            $output->writeln( '' );
+        if (!$helper->ask($input, $output, $question)) {
+            $output->writeln('');
 
-            return;
+            exit;
         }
 
-        $output->writeln( "" );
-        $output->writeln( "Starting job :" );
+        $output->writeln("");
+        $output->writeln("Starting job :");
 
         $offset = 0;
-        do
-        {
+        do {
             // Fetch small group of contents
-            $items = $this->fetch( self::FETCH_LIMIT, $offset );
+            $items = $this->fetch(self::FETCH_LIMIT, $offset);
 
             // Publish each content
-            foreach( $items as $index => $content )
-            {
+            foreach ($items as $index => $content) {
                 /** @var $content Content */
-                $contentDraft = $this->contentService->createContentDraft( $content->getVersionInfo()->getContentInfo() );
-                $this->contentService->publishVersion( $contentDraft->getVersionInfo() );
+                $contentDraft = $this->contentService->createContentDraft($content->getVersionInfo()->getContentInfo());
+                $this->contentService->publishVersion($contentDraft->getVersionInfo());
 
-                $output->writeln( sprintf( "[%s/%s] contentID: %s <comment>%s</comment> published", ( $offset + $index + 1 ), $this->totalCount, $content->id, $content->getName() ) );
+                $output->writeln(sprintf(
+                    "[%s/%s] contentID: %s <comment>%s</comment> published",
+                    ($offset + $index + 1),
+                    $this->totalCount,
+                    $content->id,
+                    $content->getName()
+                ));
             }
 
             $offset += self::FETCH_LIMIT;
-        } while( $offset < $this->totalCount );
+        } while ($offset < $this->totalCount);
 
-        $output->writeln( "" );
-        $output->writeln( "<info>Job finished !</info>" );
+        $output->writeln("");
+        $output->writeln("<info>Job finished !</info>");
     }
 
     /**
@@ -132,26 +158,26 @@ class PublishAllContentsCommand extends ContainerAwareCommand
      * @param     $limit
      * @param int $offset
      * @return array
+     * @throws InvalidArgumentException
      */
-    private function fetch( $limit, $offset = 0 )
+    private function fetch($limit, $offset = 0): array
     {
         $this->searchService = $this->repository->getSearchService();
 
         // Prepare fetch with offset and limit
         $query = new LocationQuery();
 
-        $query->query        = new Criterion\LogicalAnd( [
-                                                             new Criterion\ContentTypeIdentifier( $this->contentClassIdentifier ),
-                                                         ] );
+        $query->query = new Criterion\LogicalAnd([
+            new Criterion\ContentTypeIdentifier($this->contentClassIdentifier),
+        ]);
         $query->performCount = true;
-        $query->limit        = $limit;
-        $query->offset       = $offset;
-        $results             = $this->searchService->findContent( $query );
-        $items               = [];
+        $query->limit = $limit;
+        $query->offset = $offset;
+        $results = $this->searchService->findContent($query);
+        $items = [];
 
         // Prepare an array with contents
-        foreach( $results->searchHits as $item )
-        {
+        foreach ($results->searchHits as $item) {
             $items[] = $item->valueObject;
         }
 

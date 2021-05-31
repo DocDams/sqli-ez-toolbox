@@ -17,7 +17,7 @@ class ParameterHandlerRepository
     /**
      * @param ParameterHandlerInterface $handler
      */
-    public function addHandler( ParameterHandlerInterface $handler )
+    public function addHandler(ParameterHandlerInterface $handler)
     {
         $this->handlers[$handler::PARAMETER_NAME] = $handler;
     }
@@ -34,15 +34,12 @@ class ParameterHandlerRepository
      * @param $handlerName
      * @return ParameterHandlerInterface
      */
-    public function getHandler( $handlerName )
+    public function getHandler($handlerName)
     {
-        if( array_key_exists( $handlerName, $this->handlers ) )
-        {
+        if (array_key_exists($handlerName, $this->handlers)) {
             return $this->handlers[$handlerName];
-        }
-        else
-        {
-            throw new ParameterHandlerUnknownParameterNameException( "Parameter handler $handlerName unknown" );
+        } else {
+            throw new ParameterHandlerUnknownParameterNameException("Parameter handler $handlerName unknown");
         }
     }
 }

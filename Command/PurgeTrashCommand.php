@@ -3,46 +3,58 @@
 namespace SQLI\EzToolboxBundle\Command;
 
 use eZ\Publish\API\Repository\ContentService;
+use eZ\Publish\API\Repository\Exceptions\NotFoundException;
+use eZ\Publish\API\Repository\Exceptions\UnauthorizedException;
+use eZ\Publish\API\Repository\Repository;
 use eZ\Publish\API\Repository\SearchService;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class PurgeTrashCommand extends ContainerAwareCommand
+class PurgeTrashCommand extends Command
 {
-    const FETCH_LIMIT = 25;
+    /** @var Repository */
+    protected $repository;
     /** @var ContentService */
-    private $contentService;
+    protected $contentService;
     /** @var SearchService */
-    private $searchService;
+    protected $searchService;
 
-    public function initialize( InputInterface $input, OutputInterface $output )
+    public function __construct(Repository $repository)
     {
-        $output->setDecorated( true );
-
-        $this->contentService = $this->getContainer()->get( 'ezpublish.api.service.content' );
-        $this->searchService  = $this->getContainer()->get( 'ezpublish.api.service.inner_search' );
-
-        // Load and set Administrator User for permissions
-        $administratorUser = $this->getContainer()->get( 'ezpublish.api.repository' )->getUserService()->loadUser( 14 );
-        $this->getContainer()->get( 'ezpublish.api.repository' )->getPermissionResolver()->setCurrentUserReference( $administratorUser );
-    }
-
-    protected function configure()
-    {
-        $this->setName( 'sqli:purge:trash' )
-            ->setDescription( 'Purge eZ trash' );
+        $this->repository = $repository;
+        $this->contentService = $repository->getContentService();
+        $this->searchService = $repository->getSearchService();
+        parent::__construct('sqli:purge:trash');
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
+     * @throws NotFoundException
      */
-    protected function execute( InputInterface $input, OutputInterface $output )
+    public function initialize(InputInterface $input, OutputInterface $output): void
     {
-        $trashServices = $this->getContainer()->get( 'ezpublish.api.service.trash' );
-        $trashServices->emptyTrash();
+        $output->setDecorated(true);
 
-        $output->writeln( "Trash emptied" );
+        // Load and set Administrator User for permissions
+        $administratorUser = $this->repository->getUserService()->loadUserByLogin('admin');
+        $this->repository->getPermissionResolver()->setCurrentUserReference($administratorUser);
+    }
+
+    protected function configure(): void
+    {
+        $this->setDescription('Purge eZ trash');
+    }
+
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @throws UnauthorizedException
+     */
+    protected function execute(InputInterface $input, OutputInterface $output): void
+    {
+        $this->repository->getTrashService()->emptyTrash();
+        $output->writeln("Trash emptied");
     }
 }

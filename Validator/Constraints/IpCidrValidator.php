@@ -8,7 +8,11 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 class IpCidrValidator extends ConstraintValidator
 {
-    public function validate($value, Constraint $constraint)
+    /**
+     * @param mixed $value
+     * @param Constraint $constraint
+     */
+    public function validate($value, Constraint $constraint): void
     {
         if (!$constraint instanceof IpCidr) {
             throw new UnexpectedTypeException($constraint, IpCidr::class);
@@ -41,7 +45,7 @@ class IpCidrValidator extends ConstraintValidator
      * @param string $CIDR
      * @return bool
      */
-    private function checkCidrMask($iptocheck, $CIDR): bool
+    private function checkCidrMask(string $iptocheck, string $CIDR): bool
     {
         /* get the base and the bits from the ban in the database */
         list($base, $bits) = explode('/', $CIDR);
@@ -50,7 +54,7 @@ class IpCidrValidator extends ConstraintValidator
         list($a, $b, $c, $d) = explode('.', $base);
 
         /* now do some bit shfiting/switching to convert to ints */
-        $i    = ($a << 24) + ($b << 16) + ($c << 8) + $d;
+        $i = ($a << 24) + ($b << 16) + ($c << 8) + $d;
         $mask = $bits == 0 ? 0 : (~0 << (32 - $bits));
 
         /* here's our lowest int */

@@ -28,33 +28,37 @@ class FetchExtension extends AbstractExtension
     /** @var LoggerInterface */
     private $logger;
 
-    public function __construct( FetchHelper $fetchHelper, ViewManagerInterface $viewManager, Repository $repository,
-                                 $logDir )
-    {
+    public function __construct(
+        FetchHelper $fetchHelper,
+        ViewManagerInterface $viewManager,
+        Repository $repository,
+        $logDir
+    ) {
         $this->fetchHelper = $fetchHelper;
         $this->viewManager = $viewManager;
-        $this->repository  = $repository;
+        $this->repository = $repository;
 
-        $handler = new StreamHandler( "$logDir/sqli-eztoolbox_" . date( "Y-m-d" ) . '.log' );
-        $handler->setFormatter( new SqliSimpleLogFormatter() );
-        $this->logger = new Logger( 'SQLILogException' );
-        $this->logger->pushHandler( $handler );
+        $handler = new StreamHandler("$logDir/sqli-eztoolbox_" . date("Y-m-d") . '.log');
+        $handler->setFormatter(new SqliSimpleLogFormatter());
+        $this->logger = new Logger('SQLILogException');
+        $this->logger->pushHandler($handler);
     }
 
     public function getFunctions()
     {
         return
             [
-                new TwigFunction( 'render_children', [ $this, 'renderChildren' ], [ 'is_safe' => [ 'all' ] ] ),
-                new TwigFunction( 'fetch_children', [ $this, 'fetchChildren' ] ),
-                new TwigFunction( 'fetch_ancestor', [ $this, 'fetchAncestor' ] ),
-                new TwigFunction( 'fetch_content', [ $this, 'fetchContent' ] ),
-                new TwigFunction( 'fetch_location', [ $this, 'fetchLocation' ] ),
+                new TwigFunction('render_children', [$this, 'renderChildren'], ['is_safe' => ['all']]),
+                new TwigFunction('fetch_children', [$this, 'fetchChildren']),
+                new TwigFunction('fetch_ancestor', [$this, 'fetchAncestor']),
+                new TwigFunction('fetch_content', [$this, 'fetchContent']),
+                new TwigFunction('fetch_location', [$this, 'fetchLocation']),
             ];
     }
 
     /**
-     * Use ViewController:viewLocation to generate display of children (eventually filtered with $filterContentClass) of a $location in specified $viewType
+     * Use ViewController:viewLocation to generate display of children
+     * (eventually filtered with $filterContentClass) of a $location in specified $viewType
      * Some $parameters can be passed to template
      *
      * @param $parentLocation
@@ -64,47 +68,47 @@ class FetchExtension extends AbstractExtension
      * @return string
      * @throws InvalidArgumentException
      */
-    public function renderChildren( $parentLocation, $viewType = ViewManagerInterface::VIEW_TYPE_LINE,
-                                    $filterContentClass = null, $parameters = array() )
-    {
+    public function renderChildren(
+        $parentLocation,
+        $viewType = ViewManagerInterface::VIEW_TYPE_LINE,
+        $filterContentClass = null,
+        $parameters = array()
+    ): string {
         // Fetch children of $location
-        $children = $this->fetchHelper->fetchChildren( $parentLocation, $filterContentClass );
+        $children = $this->fetchHelper->fetchChildren($parentLocation, $filterContentClass);
 
         $render = "";
 
-        end( $children );
-        $lastKey = key( $children );
-        reset( $children );
-        $firstKey = key( $children );
+        end($children);
+        $lastKey = key($children);
+        reset($children);
+        $firstKey = key($children);
 
-        foreach( $children as $index => $child )
-        {
+        foreach ($children as $index => $child) {
             $isfirst = $index === $firstKey;
-            $islast  = $index === $lastKey;
+            $islast = $index === $lastKey;
             // Define specific parameters
             $specificParameters =
                 [
                     'isFirst' => $isfirst,
-                    'isLast'  => $islast,
-                    'index'   => $index,
+                    'isLast' => $islast,
+                    'index' => $index,
                 ];
 
-            try
-            {
+            try {
                 $parameters['location'] = $child;
-                $content                = $child->getContent();
-                $parameters['content']  = $content;
-                $contentRender          = $this->viewManager->renderContent(
+                $content = $child->getContent();
+                $parameters['content'] = $content;
+                $contentRender = $this->viewManager->renderContent(
                     $content,
                     $viewType,
-                    array_merge( $parameters, $specificParameters ) );
-                $render                 .= $contentRender;
-            }
-            catch( \Exception $exception )
-            {
-                $this->logger->critical( "Exception thrown in " . __METHOD__ );
-                $this->logger->critical( $exception->getMessage() );
-                $this->logger->critical( $exception->getTraceAsString() );
+                    array_merge($parameters, $specificParameters)
+                );
+                $render .= $contentRender;
+            } catch (\Exception $exception) {
+                $this->logger->critical("Exception thrown in " . __METHOD__);
+                $this->logger->critical($exception->getMessage());
+                $this->logger->critical($exception->getTraceAsString());
                 continue;
             }
         }
@@ -113,27 +117,27 @@ class FetchExtension extends AbstractExtension
     }
 
     /**
-     * @param $parentLocation
-     * @param $contentClass
+     * @param Location|int $parentLocation
+     * @param string|null $contentClass
      * @return array
      * @throws InvalidArgumentException
      */
-    public function fetchChildren( $parentLocation, $contentClass = null )
+    public function fetchChildren($parentLocation, $contentClass = null): array
     {
-        return $this->fetchHelper->fetchChildren( $parentLocation, $contentClass );
+        return $this->fetchHelper->fetchChildren($parentLocation, $contentClass);
     }
 
     /**
      * Fetch ancestor of $location with specified $contentType
      *
      * @param Location|int $location
-     * @param string       $contentType
+     * @param string $contentType
      * @return Location|null
      * @throws InvalidArgumentException
      */
-    public function fetchAncestor( $location, $contentType )
+    public function fetchAncestor($location, string $contentType): ?Location
     {
-        return $this->fetchHelper->fetchAncestor( $location, $contentType );
+        return $this->fetchHelper->fetchAncestor($location, $contentType);
     }
 
     /**
@@ -142,9 +146,9 @@ class FetchExtension extends AbstractExtension
      * @throws NotFoundException
      * @throws UnauthorizedException
      */
-    public function fetchContent( $contentId )
+    public function fetchContent(int $contentId): Content
     {
-        return $this->repository->getContentService()->loadContent( intval( $contentId ) );
+        return $this->repository->getContentService()->loadContent(intval($contentId));
     }
 
     /**
@@ -153,12 +157,12 @@ class FetchExtension extends AbstractExtension
      * @throws NotFoundException
      * @throws UnauthorizedException
      */
-    public function fetchLocation( $locationId )
+    public function fetchLocation(int $locationId): Location
     {
-        return $this->repository->getLocationService()->loadLocation( intval( $locationId ) );
+        return $this->repository->getLocationService()->loadLocation(intval($locationId));
     }
 
-    public function getName()
+    public function getName(): string
     {
         return 'sqli_twig_extension_fetch';
     }

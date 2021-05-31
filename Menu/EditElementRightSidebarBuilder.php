@@ -18,17 +18,54 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class EditElementRightSidebarBuilder extends AbstractBuilder
 {
     /* Menu items */
-    const ITEM__SAVE   = 'edit_element__sidebar_right__save';
-    const ITEM__CANCEL = 'edit_element__sidebar_right__cancel';
+    public const ITEM__SAVE = 'edit_element__sidebar_right__save';
+    public const ITEM__CANCEL = 'edit_element__sidebar_right__cancel';
 
     /** @var TranslatorInterface */
     protected $translator;
 
-    public function __construct( MenuItemFactory $factory, EventDispatcherInterface $eventDispatcher,
-                                 TranslatorInterface $translator )
-    {
-        parent::__construct( $factory, $eventDispatcher );
+    public function __construct(
+        MenuItemFactory $factory,
+        EventDispatcherInterface $eventDispatcher,
+        TranslatorInterface $translator
+    ) {
+        parent::__construct($factory, $eventDispatcher);
         $this->translator = $translator;
+    }
+
+    /**
+     * @param array $options
+     * @return ItemInterface
+     * @throws InvalidArgumentException
+     */
+    public function createStructure(array $options): ItemInterface
+    {
+        /** @var ItemInterface|ItemInterface[] $menu */
+        $menu = $this->factory->createItem('root');
+
+        $menu->setChildren([
+            self::ITEM__SAVE => $this->createMenuItem(
+                self::ITEM__SAVE,
+                [
+                    'attributes' => [
+                        'class' => 'btn--trigger',
+                        'data-click' => sprintf('#%s', $options['save_button_name']),
+                    ],
+                    'label' => $this->translator->trans(self::ITEM__SAVE, [], 'sqli_admin'),
+                    'extras' => ['icon' => 'save'],
+                ]
+            ),
+            self::ITEM__CANCEL => $this->createMenuItem(
+                self::ITEM__CANCEL,
+                [
+                    'uri' => $options['cancel_url'],
+                    'label' => $this->translator->trans(self::ITEM__CANCEL, [], 'sqli_admin'),
+                    'extras' => ['icon' => 'circle-close'],
+                ]
+            ),
+        ]);
+
+        return $menu;
     }
 
     /**
@@ -37,40 +74,5 @@ class EditElementRightSidebarBuilder extends AbstractBuilder
     protected function getConfigureEventName(): string
     {
         return "sqli_eztoolbox.admin.edit_element.sidebar_right";
-    }
-
-    /**
-     * @param array $options
-     * @return ItemInterface
-     * @throws InvalidArgumentException
-     */
-    public function createStructure( array $options ): ItemInterface
-    {
-        /** @var ItemInterface|ItemInterface[] $menu */
-        $menu = $this->factory->createItem( 'root' );
-
-        $menu->setChildren( [
-                                self::ITEM__SAVE   => $this->createMenuItem(
-                                    self::ITEM__SAVE,
-                                    [
-                                        'attributes' => [
-                                            'class'      => 'btn--trigger',
-                                            'data-click' => sprintf( '#%s', $options['save_button_name'] ),
-                                        ],
-                                        'label' => $this->translator->trans( self::ITEM__SAVE, [], 'sqli_admin' ),
-                                        'extras'     => [ 'icon' => 'save' ],
-                                    ]
-                                ),
-                                self::ITEM__CANCEL => $this->createMenuItem(
-                                    self::ITEM__CANCEL,
-                                    [
-                                        'uri' => $options['cancel_url'],
-                                        'label' => $this->translator->trans( self::ITEM__CANCEL, [], 'sqli_admin' ),
-                                        'extras'     => [ 'icon' => 'circle-close' ],
-                                    ]
-                                ),
-                            ] );
-
-        return $menu;
     }
 }

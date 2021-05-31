@@ -25,21 +25,21 @@ use eZ\Publish\API\Repository\Exceptions\UnauthorizedException;
 use eZ\Publish\API\Repository\Repository;
 use eZ\Publish\API\Repository\Values\Content\ContentInfo;
 use eZ\Publish\API\Repository\Values\Content\Location;
-use Netgen\TagsBundle\API\Repository\Events\Tags\CreateTagEvent;
-use Netgen\TagsBundle\API\Repository\Events\Tags\DeleteTagEvent;
-use Netgen\TagsBundle\API\Repository\Events\Tags\UpdateTagEvent;
-use Netgen\TagsBundle\API\Repository\TagsService;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Contracts\EventDispatcher\Event;
 use eZ\Publish\Core\MVC\Symfony\Security\UserInterface;
 use eZ\Publish\Core\MVC\Symfony\SiteAccess;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use Netgen\TagsBundle\API\Repository\Events\Tags\CreateTagEvent;
+use Netgen\TagsBundle\API\Repository\Events\Tags\DeleteTagEvent;
+use Netgen\TagsBundle\API\Repository\Events\Tags\UpdateTagEvent;
+use Netgen\TagsBundle\API\Repository\TagsService;
 use SQLI\EzToolboxBundle\Services\Formatter\SqliSimpleLogFormatter;
 use SQLI\EzToolboxBundle\Services\SiteAccessUtilsTrait;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class BackOfficeActionsLoggerListener implements EventSubscriberInterface
 {
@@ -150,6 +150,24 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
         }
         $this->logger->notice("  - content id : " . $contentId);
         $this->logger->notice("  - content version : " . $versionId);
+    }
+
+    /**
+     * Log connected user informations
+     */
+    private function logUserInformations(): void
+    {
+        /** @var UserInterface $user */
+        $user = $this->tokenStorage->getToken()->getUser();
+
+        $this->logger->notice("  - IP : " . implode(',', $this->request->getClientIps()));
+        $this->logger->notice(
+            sprintf(
+                "  - user name : %s [contentId=%s]",
+                $user->getUsername(),
+                $user->getAPIUser()->getUserId()
+            )
+        );
     }
 
     /**
@@ -374,9 +392,11 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
             $actionName = "unhide";
             $location = $event->getRevealedLocation();
         }
-        if (!is_null($actionName) &&
+        if (
+            !is_null($actionName) &&
             isset($location) &&
-            $location instanceof Location) {
+            $location instanceof Location
+        ) {
             $this->logger->notice("Location $actionName :");
             $this->logUserInformations();
             $this->logger->notice("  - location id : " . $location->id);
@@ -405,9 +425,11 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
             $actionName = "unhide";
             $contentInfo = $event->getContentInfo();
         }
-        if (!is_null($actionName) &&
+        if (
+            !is_null($actionName) &&
             isset($contentInfo) &&
-            $contentInfo instanceof ContentInfo) {
+            $contentInfo instanceof ContentInfo
+        ) {
             $this->logger->notice("Content $actionName :");
             $this->logUserInformations();
             $this->logger->notice("  - content id : " . $contentInfo->id);
@@ -505,23 +527,5 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
             // Object state
             $this->logger->notice("  - object state name : " . $event->getObjectState()->getName());
         }
-    }
-
-    /**
-     * Log connected user informations
-     */
-    private function logUserInformations(): void
-    {
-        /** @var UserInterface $user */
-        $user = $this->tokenStorage->getToken()->getUser();
-
-        $this->logger->notice("  - IP : " . implode(',', $this->request->getClientIps()));
-        $this->logger->notice(
-            sprintf(
-                "  - user name : %s [contentId=%s]",
-                $user->getUsername(),
-                $user->getAPIUser()->getUserId()
-            )
-        );
     }
 }

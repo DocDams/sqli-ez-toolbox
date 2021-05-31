@@ -2,44 +2,36 @@
 
 namespace SQLI\EzToolboxBundle\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Cache\Adapter\TagAwareAdapter;
+use Psr\Cache\CacheItemPoolInterface;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Psr\Cache\CacheItemPoolInterface;
 
-class CleanRedisCacheCommand extends ContainerAwareCommand
+class CleanRedisCacheCommand extends Command
 {
-   /** @var CacheItemPoolInterface */
+    /** @var CacheItemPoolInterface */
     private $cachePool;
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function configure()
+    public function __construct(CacheItemPoolInterface $cachePool)
     {
-        $this->setName( 'sqli:clear_redis_cache' )
-            ->setDescription( 'Clear Redis persistence cache' );
-    }
-     /**
-     * @param ContainerInterface $container
-     */
-    public function __construct(CacheItemPoolInterface  $cachePool) {
         $this->cachePool = $cachePool;
-        parent::__construct();
+        parent::__construct('sqli:clear_redis_cache');
     }
+
     /**
      * {@inheritdoc}
      */
-    protected function execute( InputInterface $input, OutputInterface $output )
+    protected function configure(): void
+    {
+        $this->setDescription('Clear Redis persistence cache');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function execute(InputInterface $input, OutputInterface $output): void
     {
         // To clear all cache
-         $this->cachePool->clear();
-
-        // To clear a specific cache item (check source code in eZ\Publish\Core\Persistence\Cache\*Handlers for further info)
-        //$this->cachePool->clear('content', 'info', $contentId);
-
-        // Stash cache is hierarchical, so you can clear all content/info cache like so:
-        //$this->cachePool->clear('content', 'info');
+        $this->cachePool->clear();
     }
 }

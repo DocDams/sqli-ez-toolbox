@@ -13,25 +13,30 @@ class EntityExtension extends AbstractExtension
     /** @var EntityHelper */
     private $entityHelper;
 
-    public function __construct( ContainerInterface $container, EntityHelper $entityHelper )
+    public function __construct(ContainerInterface $container, EntityHelper $entityHelper)
     {
-        $this->container    = $container;
+        $this->container = $container;
         $this->entityHelper = $entityHelper;
     }
 
     public function getFunctions()
     {
         return [
-            new TwigFunction( 'sqli_admin_attribute',
-                                      [
-                                          $this,
-                                          'attributeValue'
-                                      ], array( 'is_safe' => [ 'all' ] ) ),
-            new TwigFunction( 'bundle_exists',
-                                      [
-                                          $this,
-                                          'bundleExists'
-                                      ] ),
+            new TwigFunction(
+                'sqli_admin_attribute',
+                [
+                    $this,
+                    'attributeValue'
+                ],
+                array('is_safe' => ['all'])
+            ),
+            new TwigFunction(
+                'bundle_exists',
+                [
+                    $this,
+                    'bundleExists'
+                ]
+            ),
         ];
     }
 
@@ -42,14 +47,11 @@ class EntityExtension extends AbstractExtension
      * @param $property_name
      * @return false|string
      */
-    public function attributeValue( $object, $property_name )
+    public function attributeValue($object, $property_name)
     {
-        try
-        {
-            return $this->entityHelper->attributeValue( $object, $property_name );
-        }
-        catch( \ErrorException $exception )
-        {
+        try {
+            return $this->entityHelper->attributeValue($object, $property_name);
+        } catch (\ErrorException $exception) {
             // If property instance of an object which not implements a __toString method it will display an error
             return "<span title='{$exception->getMessage()}' class='alert alert-danger'>ERROR</span>";
         }
@@ -61,8 +63,8 @@ class EntityExtension extends AbstractExtension
      * @param $bundleName
      * @return bool
      */
-    public function bundleExists( $bundleName )
+    public function bundleExists($bundleName)
     {
-        return array_key_exists( $bundleName, $this->container->getParameter( 'kernel.bundles' ) );
+        return array_key_exists($bundleName, $this->container->getParameter('kernel.bundles'));
     }
 }

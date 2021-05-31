@@ -4,6 +4,7 @@ namespace SQLI\EzToolboxBundle\Entity\Doctrine;
 
 use Doctrine\ORM\Mapping as ORM;
 use SQLI\EzToolboxBundle\Annotations\Annotation as SQLIAdmin;
+use stdClass;
 
 /**
  * @ORM\Table(name="eboutique_parameter")
@@ -29,21 +30,26 @@ class Parameter
     /**
      * @var string
      * @ORM\Column(name="value", type="string", length=255)
-     * @SQLIAdmin\EntityProperty(choices={"Activé": "enabled", "Désactivé": "disabled"},description="Paramètre activé ou non ?")
+     * @SQLIAdmin\EntityProperty(
+     *     choices={"Activé": "enabled", "Désactivé": "disabled"},
+     *     description="Paramètre activé ou non ?")
      */
     private $value;
     /**
-     * @var \stdClass
+     * @var stdClass
      *
      * @ORM\Column(name="params", type="object", nullable=true)
-     * @SQLIAdmin\EntityProperty(visible=true,description="Données complémentaires sérialisées. S'assurer de la validité avant sauvegarde avec https://fr.functions-online.com/unserialize.html")
+     * @SQLIAdmin\EntityProperty(
+     *     visible=true,
+     *     description="Données complémentaires sérialisées.
+     * S'assurer de la validité avant sauvegarde avec https://fr.functions-online.com/unserialize.html")
      */
     private $params;
 
     /**
      * @return int
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -52,7 +58,7 @@ class Parameter
      * @param int $id
      * @return Parameter
      */
-    public function setId( int $id ): Parameter
+    public function setId(int $id): Parameter
     {
         $this->id = $id;
 
@@ -62,7 +68,7 @@ class Parameter
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -71,7 +77,7 @@ class Parameter
      * @param string $name
      * @return Parameter
      */
-    public function setName( string $name ): Parameter
+    public function setName(string $name): Parameter
     {
         $this->name = $name;
 
@@ -81,7 +87,7 @@ class Parameter
     /**
      * @return string
      */
-    public function getValue()
+    public function getValue(): ?string
     {
         return $this->value;
     }
@@ -90,7 +96,7 @@ class Parameter
      * @param string $value
      * @return Parameter
      */
-    public function setValue( string $value ): Parameter
+    public function setValue(string $value): Parameter
     {
         $this->value = $value;
 
@@ -100,7 +106,7 @@ class Parameter
     /**
      * @return mixed
      */
-    public function getParams()
+    public function getParams(): stdClass
     {
         return $this->params;
     }
@@ -109,7 +115,7 @@ class Parameter
      * @param mixed $params
      * @return Parameter
      */
-    public function setParams( $params ): Parameter
+    public function setParams($params): Parameter
     {
         $this->params = $params;
 
