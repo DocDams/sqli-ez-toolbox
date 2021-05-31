@@ -29,6 +29,9 @@
     "ibexa/oss": "^3.3",
     "netgen/tagsbundle": "^4.0"
   },
+  "suggest": {
+    "tanoconsulting/ezmigrationbundle2": "main"
+  },
   "autoload": {
     "psr-4": {
       "SQLI\\EzToolboxBundle\\": ""

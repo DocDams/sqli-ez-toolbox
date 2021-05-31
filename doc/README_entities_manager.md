@@ -10,9 +10,6 @@ sqli_ez_toolbox:
     entities:
         - { directory: 'Acme/AcmeBundle/Entity/Doctrine' }
         - { directory: 'Acme/AcmeBundle2/Entity/Doctrine', namespace: 'Acme\AcmeBundle2NoPSR0\ORM\Doctrine' }
-    contenttype_installer:
-        installation_directory: app/content_types
-        is_absolute_path: false
 ```
 Use "~" if the namespace of your classes observe PSR-0 rules or specify directory which contains them.
 

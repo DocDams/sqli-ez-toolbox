@@ -1,4 +1,4 @@
-SQLI ContentType Installer
+SQLI Toolbox
 ========================
 
 ### Configuration

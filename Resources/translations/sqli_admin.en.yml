@@ -35,4 +35,3 @@ edit_element__sidebar_right__cancel: "Cancel"
 # Main bar
 sqli_admin__menu_root: "SQLI Admin"
 sqli_admin__menu_entities_tab__default: "Doctrine Entities"
-sqli_admin__menu_contenttypes_installer: "ContentType Installer"

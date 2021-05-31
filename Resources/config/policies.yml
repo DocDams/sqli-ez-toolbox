@@ -5,4 +5,3 @@ sqli_admin:
     entity_edit_element: ~
     entity_create_element: ~
     entity_export_csv: ~
-    content_type_installer: ~

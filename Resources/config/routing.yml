@@ -24,15 +24,6 @@ sqli_eztoolbox_entitymanager_entity_homepage_reset_filter:
     path: /sqli-admin/entity/{fqcn}/reset
     controller: SQLIEzToolboxBundle:Entities:resetFilter
 
-# Content Type Installer
-sqli_eztoolbox_contenttype_installer_list:
-    path: /sqli-admin/contenttype_installer/list
-    controller: SQLIEzToolboxBundle:ContentTypeInstaller:list
-
-sqli_eztoolbox_contenttype_installer_export:
-    path: /sqli-admin/contenttype_installer/export
-    controller: SQLIEzToolboxBundle:ContentTypeInstaller:export
-
 # Keep this route at end
 sqli_eztoolbox_entitymanager_entity_homepage:
     path: /sqli-admin/entity/{fqcn}/{sort_column}/{sort_order}
