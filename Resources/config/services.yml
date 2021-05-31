@@ -10,7 +10,10 @@ services:
             $logDir: "%kernel.logs_dir%"
             $adminLoggerEnabled: "%sqli_ez_toolbox.admin_logger.enabled%"
 
+    eZ\Publish\Core\Helper\TranslationHelper: '@ezpublish.translation_helper'
+    eZ\Publish\Core\Helper\FieldHelper: '@ezpublish.field_helper'
     eZ\Publish\Core\MVC\Symfony\View\ViewManagerInterface: '@ezpublish.view_manager'
+    eZ\Publish\Core\MVC\Symfony\Templating\Twig\Extension\ContentExtension: '@ezpublish.twig.extension.content'
 
     SQLI\EzToolboxBundle\Command\:
         resource: "../../Command/*"
