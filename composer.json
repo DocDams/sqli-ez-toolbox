@@ -1,7 +1,7 @@
 {
   "name": "sqli/eztoolbox",
-  "description": "SQLI eZToolbox is a bundle used in SQLI projects gathering some bundles like \"SQLI Entities Manager\", \"SQLI ContentType Installer\", \"SQLI Command Toolbox\", some helpers and some Twig operators",
-  "keywords": ["sqli", "ezplatform", "crud", "entities", "toolbox", "command", "helper", "service"],
+  "description": "SQLI eZToolbox is a bundle used in SQLI projects gathering some bundles like \"SQLI Entities Manager\", \"SQLI Command Toolbox\", some helpers and some Twig operators",
+  "keywords": ["sqli", "ezplatform", "crud", "entities", "toolbox", "ibexa", "oss", "content", "commerce", "dxp"],
   "homepage": "https://github.com/DocDams/sqli-eztoolbox",
   "type": "ezplatform-bundle",
   "authors": [
@@ -26,16 +26,7 @@
     "MIT"
   ],
   "require": {
-    "php": "^7.1",
-    "symfony/symfony": "^3.4.2",
-    "twig/twig": "^1.0||^2.0",
-    "doctrine/doctrine-bundle": "^1.6",
-    "doctrine/orm": "^2.5",
-    "ezsystems/ezpublish-kernel": "^7.0",
-    "ezsystems/ezplatform-admin-ui": "^1.0",
-    "white-october/pagerfanta-bundle": "^1.1"
-  },
-  "require-dev": {
+    "ibexa/oss": "^3.3"
   },
   "autoload": {
     "psr-4": {
