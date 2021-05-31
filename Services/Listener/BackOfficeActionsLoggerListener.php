@@ -28,6 +28,7 @@ use eZ\Publish\API\Repository\Values\Content\Location;
 use Netgen\TagsBundle\API\Repository\Events\Tags\CreateTagEvent;
 use Netgen\TagsBundle\API\Repository\Events\Tags\DeleteTagEvent;
 use Netgen\TagsBundle\API\Repository\Events\Tags\UpdateTagEvent;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 use eZ\Publish\Core\MVC\Symfony\Security\UserInterface;
 use eZ\Publish\Core\MVC\Symfony\SiteAccess;
@@ -39,13 +40,12 @@ use SQLI\EzToolboxBundle\Services\SiteAccessUtilsTrait;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class BackOfficeActionsLoggerListener implements EventSubscriberInterface
 {
     use SiteAccessUtilsTrait;
 
-    /** @var TokenStorage */
+    /** @var TokenStorageInterface */
     private $tokenStorage;
     /** @var Repository */
     private $repository;
@@ -59,7 +59,7 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
     private $adminLoggerEnabled;
 
     public function __construct(
-        TokenStorage $tokenStorage,
+        TokenStorageInterface $tokenStorage,
         Repository $repository,
         $logDir,
         RequestStack $requestStack,
