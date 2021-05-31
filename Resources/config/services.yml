@@ -42,7 +42,7 @@ services:
         arguments:
             - "Entity"
             - "%sqli_ez_toolbox.entities%"
-            - "%kernel.root_dir%"
+            - "%kernel.project_dir%"
             - "@annotation_reader"
 
 

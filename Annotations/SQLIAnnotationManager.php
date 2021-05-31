@@ -24,16 +24,16 @@ class SQLIAnnotationManager
     /** @var Reader */
     private $annotationReader;
     /**
-     * The Kernel root directory
+     * Project root directory
      * @var string
      */
-    private $rootDir;
+    private $projectDir;
 
-    public function __construct( $annotation, $directories, $rootDir, Reader $annotationReader )
+    public function __construct( $annotation, $directories, $projectDir, Reader $annotationReader )
     {
         $this->annotation       = $annotation;
         $this->directories      = $directories;
-        $this->rootDir          = $rootDir;
+        $this->projectDir       = $projectDir;
         $this->annotationReader = $annotationReader;
     }
 
@@ -78,7 +78,7 @@ class SQLIAnnotationManager
                 $namespace = str_replace( '/', '\\', $directory );
             }
 
-            $path   = $this->rootDir . '/../src/' . $directory;
+            $path   = $this->projectDir . '/src/' . $directory;
             $finder = new Finder();
             $finder->depth( 0 )->files()->in( $path );
 
