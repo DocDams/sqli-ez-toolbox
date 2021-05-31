@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bfb13988cbedc45aa926292f3aa019dd",
+    "content-hash": "9dbf3a5e4828a10951bcca9674f436f1",
     "packages": [
         {
             "name": "babdev/pagerfanta-bundle",
@@ -4870,6 +4870,67 @@
             "time": "2021-03-31T06:42:04+00:00"
         },
         {
+            "name": "lolautruche/ez-core-extra-bundle",
+            "version": "v3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lolautruche/EzCoreExtraBundle.git",
+                "reference": "e81aa9fe989fcc0718e7d8f4df9a03e3f165440f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lolautruche/EzCoreExtraBundle/zipball/e81aa9fe989fcc0718e7d8f4df9a03e3f165440f",
+                "reference": "e81aa9fe989fcc0718e7d8f4df9a03e3f165440f",
+                "shasum": ""
+            },
+            "require": {
+                "ezsystems/ezplatform-kernel": "^1.0",
+                "symfony/config": "^5.0",
+                "symfony/dependency-injection": "^5.0",
+                "symfony/event-dispatcher": "^5.0",
+                "symfony/expression-language": "^5.0",
+                "symfony/http-foundation": "^5.0",
+                "symfony/http-kernel": "^5.0",
+                "symfony/options-resolver": "^5.0",
+                "symfony/security-core": "^5.0",
+                "twig/twig": "^3.0"
+            },
+            "require-dev": {
+                "mikey179/vfsstream": "^1.6.3",
+                "phpunit/phpunit": "^9.0"
+            },
+            "suggest": {
+                "ezsystems/ezplatform-design-engine": "Design fallback mechanism for eZ Platform (previously part of EzCoreExtraBundle)"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Lolautruche\\EzCoreExtraBundle\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jerome Vieilledent",
+                    "email": "lolautruche@gmail.com"
+                }
+            ],
+            "description": "Extra sugar for building eZ Platform websites",
+            "support": {
+                "issues": "https://github.com/lolautruche/EzCoreExtraBundle/issues",
+                "source": "https://github.com/lolautruche/EzCoreExtraBundle/tree/v3.0.0"
+            },
+            "time": "2020-04-03T15:50:03+00:00"
+        },
+        {
             "name": "mck89/peast",
             "version": "v1.13.0",
             "source": {
@@ -5202,6 +5263,77 @@
                 "source": "https://github.com/netgen/query-translator/tree/master"
             },
             "time": "2017-12-01T05:38:57+00:00"
+        },
+        {
+            "name": "netgen/tagsbundle",
+            "version": "4.0.9",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/netgen/TagsBundle.git",
+                "reference": "84d01003144eb759ddff55272ca44b57e8477aca"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/netgen/TagsBundle/zipball/84d01003144eb759ddff55272ca44b57e8477aca",
+                "reference": "84d01003144eb759ddff55272ca44b57e8477aca",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/collections": "^1.6",
+                "ezsystems/ezplatform-admin-ui": "^2.0",
+                "ezsystems/ezplatform-content-forms": "^1.0",
+                "ezsystems/ezplatform-kernel": "^1.0",
+                "ezsystems/ezplatform-rest": "^1.0",
+                "ezsystems/ezplatform-solr-search-engine": "^3.0",
+                "lolautruche/ez-core-extra-bundle": "^3.0",
+                "php": "^7.3",
+                "symfony/translation-contracts": "^2.0.1",
+                "twig/twig": "^3.0.3"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^0.12",
+                "phpstan/phpstan-phpunit": "^0.12",
+                "phpstan/phpstan-strict-rules": "^0.12",
+                "phpstan/phpstan-symfony": "^0.12",
+                "phpunit/phpunit": "^9.0",
+                "symfony/var-dumper": "^5.0"
+            },
+            "type": "ezplatform-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "4.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Netgen\\TagsBundle\\": "bundle/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "Netgen",
+                    "homepage": "https://netgen.io"
+                }
+            ],
+            "description": "Netgen Tags Bundle is an eZ Platform bundle for taxonomy management and easier classification of content, providing more functionality for tagging content than ezkeyword field type included in eZ Publish kernel.",
+            "homepage": "https://github.com/netgen/TagsBundle",
+            "keywords": [
+                "ezplatform",
+                "ezpublish",
+                "netgen",
+                "tags",
+                "tagsbundle",
+                "taxonomy"
+            ],
+            "support": {
+                "issues": "https://github.com/netgen/TagsBundle/issues",
+                "source": "https://github.com/netgen/TagsBundle/tree/4.0.9"
+            },
+            "time": "2021-03-01T13:57:07+00:00"
         },
         {
             "name": "nikic/php-parser",

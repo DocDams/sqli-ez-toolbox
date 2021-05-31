@@ -26,7 +26,8 @@
     "MIT"
   ],
   "require": {
-    "ibexa/oss": "^3.3"
+    "ibexa/oss": "^3.3",
+    "netgen/tagsbundle": "^4.0"
   },
   "autoload": {
     "psr-4": {
