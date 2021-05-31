@@ -8,7 +8,6 @@ use eZ\Publish\API\Repository\Exceptions\UnauthorizedException;
 use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\Repository;
 use eZ\Publish\API\Repository\SearchService;
-use eZ\Publish\Core\QueryType\QueryTypeRegistry;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,8 +20,6 @@ class SubtreeMoveCommand extends Command
     protected $repository;
     /** @var LocationService */
     protected $locationService;
-    /** @var QueryTypeRegistry */
-    protected $queryTypeRegistry;
     /** @var SearchService */
     protected $searchService;
     /** @var int */
@@ -30,12 +27,11 @@ class SubtreeMoveCommand extends Command
     /** @var int */
     private $newParentLocationID;
 
-    public function __construct(Repository $repository, QueryTypeRegistry $queryTypeRegistry)
+    public function __construct(Repository $repository)
     {
         $this->repository = $repository;
         $this->searchService = $repository->getSearchService();
         $this->locationService = $repository->getLocationService();
-        $this->queryTypeRegistry = $queryTypeRegistry;
         parent::__construct('sqli:move:subtree');
     }
 

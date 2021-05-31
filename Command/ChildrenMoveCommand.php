@@ -9,7 +9,7 @@ use eZ\Publish\API\Repository\LocationService;
 use eZ\Publish\API\Repository\Repository;
 use eZ\Publish\API\Repository\Values\Content\Location;
 use eZ\Publish\API\Repository\Values\Content\LocationQuery;
-use eZ\Publish\Core\QueryType\QueryTypeRegistry;
+use eZ\Publish\Core\QueryType\ArrayQueryTypeRegistry;
 use eZ\Publish\Core\Repository\SearchService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -23,7 +23,7 @@ class ChildrenMoveCommand extends Command
     protected $repository;
     /** @var LocationService */
     protected $locationService;
-    /** @var QueryTypeRegistry */
+    /** @var ArrayQueryTypeRegistry */
     protected $queryTypeRegistry;
     /** @var SearchService */
     protected $searchService;
@@ -33,7 +33,7 @@ class ChildrenMoveCommand extends Command
     private $newParentLocationID;
 
     public function __construct(
-        QueryTypeRegistry $queryTypeRegistry,
+        ArrayQueryTypeRegistry $queryTypeRegistry,
         Repository $repository
     ) {
         $this->queryTypeRegistry = $queryTypeRegistry;
