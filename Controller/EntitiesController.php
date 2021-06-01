@@ -60,7 +60,7 @@ class EntitiesController extends AbstractController
         $params['tabname'] = $tabname;
         $params['classes'] = $tabs[$tabname];
 
-        return $this->render('SQLIEzToolboxBundle:Entities:listAllEntities.html.twig', $params);
+        return $this->render('@SQLIEzToolbox/Entities/listAllEntities.html.twig', $params);
     }
 
     /**
@@ -124,7 +124,7 @@ class EntitiesController extends AbstractController
         // Set pager for template
         $params['pager'] = $pager;
 
-        return $this->render('SQLIEzToolboxBundle:Entities:showEntity.html.twig', $params);
+        return $this->render('@SQLIEzToolbox/Entities/showEntity.html.twig', $params);
     }
 
     /**
@@ -258,7 +258,7 @@ class EntitiesController extends AbstractController
 
                             return $this
                                 ->render(
-                                    'SQLIEzToolboxBundle:Entities:editElement.html.twig',
+                                    '@SQLIEzToolbox/Entities/editElement.html.twig',
                                     $params
                                 );
                         }
@@ -335,7 +335,7 @@ class EntitiesController extends AbstractController
 
                         return $this
                             ->render(
-                                'SQLIEzToolboxBundle:Entities:createElement.html.twig',
+                                '@SQLIEzToolbox/Entities/createElement.html.twig',
                                 $params
                             );
                     }
