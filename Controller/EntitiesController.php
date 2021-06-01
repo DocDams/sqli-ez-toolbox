@@ -52,7 +52,7 @@ class EntitiesController extends AbstractController
      * @return Response
      * @throws ReflectionException
      */
-    public function listAllEntitiesAction(string $tabname, TabEntityHelper $tabEntityHelper): Response
+    public function listAllEntities(string $tabname, TabEntityHelper $tabEntityHelper): Response
     {
         $this->denyAccessUnlessGranted('ez:sqli_admin:list_entities');
 
@@ -75,7 +75,7 @@ class EntitiesController extends AbstractController
      * @return Response
      * @throws ReflectionException
      */
-    public function showEntityAction(
+    public function showEntity(
         string $fqcn,
         string $sort_column,
         string $sort_order,
@@ -136,7 +136,7 @@ class EntitiesController extends AbstractController
      * @return Response
      * @throws ReflectionException
      */
-    public function removeElementAction(string $fqcn, string $compound_id, EntityHelper $entityHelper): Response
+    public function removeElement(string $fqcn, string $compound_id, EntityHelper $entityHelper): Response
     {
         $this->denyAccessUnlessGranted('ez:sqli_admin:entity_remove_element');
 
@@ -193,7 +193,7 @@ class EntitiesController extends AbstractController
      * @param FilterEntityHelper $filterEntityHelper
      * @return RedirectResponse
      */
-    public function resetFilterAction(string $fqcn, FilterEntityHelper $filterEntityHelper): RedirectResponse
+    public function resetFilter(string $fqcn, FilterEntityHelper $filterEntityHelper): RedirectResponse
     {
         $filterEntityHelper->resetFilter($fqcn);
 
@@ -213,7 +213,7 @@ class EntitiesController extends AbstractController
      * @return RedirectResponse|Response
      * @throws ReflectionException
      */
-    public function editElementAction(
+    public function editElement(
         string $fqcn,
         string $compound_id,
         Request $request,
@@ -299,7 +299,7 @@ class EntitiesController extends AbstractController
      * @return RedirectResponse|Response
      * @throws ReflectionException
      */
-    public function createElementAction(string $fqcn, Request $request, EntityHelper $entityHelper): Response
+    public function createElement(string $fqcn, Request $request, EntityHelper $entityHelper): Response
     {
         $this->denyAccessUnlessGranted('ez:sqli_admin:entity_edit_element');
 
@@ -371,7 +371,7 @@ class EntitiesController extends AbstractController
      * @return StreamedResponse
      * @throws ReflectionException
      */
-    public function exportCSVAction(string $fqcn): StreamedResponse
+    public function exportCSV(string $fqcn): StreamedResponse
     {
         $this->denyAccessUnlessGranted('ez:sqli_admin:entity_export_csv');
 
