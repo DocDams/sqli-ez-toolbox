@@ -2,7 +2,7 @@ SQLI eZ Toolbox Bundle
 ========================================
 
 [SQLI](http://www.sqli.com) eZToolbox is a bundle used in SQLI projects gathering some bundles like "SQLI Entities Manager", "SQLI Command Toolbox", some helpers and some Twig operators
-Compatible with eZPlatform 2.x
+Compatible with Ibexa 3.3
 
 Installation
 ------------
@@ -14,23 +14,20 @@ composer require sqli/eztoolbox=^2.0
 
 ### Register the bundle
 
-Activate the bundle in `app/AppKernel.php` AFTER all eZSystem/Ibexa bundles
+Activate the bundle in `config/bundles.php` AFTER all eZSystem/Ibexa bundles
 
 ```php
-// app/AppKernel.php
+// config/bundles.php
 
-public function registerBundles()
-{
-    $bundles = [
-        // ...
-        new SQLI\EzToolboxBundle\SQLIEzToolboxBundle(),
-    ];
-}
+return [
+    // ...
+    SQLI\EzToolboxBundle\SQLIEzToolboxBundle::class => ['all' => true],
+];
 ```
 
 ### Add routes
 
-In `app/config/routing.yml` :
+In `config/routes/sqli_eztoolbox.yml` :
 
 ```yml
 # SQLI Admin routes
