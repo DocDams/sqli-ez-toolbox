@@ -3,7 +3,7 @@
   "description": "SQLI eZToolbox is a bundle used in SQLI projects gathering some bundles like \"SQLI Entities Manager\", \"SQLI Command Toolbox\", some helpers and some Twig operators",
   "keywords": ["sqli", "ezplatform", "crud", "entities", "toolbox", "ibexa", "oss", "content", "commerce", "dxp"],
   "homepage": "https://github.com/DocDams/sqli-eztoolbox",
-  "type": "ezplatform-bundle",
+  "type": "symfony-bundle",
   "authors": [
     {
       "name": "SQLI",

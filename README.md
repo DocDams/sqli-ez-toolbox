@@ -35,7 +35,7 @@ In `app/config/routing.yml` :
 ```yml
 # SQLI Admin routes
 _sqli_eztoolbox:
-    resource: "@SQLIEzToolboxBundle/Resources/config/routing.yml"
+    resource: "@SQLIEzToolboxBundle/Resources/config/routing.yaml"
     prefix: /
 ```
 
