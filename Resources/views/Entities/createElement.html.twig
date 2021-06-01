@@ -1,4 +1,4 @@
-{% extends viewbaseLayout is defined ? viewbaseLayout : '@ezdesign/layout.html.twig' %}
+{% extends viewbaseLayout is defined ? viewbaseLayout : '@ezdesign/ui/layout.html.twig' %}
 
 {% form_theme form with '@SQLIEzToolbox/form_fields.html.twig' only %}
 
@@ -6,7 +6,7 @@
 
 {% block breadcrumbs %}
     {% set keytrad = constant('SQLI\\EzToolboxBundle\\Menu\\MenuListener::SQLI_ADMIN_MENU_ENTITIES_TAB_PREFIX') ~ tabname %}
-    {% include '@EzPlatformAdminUi/parts/breadcrumbs.html.twig' with { items: [
+    {% include '@ezdesign/ui/breadcrumbs.html.twig' with { items: [
         { value: 'breadcrumb.admin'|trans(domain='messages')|desc('Admin') },
         { value: keytrad|trans( {}, 'sqli_admin' )|desc('Entity'),
             url: path( 'sqli_eztoolbox_entitymanager_homepage', { 'tabname': tabname } ) },
@@ -19,9 +19,9 @@
 {% block title %}{{ 'entity.creation.page.title'|trans|desc('Entity page title') }}{% endblock %}
 
 {% block page_title %}
-    {% include '@EzPlatformAdminUi/parts/page_title.html.twig' with {
+    {% include '@ezdesign/ui/page_title.html.twig' with {
         title: 'entity.creation.page.title'|trans|desc('Entity page title'),
-        iconName: 'object-state'
+        icon_name: 'object-state'
     } %}
 {% endblock %}
 

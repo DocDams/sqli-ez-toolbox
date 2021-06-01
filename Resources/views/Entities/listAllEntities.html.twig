@@ -1,10 +1,10 @@
-{% extends 'EzPlatformAdminUiBundle::layout.html.twig' %}
+{% extends '@ezdesign/ui/layout.html.twig' %}
 
 {% trans_default_domain 'sqli_admin' %}
 
 {% block breadcrumbs %}
     {% set keytrad = constant('SQLI\\EzToolboxBundle\\Menu\\MenuListener::SQLI_ADMIN_MENU_ENTITIES_TAB_PREFIX') ~ tabname %}
-    {% include '@EzPlatformAdminUi/parts/breadcrumbs.html.twig' with { items: [
+    {% include '@ezdesign/ui/breadcrumbs.html.twig' with { items: [
         { value: 'breadcrumb.admin'|trans(domain='messages')|desc('Admin') },
         { value: keytrad|trans( {}, 'sqli_admin' )|desc('Entities') },
     ]} %}
@@ -13,9 +13,9 @@
 {% block title %}{{ 'entities.page.title'|trans|desc('Entities page title') }}{% endblock %}
 
 {% block page_title %}
-    {% include '@EzPlatformAdminUi/parts/page_title.html.twig' with {
+    {% include '@ezdesign/ui/page_title.html.twig' with {
         title: 'entities.page.title'|trans|desc('Entities page title'),
-        iconName: 'object-state'
+        icon_name: 'object-state'
     } %}
 {% endblock %}
 
