@@ -1,0 +1,33 @@
+sqli_eztoolbox_entitymanager_homepage:
+    path: /sqli-admin/entities/{tabname}
+    controller: SQLI\EzToolboxBundle\Controller\EntitiesController::listAllEntities
+    defaults:
+        tabname: 'default'
+
+sqli_eztoolbox_entitymanager_entity_remove_element:
+    path: /sqli-admin/entity/{fqcn}/remove/{compound_id}
+    controller: SQLI\EzToolboxBundle\Controller\EntitiesController::removeElement
+
+sqli_eztoolbox_entitymanager_entity_edit_element:
+    path: /sqli-admin/entity/{fqcn}/edit/{compound_id}
+    controller: SQLI\EzToolboxBundle\Controller\EntitiesController::editElement
+
+sqli_eztoolbox_entitymanager_entity_create_element:
+    path: /sqli-admin/entity/{fqcn}/create
+    controller: SQLI\EzToolboxBundle\Controller\EntitiesController::createElement
+
+sqli_eztoolbox_entitymanager_entity_export_csv:
+    path: /sqli-admin/entity/{fqcn}/csv
+    controller: SQLI\EzToolboxBundle\Controller\EntitiesController::exportCSV
+
+sqli_eztoolbox_entitymanager_entity_homepage_reset_filter:
+    path: /sqli-admin/entity/{fqcn}/reset
+    controller: SQLI\EzToolboxBundle\Controller\EntitiesController::resetFilter
+
+# Keep this route at end
+sqli_eztoolbox_entitymanager_entity_homepage:
+    path: /sqli-admin/entity/{fqcn}/{sort_column}/{sort_order}
+    controller: SQLI\EzToolboxBundle\Controller\EntitiesController::showEntity
+    defaults:
+        sort_column: 'id'
+        sort_order: 'ASC'
