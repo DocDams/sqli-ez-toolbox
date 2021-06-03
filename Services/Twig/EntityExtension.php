@@ -3,19 +3,20 @@
 namespace SQLI\EzToolboxBundle\Services\Twig;
 
 use SQLI\EzToolboxBundle\Services\EntityHelper;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
 class EntityExtension extends AbstractExtension
 {
-    protected $container;
+    /** @var ParameterBagInterface */
+    protected $parameterBag;
     /** @var EntityHelper */
     private $entityHelper;
 
-    public function __construct(ContainerInterface $container, EntityHelper $entityHelper)
+    public function __construct(ParameterBagInterface $parameterBag, EntityHelper $entityHelper)
     {
-        $this->container = $container;
+        $this->parameterBag = $parameterBag;
         $this->entityHelper = $entityHelper;
     }
 
@@ -63,8 +64,8 @@ class EntityExtension extends AbstractExtension
      * @param $bundleName
      * @return bool
      */
-    public function bundleExists($bundleName)
+    public function bundleExists($bundleName): bool
     {
-        return array_key_exists($bundleName, $this->container->getParameter('kernel.bundles'));
+        return array_key_exists($bundleName, $this->parameterBag->get('kernel.bundles'));
     }
 }
