@@ -131,7 +131,7 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
     /**
      * @param PublishVersionEvent $event
      */
-    private function logIfPublishVersionEvent(PublishVersionEvent $event)
+    public function logIfPublishVersionEvent(PublishVersionEvent $event)
     {
         // Log only for admin siteaccesses
         if (!$this->adminLoggerEnabled || !$this->isAdminSiteAccess()) {
@@ -173,7 +173,7 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
     /**
      * @param CopyContentEvent $event
      */
-    private function logIfCopyContentEvent(CopyContentEvent $event)
+    public function logIfCopyContentEvent(CopyContentEvent $event)
     {
         // Log only for admin siteaccesses
         if (!$this->adminLoggerEnabled || !$this->isAdminSiteAccess()) {
@@ -207,7 +207,7 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
     /**
      * @param DeleteContentEvent $event
      */
-    private function logIfDeleteContentEvent(DeleteContentEvent $event)
+    public function logIfDeleteContentEvent(DeleteContentEvent $event)
     {
         // Log only for admin siteaccesses
         if (!$this->adminLoggerEnabled || !$this->isAdminSiteAccess()) {
@@ -226,7 +226,7 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
      * @throws NotFoundException
      * @throws UnauthorizedException
      */
-    private function logIfCreateTagEvent(CreateTagEvent $event)
+    public function logIfCreateTagEvent(CreateTagEvent $event)
     {
         // Log only for admin siteaccesses
         if (!$this->adminLoggerEnabled || !$this->isAdminSiteAccess()) {
@@ -248,7 +248,7 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
     /**
      * @param UpdateTagEvent $event
      */
-    private function logIfUpdateTagEvent(UpdateTagEvent $event)
+    public function logIfUpdateTagEvent(UpdateTagEvent $event)
     {
         // Log only for admin siteaccesses
         if (!$this->adminLoggerEnabled || !$this->isAdminSiteAccess()) {
@@ -264,7 +264,7 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
     /**
      * @param DeleteTagEvent $event
      */
-    private function logIfDeleteTagEvent(DeleteTagEvent $event)
+    public function logIfDeleteTagEvent(DeleteTagEvent $event)
     {
         // Log only for admin siteaccesses
         if (!$this->adminLoggerEnabled || !$this->isAdminSiteAccess()) {
@@ -279,7 +279,7 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
     /**
      * @param MoveSubtreeEvent $event
      */
-    private function logIfMoveSubtreeEvent(MoveSubtreeEvent $event)
+    public function logIfMoveSubtreeEvent(MoveSubtreeEvent $event)
     {
         // Log only for admin siteaccesses
         if (!$this->adminLoggerEnabled || !$this->isAdminSiteAccess()) {
@@ -300,7 +300,7 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
     /**
      * @param CopySubtreeEvent $event
      */
-    private function logIfCopySubtreeEvent(CopySubtreeEvent $event)
+    public function logIfCopySubtreeEvent(CopySubtreeEvent $event)
     {
         // Log only for admin siteaccesses
         if (!$this->adminLoggerEnabled || !$this->isAdminSiteAccess()) {
@@ -327,7 +327,7 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
     /**
      * @param CreateLocationEvent $event
      */
-    private function logIfCreateLocationEvent(CreateLocationEvent $event)
+    public function logIfCreateLocationEvent(CreateLocationEvent $event)
     {
         // Log only for admin siteaccesses
         if (!$this->adminLoggerEnabled || !$this->isAdminSiteAccess()) {
@@ -358,7 +358,7 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
     /**
      * @param DeleteLocationEvent $event
      */
-    private function logIfDeleteLocationEvent(DeleteLocationEvent $event)
+    public function logIfDeleteLocationEvent(DeleteLocationEvent $event)
     {
         // Log only for admin siteaccesses
         if (!$this->adminLoggerEnabled || !$this->isAdminSiteAccess()) {
@@ -376,7 +376,7 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
     /**
      * @param Event $event
      */
-    private function logIfVisibilityLocationEvent(Event $event)
+    public function logIfVisibilityLocationEvent(Event $event)
     {
         // Log only for admin siteaccesses
         if (!$this->adminLoggerEnabled || !$this->isAdminSiteAccess()) {
@@ -409,7 +409,7 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
     /**
      * @param Event $event
      */
-    private function logIfVisibilityContentEvent(Event $event)
+    public function logIfVisibilityContentEvent(Event $event)
     {
         // Log only for admin siteaccesses
         if (!$this->adminLoggerEnabled || !$this->isAdminSiteAccess()) {
@@ -440,7 +440,7 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
     /**
      * @param Event $event
      */
-    private function logIfUserEvent(Event $event)
+    public function logIfUserEvent(Event $event)
     {
         // Log only for admin siteaccesses
         if (!$this->adminLoggerEnabled || !$this->isAdminSiteAccess()) {
@@ -465,7 +465,7 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
     /**
      * @param TrashEvent $event
      */
-    private function logIfTrashEvent(TrashEvent $event)
+    public function logIfTrashEvent(TrashEvent $event)
     {
         // Log only for admin siteaccesses
         if (!$this->adminLoggerEnabled || !$this->isAdminSiteAccess()) {
@@ -491,7 +491,7 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
     /**
      * @param AssignSectionToSubtreeEvent $event
      */
-    private function logIfAssignSectionEvent(AssignSectionToSubtreeEvent $event)
+    public function logIfAssignSectionEvent(AssignSectionToSubtreeEvent $event)
     {
         // Log only for admin siteaccesses
         if (!$this->adminLoggerEnabled || !$this->isAdminSiteAccess()) {
@@ -509,7 +509,7 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
     /**
      * @param SetContentStateEvent $event
      */
-    private function logIfSetContentStateEvent(SetContentStateEvent $event)
+    public function logIfSetContentStateEvent(SetContentStateEvent $event)
     {
         // Log only for admin siteaccesses
         if (!$this->adminLoggerEnabled || !$this->isAdminSiteAccess()) {
