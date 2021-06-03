@@ -46,6 +46,8 @@ php bin/console cache:clear
 
 ##### Full example
 
+In `config/packages/sqli_eztoolbox.yml` :
+
 ```yaml
 sqli_ez_toolbox:
     entities:
