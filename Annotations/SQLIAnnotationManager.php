@@ -8,9 +8,9 @@ use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Id;
 use ReflectionClass;
 use ReflectionException;
-use SQLI\EzToolboxBundle\Annotations\Annotation\EntityProperty;
+use SQLI\EzToolboxBundle\Annotations\Annotation\Entity as SQLIEntity;
+use SQLI\EzToolboxBundle\Annotations\Annotation\EntityProperty as SQLIEntityProperty;
 use SQLI\EzToolboxBundle\Annotations\Annotation\SQLIClassAnnotation;
-use SQLI\EzToolboxBundle\Annotations\Annotation\SQLIPropertyAnnotation;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -91,7 +91,7 @@ class SQLIAnnotationManager
                 // Search if $class use an SQLIClassAnnotation
                 $classAnnotation = $this
                     ->annotationReader
-                    ->getClassAnnotation($class, SQLIClassAnnotation::class);
+                    ->getClassAnnotation($class, SQLIEntity::class);
                 // Check if $class use Doctrine\Entity annotation
                 $classDoctrineAnnotation = $this
                     ->annotationReader
@@ -127,9 +127,9 @@ class SQLIAnnotationManager
 
                     $propertyAnnotation = $this
                         ->annotationReader
-                        ->getPropertyAnnotation($reflectionProperty, SQLIPropertyAnnotation::class);
+                        ->getPropertyAnnotation($reflectionProperty, SQLIEntityProperty::class);
 
-                    if ($propertyAnnotation instanceof EntityProperty) {
+                    if ($propertyAnnotation instanceof SQLIEntityProperty) {
                         // Check if a visibility information defined on entity's property thanks to 'visible' annotation
                         $visible = $propertyAnnotation->isVisible();
                         // Check if property must be only in readonly

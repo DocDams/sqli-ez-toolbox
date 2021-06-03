@@ -64,10 +64,10 @@ class EntityHelper
      * Get a class annotated with SQLIClassAnnotation interface from her FQCN
      *
      * @param string $fqcn
-     * @return string
+     * @return array
      * @throws ReflectionException
      */
-    public function getAnnotatedClass(string $fqcn): ?string
+    public function getAnnotatedClass(string $fqcn): ?array
     {
         $annotatedClasses = $this->getAnnotatedClasses();
 
@@ -77,7 +77,7 @@ class EntityHelper
     /**
      * Get all classes annotated with SQLIClassAnnotation interface
      *
-     * @return string[]
+     * @return array
      * @throws ReflectionException
      */
     public function getAnnotatedClasses(): array

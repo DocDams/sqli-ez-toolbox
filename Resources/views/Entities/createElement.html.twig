@@ -13,7 +13,7 @@
         { value: fqcn,
             url: path( 'sqli_eztoolbox_entitymanager_entity_homepage', { 'fqcn': fqcn } ) },
         { value: 'entity.button.alt.create'|trans },
-    ]} %}
+    ]} only %}
 {% endblock %}
 
 {% block title %}{{ 'entity.creation.page.title'|trans|desc('Entity page title') }}{% endblock %}
@@ -31,8 +31,10 @@
         <div class="container px-0 pb-4 mt-3 ez-content-edit-container">
             {{ form_start(form, {'attr': {'class': 'ez-form-validate'}}) }}
 
-            {% for field in form.children if not field.rendered %}
-                {{ form_row(field) }}
+            {% for field in form.children %}
+                {% if not field.rendered %}
+                    {{ form_row(field) }}
+                {% endif %}
             {% endfor %}
 
             {{ form_end(form) }}

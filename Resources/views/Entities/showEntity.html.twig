@@ -9,7 +9,7 @@
         { value: keytrad|trans( {}, 'sqli_admin' )|desc('Entities'),
             url: path( 'sqli_eztoolbox_entitymanager_homepage', { 'tabname': class.annotation.tabname } ) },
         { value: class.classname }
-    ]} %}
+    ]} only %}
 {% endblock %}
 
 {% block title %}{{ 'entity.page.title'|trans|desc('Entity page title') }}{% endblock %}

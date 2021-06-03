@@ -7,7 +7,7 @@
     {% include '@ezdesign/ui/breadcrumbs.html.twig' with { items: [
         { value: 'breadcrumb.admin'|trans(domain='messages')|desc('Admin') },
         { value: keytrad|trans( {}, 'sqli_admin' )|desc('Entities') },
-    ]} %}
+    ]} only %}
 {% endblock %}
 
 {% block title %}{{ 'entities.page.title'|trans|desc('Entities page title') }}{% endblock %}
