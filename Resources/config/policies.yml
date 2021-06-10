@@ -1,6 +1,7 @@
 sqli_admin:
     list_entities: ~
     entity_show: ~
+    entity_view_element: ~
     entity_remove_element: ~
     entity_edit_element: ~
     entity_create_element: ~

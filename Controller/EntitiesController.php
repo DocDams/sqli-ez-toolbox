@@ -203,6 +203,8 @@ class EntitiesController extends AbstractController
         );
     }
 
+
+
     /**
      * Show edit form and save modifications
      *
@@ -289,6 +291,26 @@ class EntitiesController extends AbstractController
             ['fqcn' => $fqcn]
         );
     }
+
+    /**
+     * Show edit form and save modifications
+     *
+     * @param string $fqcn FQCN
+     * @param Request $request
+     * @param EntityHelper $entityHelper
+     * @return RedirectResponse|Response
+     * @throws ReflectionException
+     */
+    public function viewElement(string $fqcn, Request $request): Response {
+        $this->denyAccessUnlessGranted('ez:sqli_admin:entity_view_element');
+        $entity = $this->entityHelper->getEntity($fqcn, false);
+
+        return $this
+            ->render(
+                '@SQLIEzToolbox/Entities/view.html.twig'
+            );
+    }
+
 
     /**
      * Show edit form and save modifications
