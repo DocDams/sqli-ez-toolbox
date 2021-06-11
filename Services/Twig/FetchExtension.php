@@ -51,6 +51,7 @@ class FetchExtension extends AbstractExtension
                 new TwigFunction('render_children', [$this, 'renderChildren'], ['is_safe' => ['all']]),
                 new TwigFunction('fetch_children', [$this, 'fetchChildren']),
                 new TwigFunction('fetch_ancestor', [$this, 'fetchAncestor']),
+                new TwigFunction('fetch_ancestors', [$this, 'fetchAncestors']),
                 new TwigFunction('fetch_content', [$this, 'fetchContent']),
                 new TwigFunction('fetch_location', [$this, 'fetchLocation']),
             ];
@@ -138,6 +139,19 @@ class FetchExtension extends AbstractExtension
     public function fetchAncestor($location, string $contentType): ?Location
     {
         return $this->fetchHelper->fetchAncestor($location, $contentType);
+    }
+
+    /**
+     * Fetch ancestor of $location with specified $contentType
+     *
+     * @param Location|int $location
+     * @param string $contentType
+     * @return Location|null
+     * @throws InvalidArgumentException
+     */
+    public function fetchAncestors($location, string $contentType): ?array
+    {
+        return $this->fetchHelper->fetchAncestors($location, $contentType);
     }
 
     /**

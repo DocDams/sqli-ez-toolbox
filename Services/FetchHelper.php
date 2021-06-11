@@ -18,6 +18,7 @@ use eZ\Publish\API\Repository\Values\Content\Query\SortClause;
 use eZ\Publish\Core\Helper\FieldHelper;
 use eZ\Publish\Core\Helper\TranslationHelper;
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
+use function Sodium\add;
 
 class FetchHelper
 {
@@ -148,7 +149,7 @@ class FetchHelper
         if (!is_null($contentClass)) {
             $params[] = new Criterion\ContentTypeIdentifier($contentClass);
         }
-
+        
         $languages = $this->configResolver->getParameter('languages');
         $query = new LocationQuery();
 
@@ -192,7 +193,7 @@ class FetchHelper
      * @return Location|null
      * @throws InvalidArgumentException
      */
-    public function fetchAncestor($location, string $contentType): ?Location
+    public function fetchAncestors($location, string $contentType): ?array
     {
         if (!$location instanceof Location) {
             try {
@@ -208,7 +209,23 @@ class FetchHelper
                 new Criterion\Ancestor($location->pathString),
             ];
 
-        return $this->fetchLocation($params);
+        $items = $this->fetchLocationList($params);
+        return $items;
+    }
+
+    /**
+     * Fetch ancestor of $location with specified $contentType
+     *
+     * @param Location|int $location
+     * @param string $contentType
+     * @return Location|null
+     * @throws InvalidArgumentException
+     */
+    public function fetchAncestor($location, string $contentType): ?Location
+    {
+        $results = $this->fetchAncestors($location, $contentType);
+        $itemHit = reset($results);
+        return ($itemHit instanceof Location) ? $itemHit : null;
     }
 
     /**
@@ -221,7 +238,6 @@ class FetchHelper
         $results = $this->fetchLocationList($params, 1);
 
         $itemHit = reset($results);
-
         return ($itemHit instanceof Location) ? $itemHit : null;
     }
 
