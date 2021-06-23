@@ -203,8 +203,6 @@ class EntitiesController extends AbstractController
         );
     }
 
-
-
     /**
      * Show edit form and save modifications
      *
@@ -300,8 +298,8 @@ class EntitiesController extends AbstractController
      * @return RedirectResponse|Response
      * @throws ReflectionException
      */
-    public function viewElement(string $fqcn, string $compound_id, Request $request): Response {
-
+    public function viewElement(string $fqcn, string $compound_id, Request $request): Response
+    {
         $context = 'view';
         $this->denyAccessUnlessGranted('ez:sqli_admin:entity_view_element');
 
@@ -321,19 +319,23 @@ class EntitiesController extends AbstractController
                         $element = $this->entityHelper->findOneBy($fqcn, $compound_id);
 
                         // Build form according to element and entity informations
-                        $form = $this->createForm(EditElementType::class, $element, ['entity' => $entity, 'context' => $context]);
+                        $form = $this->createForm(
+                            EditElementType::class,
+                            $element,
+                            ['entity' => $entity, 'context' => $context]
+                        );
                         $form->handleRequest($request);
-                        
-                            // Display form
-                            $params['form'] = $form->createView();
-                            $params['fqcn'] = $fqcn;
-                            $params['class'] = $entity['class'];
 
-                            return $this
-                                ->render(
-                                    '@SQLIEzToolbox/Entities/view.html.twig',
-                                    $params
-                                );
+                        // Display form
+                        $params['form'] = $form->createView();
+                        $params['fqcn'] = $fqcn;
+                        $params['class'] = $entity['class'];
+
+                        return $this
+                            ->render(
+                                '@SQLIEzToolbox/Entities/view.html.twig',
+                                $params
+                            );
                     }
                 }
             }
