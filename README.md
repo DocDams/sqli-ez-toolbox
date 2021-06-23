@@ -27,7 +27,7 @@ return [
 
 ### Add routes
 
-In `config/routes/sqli_eztoolbox.yml` :
+In `config/routes/sqli_eztoolbox.yaml` :
 
 ```yml
 # SQLI Admin routes
@@ -46,7 +46,7 @@ php bin/console cache:clear
 
 ##### Full example
 
-In `config/packages/sqli_eztoolbox.yml` :
+In `config/packages/sqli_eztoolbox.yaml` :
 
 ```yaml
 sqli_ez_toolbox:
