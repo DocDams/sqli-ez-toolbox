@@ -1,4 +1,4 @@
 system:
   admin_group:
     field_templates:
-      - { template: '@SQLIEzToolboxBundle/sqli_field_templates.html.twig', priority: 0 }
+      - { template: '@SQLIEzToolbox/sqli_field_templates.html.twig', priority: 0 }

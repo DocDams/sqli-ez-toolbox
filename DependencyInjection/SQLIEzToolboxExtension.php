@@ -62,23 +62,7 @@ class SQLIEzToolboxExtension extends Extension implements PrependExtensionInterf
      */
     public function prepend(ContainerBuilder $container): void
     {
-        $this->loadTwigNameSpace($container);
         $this->prependFieldType($container);
-    }
-
-    /**
-     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
-     */
-    private function loadTwigNameSpace(ContainerBuilder $container): void
-    {
-        $container->loadFromExtension(
-            'twig',
-            array(
-                'paths' => array(
-                    __DIR__ . '/../Resources/views' => 'SQLIEzToolboxBundle',
-                ),
-            )
-        );
     }
 
     /**
