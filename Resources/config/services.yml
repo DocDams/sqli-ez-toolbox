@@ -45,7 +45,6 @@ services:
             - "%kernel.project_dir%"
             - "@annotation_reader"
 
-
     # Handler Parameters
     SQLI\EzToolboxBundle\Services\Parameter\ParameterHandlerMaintenance:
         tags:
@@ -56,3 +55,7 @@ services:
             - { name: ezplatform.field_type, alias: sqlitoolbox }
             - { name: ezplatform.field_type.form_mapper.value, fieldType: sqlitoolbox }
             - { name: ezplatform.field_type.indexable, alias: sqlitoolbox }
+
+    SQLI\EzToolboxBundle\Serializer\SqliToolbox\ValueNormalizer:
+        tags:
+            - { name: serializer.normalizer }
