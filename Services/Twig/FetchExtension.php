@@ -133,12 +133,13 @@ class FetchExtension extends AbstractExtension
      *
      * @param Location|int $location
      * @param string $contentType
+     * @param bool $highest
      * @return Location|null
      * @throws InvalidArgumentException
      */
-    public function fetchAncestor($location, string $contentType): ?Location
+    public function fetchAncestor($location, string $contentType, bool $highest): ?Location
     {
-        return $this->fetchHelper->fetchAncestor($location, $contentType);
+        return $this->fetchHelper->fetchAncestor($location, $contentType, $highest);
     }
 
     /**

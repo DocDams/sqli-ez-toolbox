@@ -18,7 +18,6 @@ use eZ\Publish\API\Repository\Values\Content\Query\SortClause;
 use eZ\Publish\Core\Helper\FieldHelper;
 use eZ\Publish\Core\Helper\TranslationHelper;
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
-use function Sodium\add;
 
 class FetchHelper
 {
@@ -102,24 +101,42 @@ class FetchHelper
      * @param array $params
      * @param int $limit
      * @param int $offset
+     * @param string $sortClauses
+     *      parametre which specifies the way the request will be sorted : "depth" or "prioriy"
      * @return Location[]
      * @throws InvalidArgumentException
      */
-    private function fetchLocationList(array $params, $limit = self::LIMIT, $offset = 0): array
-    {
+    private function fetchLocationList(
+        array $params,
+        $sortClauses = "priority",
+        $limit = self::LIMIT,
+        $offset = 0
+    ): array {
         $languages = $this->configResolver->getParameter('languages');
         $query = new LocationQuery();
 
-        $query->query = new Criterion\LogicalAnd(array_merge([
-            new Criterion\Visibility(Criterion\Visibility::VISIBLE),
-            new Criterion\LanguageCode($languages),
-        ], $params));
+        $query->query = new Criterion\LogicalAnd(
+            array_merge(
+                [
+                    new Criterion\Visibility(Criterion\Visibility::VISIBLE),
+                    new Criterion\LanguageCode($languages),
+                ],
+                $params
+            )
+        );
         $query->performCount = true;
         $query->limit = $limit;
         $query->offset = $offset;
-        $query->sortClauses = [
-            new SortClause\Location\Priority(Query::SORT_ASC),
-        ];
+        if ($sortClauses == "depth") {
+            $query->sortClauses = [
+                new SortClause\Location\Depth(Query::SORT_ASC),
+            ];
+        }
+        if ($sortClauses == "priority") {
+            $query->sortClauses = [
+                new SortClause\Location\Priority(Query::SORT_ASC),
+            ];
+        }
         $results = $this->searchService->findLocations($query);
         $items = [];
 
@@ -149,15 +166,20 @@ class FetchHelper
         if (!is_null($contentClass)) {
             $params[] = new Criterion\ContentTypeIdentifier($contentClass);
         }
-        
+
         $languages = $this->configResolver->getParameter('languages');
         $query = new LocationQuery();
 
-        $query->query = new Criterion\LogicalAnd(array_merge([
-            new Criterion\Visibility(Criterion\Visibility::VISIBLE),
-            new Criterion\LanguageCode($languages),
-            new Criterion\Subtree($parentLocation->pathString),
-        ], $params));
+        $query->query = new Criterion\LogicalAnd(
+            array_merge(
+                [
+                    new Criterion\Visibility(Criterion\Visibility::VISIBLE),
+                    new Criterion\LanguageCode($languages),
+                    new Criterion\Subtree($parentLocation->pathString),
+                ],
+                $params
+            )
+        );
 
         if ($limit == -1) {
             $query->performCount = true;
@@ -209,7 +231,8 @@ class FetchHelper
                 new Criterion\Ancestor($location->pathString),
             ];
 
-        $items = $this->fetchLocationList($params);
+        $sortClauses = "depth";
+        $items = $this->fetchLocationList($params, $sortClauses);
         return $items;
     }
 
@@ -218,13 +241,19 @@ class FetchHelper
      *
      * @param Location|int $location
      * @param string $contentType
+     * @param bool $highest
+     *      param which specifies if fetchAncestor must return the most distant or closest ancestor
      * @return Location|null
      * @throws InvalidArgumentException
      */
-    public function fetchAncestor($location, string $contentType): ?Location
+    public function fetchAncestor($location, string $contentType, bool $highest = true): ?Location
     {
         $results = $this->fetchAncestors($location, $contentType);
-        $itemHit = reset($results);
+        if ($highest) {
+            $itemHit = array_shift($results);
+        } elseif ($highest == false) {
+            $itemHit = array_pop($results);
+        }
         return ($itemHit instanceof Location) ? $itemHit : null;
     }
 
@@ -275,10 +304,15 @@ class FetchHelper
         $languages = $this->configResolver->getParameter('languages');
         $query = new Query();
 
-        $query->query = new Criterion\LogicalAnd(array_merge([
-            new Criterion\Visibility(Criterion\Visibility::VISIBLE),
-            new Criterion\LanguageCode($languages),
-        ], $params));
+        $query->query = new Criterion\LogicalAnd(
+            array_merge(
+                [
+                    new Criterion\Visibility(Criterion\Visibility::VISIBLE),
+                    new Criterion\LanguageCode($languages),
+                ],
+                $params
+            )
+        );
         $query->performCount = true;
         $query->limit = $limit;
         $query->offset = $offset;
