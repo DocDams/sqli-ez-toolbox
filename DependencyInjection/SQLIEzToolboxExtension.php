@@ -75,8 +75,7 @@ class SQLIEzToolboxExtension extends Extension implements PrependExtensionInterf
             'twig',
             array(
                 'paths' => array(
-                    //__DIR__ . '/../Resources/views' => 'SQLIEzToolboxBundle',
-                    '/var/www/html/project/ezplatform/vendor/sqli/eztoolbox/Resources/views' => 'SQLIEzToolboxBundle',
+                    __DIR__ . '/../Resources/views' => 'SQLIEzToolboxBundle',
                 ),
             )
         );
