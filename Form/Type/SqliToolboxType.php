@@ -17,7 +17,7 @@ final class SqliToolboxType extends AbstractType
     {
         $builder->add('classname', TextType::class);
         $builder->add('pkkey', TextType::class);
-        $builder->add('pkvalue', NumberType::class);
+        $builder->add('pkvalue', TextType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

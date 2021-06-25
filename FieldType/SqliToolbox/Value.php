@@ -12,11 +12,10 @@ final class Value implements ValueInterface
     private $className;
     /** @var string|null */
     private $pkKey;
-
-    /** @var int|null */
+    /** @var string|null */
     private $pkValue;
 
-    public function __construct(?string $className = null, ?string $pkKey = null ,?int $pkValue = null)
+    public function __construct(?string $className = null, ?string $pkKey = null ,?string $pkValue = null)
     {
         $this->className = $className;
         $this->pkKey = $pkKey;
@@ -40,17 +39,17 @@ final class Value implements ValueInterface
     }
 
     /**
-     * @return int|null
+     * @return string|null
      */
-    public function getPkValue(): ?int
+    public function getPkValue(): ?string
     {
         return $this->pkValue;
     }
 
     /**
-     * @param int|null $pkValue
+     * @param string|null $pkValue
      */
-    public function setPkValue(?int $pkValue): void
+    public function setPkValue(?string $pkValue): void
     {
         $this->pkValue = $pkValue;
     }
