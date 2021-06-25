@@ -12,9 +12,9 @@ final class ValueNormalizer implements NormalizerInterface
     public function normalize($object, string $format = null, array $context = [])
     {
         return [
-            $object->getClassName(),
-            $object->getPkKey(),
-            $object->getPkValue()
+            'className' => $object->getClassName(),
+            'pkKey' => $object->getPkKey(),
+            'pkValue' => $object->getPkValue()
         ];
     }
 

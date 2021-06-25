@@ -56,10 +56,10 @@ services:
             - { name: ezplatform.field_type.form_mapper.value, fieldType: sqlitoolbox }
             - { name: ezplatform.field_type.indexable, alias: sqlitoolbox }
 
-#    SQLI\EzToolboxBundle\Serializer\SqliToolbox\ValueNormalizer:
-#        tags:
-#            - { name: serializer.normalizer }
-#
+    SQLI\EzToolboxBundle\Serializer\SqliToolbox\ValueNormalizer:
+        tags:
+            - { name: serializer.normalizer }
+
     SQLI\EzToolboxBundle\Serializer\SqliToolbox\ValueDenormalizer:
         tags:
             - { name: serializer.denormalizer }
