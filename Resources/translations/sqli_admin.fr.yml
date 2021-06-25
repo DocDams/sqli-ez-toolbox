@@ -34,5 +34,5 @@ edit_element__sidebar_right__save: "Enregistrer"
 edit_element__sidebar_right__cancel: "Annuler"
 
 # Main bar
-sqli_admin__menu_root: "SQLI Admin"
+sqli_admin__menu_root: "SQLI Toolbox"
 sqli_admin__menu_entities_tab__default: "Entités Doctrine"
