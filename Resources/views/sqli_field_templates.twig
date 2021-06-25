@@ -1,0 +1,15 @@
+{% block sqlitoolbox_field %}
+    ({{ field.value.getClassName() }}, {{ field.value.getPkKey() }}, {{ field.value.getPkValue() }})
+llllllllllll
+    {%  if field.value.getClassName() is defined and field.value.getPkValue() is defined  %}
+        {% set compound_id= [] |merge( { (field.value.getPkKey()):field.value.getPkValue() } ) %}
+        <a href="{{ path( 'sqli_eztoolbox_entitymanager_entity_view_element',
+            { 'fqcn': field.value.getClassName(), 'compound_id': compound_id|json_encode }) }}">
+            <svg class="ez-icon ez-icon-view" style="width: 1.5rem;height: 1.5rem;">
+                <use xmlns:xlink="http://www.w3.org/1999/xlink"
+                     xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#view"></use>
+            </svg>
+        </a>
+    {% endif %}
+
+{% endblock %}

@@ -1,0 +1,4 @@
+system:
+  admin:
+    field_templates:
+      - { template: '@ezdesign/sqli_field_templates.html.twig', priority: 0 }
