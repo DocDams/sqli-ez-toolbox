@@ -165,18 +165,22 @@ class EntitiesController extends AbstractController
 
         if ($removeSuccessfull) {
             // Display success notification
-            $this->flashBagNotificationHandler->success($this->translator->trans(
-                'entity.element.deleted',
-                [],
-                'sqli_admin'
-            ));
+            $this->flashBagNotificationHandler->success(
+                $this->translator->trans(
+                    'entity.element.deleted',
+                    [],
+                    'sqli_admin'
+                )
+            );
         } else {
             // Display error notification
-            $this->flashBagNotificationHandler->error($this->translator->trans(
-                'entity.element.cannot_delete',
-                [],
-                'sqli_admin'
-            ));
+            $this->flashBagNotificationHandler->error(
+                $this->translator->trans(
+                    'entity.element.cannot_delete',
+                    [],
+                    'sqli_admin'
+                )
+            );
         }
 
         // Redirect to entity homepage (list of elements)
@@ -269,18 +273,22 @@ class EntitiesController extends AbstractController
 
         if ($updateSuccessfull) {
             // Display success notification
-            $this->flashBagNotificationHandler->success($this->translator->trans(
-                'entity.element.updated',
-                [],
-                'sqli_admin'
-            ));
+            $this->flashBagNotificationHandler->success(
+                $this->translator->trans(
+                    'entity.element.updated',
+                    [],
+                    'sqli_admin'
+                )
+            );
         } else {
             // Display error notification
-            $this->flashBagNotificationHandler->error($this->translator->trans(
-                'entity.element.cannot_update',
-                [],
-                'sqli_admin'
-            ));
+            $this->flashBagNotificationHandler->error(
+                $this->translator->trans(
+                    'entity.element.cannot_update',
+                    [],
+                    'sqli_admin'
+                )
+            );
         }
 
         // Redirect to entity homepage (list of elements)
@@ -312,29 +320,29 @@ class EntitiesController extends AbstractController
             if ($entityAnnotation instanceof Entity) {
                 // Check if modification is allowed
                 $compound_id = json_decode($compound_id, true);
-                    if (!empty($compound_id)) {
-                        // Find element
-                        $element = $this->entityHelper->findOneBy($fqcn, $compound_id);
+                if (!empty($compound_id)) {
+                    // Find element
+                    $element = $this->entityHelper->findOneBy($fqcn, $compound_id);
 
-                        // Build form according to element and entity informations
-                        $form = $this->createForm(
-                            EditElementType::class,
-                            $element,
-                            ['entity' => $entity, 'context' => $context]
+                    // Build form according to element and entity informations
+                    $form = $this->createForm(
+                        EditElementType::class,
+                        $element,
+                        ['entity' => $entity, 'context' => $context]
+                    );
+                    $form->handleRequest($request);
+
+                    // Display form
+                    $params['form'] = $form->createView();
+                    $params['fqcn'] = $fqcn;
+                    $params['class'] = $entity['class'];
+
+                    return $this
+                        ->render(
+                            '@SQLIEzToolbox/Entities/view.html.twig',
+                            $params
                         );
-                        $form->handleRequest($request);
-
-                        // Display form
-                        $params['form'] = $form->createView();
-                        $params['fqcn'] = $fqcn;
-                        $params['class'] = $entity['class'];
-
-                        return $this
-                            ->render(
-                                '@SQLIEzToolbox/Entities/view.html.twig',
-                                $params
-                            );
-                    }
+                }
             }
         }
         // Redirect to entity homepage (list of elements)
@@ -400,18 +408,22 @@ class EntitiesController extends AbstractController
 
         if ($updateSuccessfull) {
             // Display success notification
-            $this->flashBagNotificationHandler->success($this->translator->trans(
-                'entity.element.created',
-                [],
-                'sqli_admin'
-            ));
+            $this->flashBagNotificationHandler->success(
+                $this->translator->trans(
+                    'entity.element.created',
+                    [],
+                    'sqli_admin'
+                )
+            );
         } else {
             // Display error notification
-            $this->flashBagNotificationHandler->error($this->translator->trans(
-                'entity.element.cannot_create',
-                [],
-                'sqli_admin'
-            ));
+            $this->flashBagNotificationHandler->error(
+                $this->translator->trans(
+                    'entity.element.cannot_create',
+                    [],
+                    'sqli_admin'
+                )
+            );
         }
 
         // Redirect to entity homepage (list of elements)
@@ -444,34 +456,36 @@ class EntitiesController extends AbstractController
                     // Find element
                     $entityInformations = $this->entityHelper->getEntity($fqcn, true);
 
-                    $response->setCallback(function () use ($entityInformations) {
-                        // Open buffer
-                        $resource = fopen('php://output', 'w+');
+                    $response->setCallback(
+                        function () use ($entityInformations) {
+                            // Open buffer
+                            $resource = fopen('php://output', 'w+');
 
-                        $columns = [];
-                        foreach ($entityInformations['class']['properties'] as $property_name => $property_infos) {
-                            if ($property_infos['visible']) {
-                                $columns[] = $property_name;
+                            $columns = [];
+                            foreach ($entityInformations['class']['properties'] as $property_name => $property_infos) {
+                                if ($property_infos['visible']) {
+                                    $columns[] = $property_name;
+                                }
                             }
-                        }
 
-                        // Add CSV headers
-                        fputcsv($resource, $columns);
+                            // Add CSV headers
+                            fputcsv($resource, $columns);
 
-                        // Add datas
-                        foreach ($entityInformations['elements'] as $element) {
-                            $elementDatas = [];
-                            // Get value for each column
-                            foreach ($columns as $column) {
-                                $elementDatas[] = $this->entityHelper->attributeValue($element, $column);
+                            // Add datas
+                            foreach ($entityInformations['elements'] as $element) {
+                                $elementDatas = [];
+                                // Get value for each column
+                                foreach ($columns as $column) {
+                                    $elementDatas[] = $this->entityHelper->attributeValue($element, $column);
+                                }
+                                // Add line
+                                fputcsv($resource, $elementDatas);
                             }
-                            // Add line
-                            fputcsv($resource, $elementDatas);
-                        }
 
-                        // Close buffer
-                        fclose($resource);
-                    });
+                            // Close buffer
+                            fclose($resource);
+                        }
+                    );
                 }
             }
         }

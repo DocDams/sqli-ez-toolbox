@@ -23,7 +23,7 @@
 
 {% block content %}
     <section class="container my-4">
-        {# Filters filter_form #}
+        {# Filters filter_form #}
         {{ form_start( filter_form ) }}
         <table class="table ez-table--list">
             <thead>
@@ -119,7 +119,7 @@
 {% endblock %}
 
 {% block sqli_entity_element %}
-    {# Generate compound ID #}
+    {# Generate compound ID #}
     {% set compound_id = [] %}
     {% for column_name in class.primary_key %}
         {% set compound_id = compound_id|merge( { (column_name): sqli_admin_attribute( element, column_name ) } ) %}
