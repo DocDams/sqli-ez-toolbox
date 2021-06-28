@@ -312,8 +312,6 @@ class EntitiesController extends AbstractController
             if ($entityAnnotation instanceof Entity) {
                 // Check if modification is allowed
                 $compound_id = json_decode($compound_id, true);
-                if ($entityAnnotation->isVisible()) {
-                    // If valid compound Id, update element
                     if (!empty($compound_id)) {
                         // Find element
                         $element = $this->entityHelper->findOneBy($fqcn, $compound_id);
@@ -339,7 +337,6 @@ class EntitiesController extends AbstractController
                     }
                 }
             }
-        }
         // Redirect to entity homepage (list of elements)
         return $this->redirectToRoute(
             'sqli_eztoolbox_entitymanager_entity_homepage',

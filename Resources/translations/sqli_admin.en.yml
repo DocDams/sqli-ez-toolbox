@@ -15,6 +15,7 @@ entity.elements.table.no_elements: "None found"
 entity.elements.table.column_header.operations: "Operations"
 entity.button.alt.delete: "Delete"
 entity.button.alt.edit: "Edit"
+entity.button.alt.view: "View"
 entity.button.alt.create: "Create"
 entity.button.alt.export_csv: "CSV Export"
 entity.element.deleted: "Element deleted"
@@ -32,6 +33,7 @@ entity.field.placeholder.value: "Value"
 # Right Sidebar
 edit_element__sidebar_right__save: "Save"
 edit_element__sidebar_right__cancel: "Cancel"
+element__sidebar_right__edit: "Edit"
 
 # Main bar
 sqli_admin__menu_root: "SQLI Toolbox"

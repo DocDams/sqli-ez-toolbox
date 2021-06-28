@@ -18,8 +18,6 @@ final class Entity implements SQLIClassAnnotation
     public $update = false;
     /** @var bool */
     public $delete = false;
-    /** @var bool */
-    public $visible = false;
     /** @var string */
     public $description = "";
     /** @var int */

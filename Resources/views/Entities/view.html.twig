@@ -12,7 +12,7 @@
             url: path( 'sqli_eztoolbox_entitymanager_homepage', { 'tabname': class.annotation.tabname } ) },
         { value: fqcn,
             url: path( 'sqli_eztoolbox_entitymanager_entity_homepage', { 'fqcn': fqcn } ) },
-        { value: 'entity.button.alt.edit'|trans },
+        { value: 'entity.button.alt.view'|trans },
     ]} only %}
 {% endblock %}
 
@@ -26,6 +26,13 @@
 {% endblock %}
 
 {% block content %}
+
+    {% set compound_id = [] %}
+    {% for column_name in class.primary_key %}
+        {% set compound_id= compound_id |merge( { (column_name):(form.children.id.vars.value) } ) %}
+    {% endfor %}
+    {% set compound_id = compound_id|json_encode %}
+
         <div class="row align-items-stretch ez-main-row">
             {% block left_sidebar %}{% endblock left_sidebar %}
             <div class="container px-0 pb-4 mt-3 ez-content-edit-container">
@@ -39,20 +46,34 @@
 
                 {{ form_end(form) }}
             </div>
-{#            {% block right_sidebar_wrapper %}#}
-{#                <div class="col-sm-1 pt-4 px-0 bg-secondary ez-context-menu">#}
-{#                    <div class="ez-sticky-container">#}
-{#                        {% set sidebar_right = knp_menu_get('sqli_eztoolbox.admin.edit_element.sidebar_right',#}
-{#                            [],#}
-{#                            {#}
-{#                                'save_button_name': form.children.submit.vars.id,#}
-{#                                'cancel_url': path( 'sqli_eztoolbox_entitymanager_entity_homepage',#}
-{#                                { 'fqcn': fqcn } )#}
-{#                            }#}
-{#                        ) %}#}
-{#                        {{ knp_menu_render(sidebar_right, {'template': '@ezdesign/ui/menu/sidebar_right.html.twig'}) }}#}
-{#                    </div>#}
-{#                </div>#}
-{#            {% endblock %}#}
+        {% block right_sidebar_wrapper %}
+            <div class="col-sm-1 pt-4 px-0 bg-secondary ez-context-menu">
+                <div class="ez-sticky-container">
+                    {% if class.annotation.update and is_granted( 'ez:sqli_admin:entity_edit_element' ) %}
+                        {% set sidebar_right = knp_menu_get('sqli_eztoolbox.admin.edit_element.sidebar_right',
+                            [],
+                            {
+                                'edit_button_name': path('sqli_eztoolbox_entitymanager_entity_edit_element',
+                                {'compound_id': compound_id,
+                                    'fqcn': fqcn}),
+                                'cancel_url': path( 'sqli_eztoolbox_entitymanager_entity_homepage',
+                                { 'fqcn': fqcn } )
+                            }
+                        ) %}
+                    {% else %}
+                        {% set sidebar_right = knp_menu_get('sqli_eztoolbox.admin.edit_element.sidebar_right',
+                            [],
+                            {
+                                'cancel_url': path( 'sqli_eztoolbox_entitymanager_entity_homepage',
+                                { 'fqcn': fqcn } )
+                            }
+                        ) %}
+                    {% endif %}
+                    {{ knp_menu_render(sidebar_right, {'template': '@ezdesign/ui/menu/sidebar_right.html.twig'}) }}
+                </div>
+                +
+            </div>
+
+        {% endblock %}
         </div>
 {% endblock %}

@@ -32,6 +32,7 @@ entity.field.placeholder.value: "Valeur"
 # Right Sidebar
 edit_element__sidebar_right__save: "Enregistrer"
 edit_element__sidebar_right__cancel: "Annuler"
+element__sidebar_right__edit: "Editer"
 
 # Main bar
 sqli_admin__menu_root: "SQLI Toolbox"

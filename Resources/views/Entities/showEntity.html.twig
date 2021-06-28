@@ -144,7 +144,7 @@
             {% endif %}
         {% endfor %}
         <td>
-            {% if class.annotation.visible and is_granted( 'ez:sqli_admin:entity_view_element' ) %}
+            {% if is_granted( 'ez:sqli_admin:entity_view_element' ) %}
                 <a href="{{ path( 'sqli_eztoolbox_entitymanager_entity_view_element',
                     { 'fqcn': fqcn, 'compound_id': compound_id }) }}">
                     <svg class="ez-icon ez-icon-view" style="width: 1.5rem;height: 1.5rem;">
