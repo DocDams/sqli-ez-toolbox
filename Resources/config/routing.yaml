@@ -4,6 +4,10 @@ sqli_eztoolbox_entitymanager_homepage:
     defaults:
         tabname: 'default'
 
+sqli_eztoolbox_entitymanager_entity_view_element:
+    path: /sqli-admin/entity/{fqcn}/view/{compound_id}
+    controller: SQLI\EzToolboxBundle\Controller\EntitiesController::viewElement
+
 sqli_eztoolbox_entitymanager_entity_remove_element:
     path: /sqli-admin/entity/{fqcn}/remove/{compound_id}
     controller: SQLI\EzToolboxBundle\Controller\EntitiesController::removeElement

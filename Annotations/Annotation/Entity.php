@@ -52,6 +52,14 @@ final class Entity implements SQLIClassAnnotation
     }
 
     /**
+     * @return bool
+     */
+    public function isVisible(): bool
+    {
+        return $this->visible;
+    }
+
+    /**
      * @return string
      */
     public function getDescription(): string
