@@ -6,6 +6,9 @@ use Doctrine\Common\Annotations\Reader;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\ManyToMany;
+use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\OneToMany;
 use ReflectionClass;
 use ReflectionException;
 use SQLI\EzToolboxBundle\Annotations\Annotation\Entity as SQLIEntity;
@@ -120,10 +123,12 @@ class SQLIAnnotationManager
                     $visible = true;
                     $readonly = false;
                     $required = true;
-                    $columnType = "string";
+                    $columnType = null;
                     $description = null;
                     $choices = null;
                     $extraLink = null;
+                    $onetomany = null;
+                    $manytoone = null;
 
                     $propertyAnnotation = $this
                         ->annotationReader
@@ -145,9 +150,40 @@ class SQLIAnnotationManager
                     $nullablePropertyAnnotation = $this
                         ->annotationReader
                         ->getPropertyAnnotation($reflectionProperty, Column::class);
+
                     if ($nullablePropertyAnnotation) {
                         $columnType = $nullablePropertyAnnotation->type;
                         $required = $columnType == "boolean" ? false : !boolval($nullablePropertyAnnotation->nullable);
+                    }
+
+                    // Check if there is a onetomany or manytoone attribute in the entity
+                    $oneToManyPropertyAnnotation = $this
+                        ->annotationReader
+                        ->getPropertyAnnotation($reflectionProperty, OneToMany::class);
+
+                    if(!is_null($oneToManyPropertyAnnotation)){
+                        $onetomany = $oneToManyPropertyAnnotation->targetEntity;
+                    }
+
+                    $manyToOnePropertyAnnotation = $this
+                        ->annotationReader
+                        ->getPropertyAnnotation($reflectionProperty, ManyToOne::class);
+
+                    if(!is_null($manyToOnePropertyAnnotation)){
+                        // if there is a manytoone attribute, the primary key of the targetEntity is added to the property, [targetEntityPKey, targetEntity]
+                        // exemple : "manytoone" : ["targetEntityPKey" => "id", "targetEntity" => "App\Entity\Param"]
+                        $targetEntityName = $manyToOnePropertyAnnotation->targetEntity;
+                        $targetEntity = new ReflectionClass($targetEntityName);
+                        $targetEntityProperties = $targetEntity->getProperties();
+                        foreach ($targetEntityProperties as $targetEntityProperty) {
+                            $primaryKey = $this
+                                ->annotationReader
+                                ->getPropertyAnnotation($targetEntityProperty, Id::class);
+                            if(!is_null($primaryKey)){
+                                $manytoone = array("targetEntityPKey" => $targetEntityProperty->getName());
+                            }
+                        }
+                        $manytoone['targetEntity'] = $manyToOnePropertyAnnotation->targetEntity;
                     }
 
                     $properties[$reflectionProperty->getName()] = [
@@ -159,6 +195,8 @@ class SQLIAnnotationManager
                         'description' => $description,
                         'choices' => $choices,
                         'extra_link' => $extraLink,
+                        'onetomany' => $onetomany,
+                        'manytoone' => $manytoone
                     ];
 
                     // Build primary key from Doctrine\Id annotation
