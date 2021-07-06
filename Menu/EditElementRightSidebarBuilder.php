@@ -50,10 +50,6 @@ class EditElementRightSidebarBuilder extends AbstractBuilder
                     self::ITEM__EDIT => $this->createMenuItem(
                         self::ITEM__EDIT,
                         [
-//                        'attributes' => [
-//                            'class' => 'btn--trigger',
-//                            'data-click' => sprintf('#%s', $options['edit_button_name']),
-//                        ],
                             'uri' => $options['edit_button_name'],
                             'label' => $this->translator->trans(self::ITEM__EDIT, [], 'sqli_admin'),
                             'extras' => ['icon' => 'edit'],
@@ -64,7 +60,7 @@ class EditElementRightSidebarBuilder extends AbstractBuilder
         }
 
         if (isset($options['save_button_name'])) {
-        $menu->setChildren([
+            $menu->setChildren([
             self::ITEM__SAVE => $this->createMenuItem(
                 self::ITEM__SAVE,
                 [
@@ -75,9 +71,8 @@ class EditElementRightSidebarBuilder extends AbstractBuilder
                     'label' => $this->translator->trans(self::ITEM__SAVE, [], 'sqli_admin'),
                     'extras' => ['icon' => 'save'],
                 ]
-                    )
-                ]
-            );
+            )
+                ]);
         }
 
         $menu->addChild(

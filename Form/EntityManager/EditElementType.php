@@ -89,8 +89,9 @@ class EditElementType extends AbstractType
         }
     }
 
-    public function configureOptions(OptionsResolver $resolver) {
+    public function configureOptions(OptionsResolver $resolver)
+    {
         $resolver->setRequired('entity');
-        $resolver->setDefault('context','edit');
+        $resolver->setDefault('context', 'edit');
     }
 }
