@@ -52,6 +52,11 @@ class EditElementType extends AbstractType
                     $formType = TextareaType::class;
                 }
 
+                // If context is defined as view, readonly parameter is added
+                if ($options['context'] == 'view') {
+                    $params['attr']['readonly'] = true;
+                }
+
                 // Add field on Form
                 $builder->add($propertyName, $formType, $params);
 
@@ -69,21 +74,24 @@ class EditElementType extends AbstractType
             }
         }
 
-        // Add submit button
-        $builder
-            ->add(
-                'submit',
-                SubmitType::class,
-                [
-                    'label' => 'form.button.label.submit',
-                    'translation_domain' => 'forms',
-                    'attr' => ['class' => 'd-none'],
-                ]
-            );
+        // Add submit button if context is defined as edit
+        if ($options['context'] == 'edit') {
+            $builder
+                ->add(
+                    'submit',
+                    SubmitType::class,
+                    [
+                        'label' => 'form.button.label.submit',
+                        'translation_domain' => 'forms',
+                        'attr' => ['class' => 'd-none'],
+                    ]
+                );
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setRequired('entity');
+        $resolver->setDefault('context', 'edit');
     }
 }
