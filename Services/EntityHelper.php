@@ -140,10 +140,11 @@ class EntityHelper
             );
             $select = implode(",", $filteredColums);
 
-            // Change SELECT clause //if relation_columns is not empty then join must be added
+            // Change SELECT clause
+            // if relation_columns is not empty then join must be added
             if (is_array($relationColumns) && !empty($relationColumns)) {
                 foreach (array_keys($relationColumns) as $elt) {
-                    $queryBuilder->innerJoin('entity.' . $elt, $elt);
+                    $queryBuilder->leftJoin('entity.' . $elt, $elt);
                     $queryBuilder->addSelect($elt);
                 }
             } else {
