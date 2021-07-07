@@ -75,7 +75,6 @@ class EditElementType extends AbstractType
 
                 // Add field on Form
                 //$builder->add($propertyName, $formType, $params);
-
                 // Support display of objects and arrays : serialize them before display
                 if ($propertyInfos['type'] === "object" || $propertyInfos['type'] === "array") {
                     $builder->get($propertyName)->addViewTransformer(

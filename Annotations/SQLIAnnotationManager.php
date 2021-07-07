@@ -161,30 +161,13 @@ class SQLIAnnotationManager
                         ->annotationReader
                         ->getPropertyAnnotation($reflectionProperty, OneToMany::class);
 
-                    if(!is_null($oneToManyPropertyAnnotation)){
-                        $onetomany = $oneToManyPropertyAnnotation->targetEntity;
-                    }
+                    $onetomany = $this->setBidirectionalParam($oneToManyPropertyAnnotation);
 
                     $manyToOnePropertyAnnotation = $this
                         ->annotationReader
                         ->getPropertyAnnotation($reflectionProperty, ManyToOne::class);
 
-                    if(!is_null($manyToOnePropertyAnnotation)){
-                        // if there is a manytoone attribute, the primary key of the targetEntity is added to the property, [targetEntityPKey, targetEntity]
-                        // exemple : "manytoone" : ["targetEntityPKey" => "id", "targetEntity" => "App\Entity\Param"]
-                        $targetEntityName = $manyToOnePropertyAnnotation->targetEntity;
-                        $targetEntity = new ReflectionClass($targetEntityName);
-                        $targetEntityProperties = $targetEntity->getProperties();
-                        foreach ($targetEntityProperties as $targetEntityProperty) {
-                            $primaryKey = $this
-                                ->annotationReader
-                                ->getPropertyAnnotation($targetEntityProperty, Id::class);
-                            if(!is_null($primaryKey)){
-                                $manytoone = array("targetEntityPKey" => $targetEntityProperty->getName());
-                            }
-                        }
-                        $manytoone['targetEntity'] = $manyToOnePropertyAnnotation->targetEntity;
-                    }
+                    $manytoone = $this->setBidirectionalParam($manyToOnePropertyAnnotation);
 
                     $properties[$reflectionProperty->getName()] = [
                         'accessibility' => $accessibility,
@@ -219,5 +202,33 @@ class SQLIAnnotationManager
         }
 
         return $annotatedClasses;
+    }
+
+    /**
+     * @param $bidirectionalPropertyAnnotation
+     * @throws ReflectionException
+     */
+    protected function setBidirectionalParam($bidirectionalPropertyAnnotation): ?array
+    {
+        if (!is_null($bidirectionalPropertyAnnotation)) {
+            $bidirectionalParam = array();
+            $targetEntityName = $bidirectionalPropertyAnnotation->targetEntity;
+            $targetEntity = new ReflectionClass($targetEntityName);
+            $targetEntityProperties = $targetEntity->getProperties();
+            foreach ($targetEntityProperties as $targetEntityProperty) {
+                $primaryKey = $this
+                    ->annotationReader
+                    ->getPropertyAnnotation($targetEntityProperty, Id::class);
+                if (!is_null($primaryKey)) {
+                    $bidirectionalParam["targetEntityPKey"] = $targetEntityProperty->getName();
+                }
+            }
+            $bidirectionalParam['targetEntity'] = $bidirectionalPropertyAnnotation->targetEntity;
+            if (property_exists($bidirectionalPropertyAnnotation, "mappedBy")) {
+                $bidirectionalParam['mappedBy'] = $bidirectionalPropertyAnnotation->mappedBy;
+            }
+            return $bidirectionalParam;
+        }
+        return null;
     }
 }
