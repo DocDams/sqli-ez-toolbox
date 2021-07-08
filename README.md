@@ -46,7 +46,8 @@ php bin/console cache:clear
 
 ##### Full example
 
-In `config/packages/sqli_eztoolbox.yaml` add the localisations and namespaces of the entities : 
+
+In `config/packages/sqli_eztoolbox.yaml` add the localisations and namespaces of the entities :
 
 ```yaml
 sqli_ez_toolbox:
