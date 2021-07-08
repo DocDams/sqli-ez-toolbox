@@ -259,7 +259,7 @@ class EntitiesController extends AbstractController
                         $form->handleRequest($request);
 
                         if ($form->isSubmitted() && $form->isValid()) {
-                            // Form is valid, update element
+                            //CHeck if there are
                             $this->entityManager->persist($element);
                             $this->entityManager->flush();
 
