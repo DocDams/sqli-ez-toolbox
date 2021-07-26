@@ -24,6 +24,11 @@ sqli_eztoolbox_entitymanager_entity_homepage_reset_filter:
     path: /sqli-admin/entity/{fqcn}/reset
     controller: SQLI\EzToolboxBundle\Controller\EntitiesController::resetFilter
 
+# FosRestBundle used for api rest
+api:
+    resource: api_routes.yaml
+    prefix: /api/
+
 # Keep this route at end
 sqli_eztoolbox_entitymanager_entity_homepage:
     path: /sqli-admin/entity/{fqcn}/{sort_column}/{sort_order}

@@ -1,0 +1,17 @@
+serializer:
+  serialize_null: true
+body_listener:
+  enabled: true
+  throw_exception_on_unsupported_content_type:  true
+  decoders:
+    json: fos_rest.decoder.json
+format_listener:
+  rules:
+    - { path: '^/api', priorities: ['json'], fallback_format: json, prefer_extension: false }
+param_fetcher_listener: force
+view:
+  view_response_listener: 'force'
+  formats:
+    json: true
+allowed_methods_listener: true
+

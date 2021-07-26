@@ -4,15 +4,17 @@ namespace SQLI\EzToolboxBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * This is the class that loads and manages your bundle configuration.
  *
  * @link http://symfony.com/doc/current/cookbook/bundles/extension.html
  */
-class SQLIEzToolboxExtension extends Extension
+class SQLIEzToolboxExtension extends Extension implements PrependExtensionInterface
 {
     /**
      * {@inheritdoc}
@@ -53,5 +55,24 @@ class SQLIEzToolboxExtension extends Extension
                 'SQLI\EzToolboxBundle\Services\Core\FieldType\BinaryFileStorage'
             );
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function prepend(ContainerBuilder $container): void
+    {
+        $this->prependFieldType($container);
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     */
+    private function prependFieldType(ContainerBuilder $container): void
+    {
+        $config = Yaml::parseFile(
+            __DIR__ . '/../Resources/config/fos_rest.yaml'
+        );
+        $container->prependExtensionConfig('fos_rest', $config);
     }
 }
