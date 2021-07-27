@@ -68,6 +68,8 @@ You can change label of the default tab using this translation key for domain `s
 
 [Toolbox](doc/README_toolbox.md)
 
+[RestApi](doc/README_rest_api.md)
+
 ### Other
 
 [Changelogs](doc/CHANGELOGS.md)
