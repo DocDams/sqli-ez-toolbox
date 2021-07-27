@@ -2,14 +2,10 @@
 
 namespace SQLI\EzToolboxBundle\Controller;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use EzSystems\EzPlatformAdminUi\Notification\FlashBagNotificationHandler;
-use EzSystems\EzPlatformRest\Input\Handler\Json;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use FOS\RestBundle\View\ViewHandler;
-use FOS\RestBundle\View\View;
 use SQLI\EzToolboxBundle\Form\EntityManager\EditElementType;
 use SQLI\EzToolboxBundle\Services\EntityHelper;
 use Symfony\Component\Form\FormInterface;
@@ -20,8 +16,6 @@ use ReflectionException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Serializer\SerializerInterface;
-
-use function Sodium\add;
 
 class SQLIRestApiController extends AbstractFOSRestController
 {
@@ -36,21 +30,16 @@ class SQLIRestApiController extends AbstractFOSRestController
 
     /**
      * RestApiController constructor.
-     * @param FlashBagNotificationHandler $flashBagNotificationHandler
      * @param EntityManagerInterface $entityManager
      * @param EntityHelper $entityHelper
-     * @param TranslatorInterface $translator
      */
     public function __construct(
-        FlashBagNotificationHandler $flashBagNotificationHandler,
         EntityManagerInterface $entityManager,
-        EntityHelper $entityHelper,
-        TranslatorInterface $translator
+        EntityHelper $entityHelper
+
     ) {
-        $this->flashBagNotificationHandler = $flashBagNotificationHandler;
         $this->entityManager = $entityManager;
         $this->entityHelper = $entityHelper;
-        $this->translator = $translator;
     }
 
     /**
@@ -205,7 +194,6 @@ class SQLIRestApiController extends AbstractFOSRestController
 
         $this->entityManager->flush();
         return $element;
-
     }
 
     /**
