@@ -38,3 +38,8 @@ element__sidebar_right__edit: "Edit"
 # Main bar
 sqli_admin__menu_root: "SQLI Toolbox"
 sqli_admin__menu_entities_tab__default: "Doctrine Entities"
+sqli_admin__menu_content_list: "Content List"
+
+#Content List
+content_list_total_object: "Object"
+content_list_total_objects: "Objects"

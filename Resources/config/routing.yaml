@@ -35,3 +35,16 @@ sqli_eztoolbox_entitymanager_entity_homepage:
     defaults:
         sort_column: 'id'
         sort_order: 'ASC'
+
+# Listing Content route
+sqli_eztoolbox_all_content_list:
+    path: /sqli-admin/all_content_list/{page}/{contentTypeIdentifier}
+    defaults:
+        page: 1
+        contentTypeIdentifier: false
+        _controller: SQLI\EzToolboxBundle\Controller\SQLIContentListController::listAction
+
+# FosRestBundle used for api rest
+api:
+    resource: api_routes.yaml
+    prefix: /api/
