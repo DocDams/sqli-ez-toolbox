@@ -7,3 +7,4 @@ role.policy.sqli_admin.entity_remove_element: 'SQLI Admin / Supprimer un éléme
 role.policy.sqli_admin.entity_edit_element: 'SQLI Admin / Editer un élément'
 role.policy.sqli_admin.entity_create_element: 'SQLI Admin / Créer un élément'
 form.button.label.submit: "Enregistrer"
+form.edit.type_object.invalid: "Les données décrites ne peuvent être sérialisées, veuillez vous assurer de leur validité"
