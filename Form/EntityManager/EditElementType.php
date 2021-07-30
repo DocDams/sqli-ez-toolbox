@@ -4,18 +4,27 @@ namespace SQLI\EzToolboxBundle\Form\EntityManager;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
+use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class EditElementType extends AbstractType
 {
+    /** @var TranslatorInterface */
+    private $translator;
+
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $element = $options['entity'];
-
         foreach ($element['class']['properties'] as $propertyName => $propertyInfos) {
             // If property can be visible, add it to formbuilder
             if ($propertyInfos['visible']) {
@@ -50,6 +59,11 @@ class EditElementType extends AbstractType
                     $params['choices'] = $propertyInfos['choices'];
                 } elseif ($propertyInfos['type'] === "object" || $propertyInfos['type'] === "array") {
                     $formType = TextareaType::class;
+                    $params['invalid_message'] = $this->translator->trans(
+                        'form.edit.type_object.invalid',
+                        [],
+                        'forms'
+                    );
                 }
 
                 // If context is defined as view, readonly parameter is added
@@ -67,7 +81,11 @@ class EditElementType extends AbstractType
                             return serialize($toSerialize);
                         },
                         function ($toUnserialize) {
-                            return unserialize($toUnserialize);
+                            try {
+                                return unserialize($toUnserialize);
+                            } catch (\Exception $e) {
+                                throw new TransformationFailedException();
+                            }
                         }
                     ));
                 }
