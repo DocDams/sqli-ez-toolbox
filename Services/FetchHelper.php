@@ -94,21 +94,20 @@ class FetchHelper
         $parentLocationId = $parentLocation instanceof Location ? $parentLocation->id : $parentLocation;
         $params[] = new Criterion\ParentLocationId($parentLocationId);
 
-        return $this->fetchLocationList($params, $limit);
+        return $this->fetchLocationList($params, null, $limit);
     }
 
     /**
      * @param array $params
      * @param int $limit
      * @param int $offset
-     * @param string $sortClauses
-     *      parametre which specifies the way the request will be sorted : "depth" or "prioriy"
+     * @param SortClause[]|null $sortClauses If null, results will be sorted by priority
      * @return Location[]
      * @throws InvalidArgumentException
      */
     private function fetchLocationList(
         array $params,
-        $sortClauses = "priority",
+        $sortClauses = null,
         $limit = self::LIMIT,
         $offset = 0
     ): array {
@@ -127,16 +126,8 @@ class FetchHelper
         $query->performCount = true;
         $query->limit = $limit;
         $query->offset = $offset;
-        if ($sortClauses == "depth") {
-            $query->sortClauses = [
-                new SortClause\Location\Depth(Query::SORT_ASC),
-            ];
-        }
-        if ($sortClauses == "priority") {
-            $query->sortClauses = [
-                new SortClause\Location\Priority(Query::SORT_ASC),
-            ];
-        }
+        $query->sortClauses = is_null($sortClauses) ?
+            [ new SortClause\Location\Priority(Query::SORT_ASC) ] : $sortClauses;
         $results = $this->searchService->findLocations($query);
         $items = [];
 
@@ -231,9 +222,8 @@ class FetchHelper
                 new Criterion\Ancestor($location->pathString),
             ];
 
-        $sortClauses = "depth";
-        $items = $this->fetchLocationList($params, $sortClauses);
-        return $items;
+        $sortClauses = [ new SortClause\Location\Depth(Query::SORT_ASC) ];
+        return $this->fetchLocationList($params, $sortClauses);
     }
 
     /**
@@ -242,17 +232,20 @@ class FetchHelper
      * @param Location|int $location
      * @param string $contentType
      * @param bool $highest
-     *      param which specifies if fetchAncestor must return the most distant or closest ancestor
+     *      param which specifies if fetchAncestor must return the highest ancestor in tree structure (smallest depth)
      * @return Location|null
      * @throws InvalidArgumentException
      */
     public function fetchAncestor($location, string $contentType, bool $highest = true): ?Location
     {
         $results = $this->fetchAncestors($location, $contentType);
-        if ($highest) {
-            $itemHit = array_shift($results);
-        } elseif ($highest == false) {
-            $itemHit = array_pop($results);
+        $itemHit = null;
+        if (is_array($results) && count($results)) {
+            if ($highest) {
+                $itemHit = array_shift($results);
+            } else {
+                $itemHit = array_pop($results);
+            }
         }
         return ($itemHit instanceof Location) ? $itemHit : null;
     }
@@ -264,7 +257,7 @@ class FetchHelper
      */
     private function fetchLocation(array $params): ?Location
     {
-        $results = $this->fetchLocationList($params, 1);
+        $results = $this->fetchLocationList($params, null, 1);
 
         $itemHit = reset($results);
         return ($itemHit instanceof Location) ? $itemHit : null;
@@ -340,8 +333,7 @@ class FetchHelper
         $content = $location->getContent();
 
         // Check if $location has a relation in field
-        if (
-            $content->getContentType()->getFieldDefinition($fieldIdentifier) == null ||
+        if ($content->getContentType()->getFieldDefinition($fieldIdentifier) == null ||
             $this->fieldhelper->isFieldEmpty($content, $fieldIdentifier)
         ) {
             // No relation to a header object then check parent location

@@ -49,11 +49,11 @@ class FetchExtension extends AbstractExtension
         return
             [
                 new TwigFunction('render_children', [$this, 'renderChildren'], ['is_safe' => ['all']]),
-                new TwigFunction('fetch_children', [$this, 'fetchChildren']),
-                new TwigFunction('fetch_ancestor', [$this, 'fetchAncestor']),
-                new TwigFunction('fetch_ancestors', [$this, 'fetchAncestors']),
-                new TwigFunction('fetch_content', [$this, 'fetchContent']),
-                new TwigFunction('fetch_location', [$this, 'fetchLocation']),
+                new TwigFunction('fetch_children', [$this->fetchHelper, 'fetchChildren']),
+                new TwigFunction('fetch_ancestor', [$this->fetchHelper, 'fetchAncestor']),
+                new TwigFunction('fetch_ancestors', [$this->fetchHelper, 'fetchAncestors']),
+                new TwigFunction('fetch_content', [$this->repository->getContentService(), 'loadContent']),
+                new TwigFunction('fetch_location', [$this->repository->getLocationService(), 'loadLocation']),
             ];
     }
 
@@ -115,66 +115,6 @@ class FetchExtension extends AbstractExtension
         }
 
         return $render;
-    }
-
-    /**
-     * @param Location|int $parentLocation
-     * @param string|null $contentClass
-     * @return array
-     * @throws InvalidArgumentException
-     */
-    public function fetchChildren($parentLocation, $contentClass = null): array
-    {
-        return $this->fetchHelper->fetchChildren($parentLocation, $contentClass);
-    }
-
-    /**
-     * Fetch ancestor of $location with specified $contentType
-     *
-     * @param Location|int $location
-     * @param string $contentType
-     * @param bool $highest
-     * @return Location|null
-     * @throws InvalidArgumentException
-     */
-    public function fetchAncestor($location, string $contentType, bool $highest): ?Location
-    {
-        return $this->fetchHelper->fetchAncestor($location, $contentType, $highest);
-    }
-
-    /**
-     * Fetch ancestor of $location with specified $contentType
-     *
-     * @param Location|int $location
-     * @param string $contentType
-     * @return Location|null
-     * @throws InvalidArgumentException
-     */
-    public function fetchAncestors($location, string $contentType): ?array
-    {
-        return $this->fetchHelper->fetchAncestors($location, $contentType);
-    }
-
-    /**
-     * @param int $contentId
-     * @return Content
-     * @throws NotFoundException
-     * @throws UnauthorizedException
-     */
-    public function fetchContent(int $contentId): Content
-    {
-        return $this->repository->getContentService()->loadContent(intval($contentId));
-    }
-
-    /**
-     * @param int $locationId
-     * @return Location
-     * @throws NotFoundException
-     * @throws UnauthorizedException
-     */
-    public function fetchLocation(int $locationId): Location
-    {
-        return $this->repository->getLocationService()->loadLocation(intval($locationId));
     }
 
     public function getName(): string
