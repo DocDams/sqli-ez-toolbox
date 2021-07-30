@@ -49,11 +49,7 @@
         </div>
         <div class="ez-table-header">
             <div class="ez-table-header__headline">{{ "Content List"|trans }} --
-                {% if totalCount > 1 %}
-                    {{ totalCount }}{{ "entity.content_list_total_objects"|trans}}
-                {% else %}
-                    {{ totalCount }}{{ "content_list_total_object"|trans}}
-                {% endif %}
+                    {{ "num_of_content"|trans({'totalCount' : totalCount})}}
             </div>
         </div>
         <table class="table">

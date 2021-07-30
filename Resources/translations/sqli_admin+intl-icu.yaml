@@ -1,0 +1,7 @@
+#Content List
+num_of_content: >-
+  {totalCount, plural,
+    =0 {No Content Found}
+    one {1 Content Found}
+    other {# Contents Found}
+  }
