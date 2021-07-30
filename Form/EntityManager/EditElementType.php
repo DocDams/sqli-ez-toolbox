@@ -10,9 +10,18 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class EditElementType extends AbstractType
 {
+    /** @var TranslatorInterface */
+    private $translator;
+
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $element = $options['entity'];
@@ -50,7 +59,11 @@ class EditElementType extends AbstractType
                     $params['choices'] = $propertyInfos['choices'];
                 } elseif ($propertyInfos['type'] === "object" || $propertyInfos['type'] === "array") {
                     $formType = TextareaType::class;
-                    $params['invalid_message'] = 'Les données décrites ne peuvent être sérialisées, veuillez vous assurer de leur validité';
+                    $params['invalid_message'] = $this->translator->trans(
+                        'form.edit.type_object.invalid',
+                        [],
+                        'forms'
+                    );
                 }
 
                 // Add field on Form
@@ -58,18 +71,14 @@ class EditElementType extends AbstractType
 
                 // Support display of objects and arrays : serialize them before display
                 if ($propertyInfos['type'] === "object" || $propertyInfos['type'] === "array") {
-                    $entity_data = $options['data'];
-                    $original_property_value = $entity_data->getParams();
                     $builder->get($propertyName)->addViewTransformer(new CallbackTransformer(
                         function ($toSerialize) {
                             return serialize($toSerialize);
                         },
                         function ($toUnserialize) {
                             try {
-                                $unserialize_result = unserialize($toUnserialize);
-                                return $unserialize_result;
-                            }
-                            catch (\Exception $e){
+                                return unserialize($toUnserialize);
+                            } catch (\Exception $e) {
                                 throw new TransformationFailedException();
                             }
                         }
