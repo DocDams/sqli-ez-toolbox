@@ -38,21 +38,16 @@ sqli_eztoolbox_entitymanager_entity_homepage:
 
 # Listing Content route
 sqli_eztoolbox_all_content_list:
-    path: /sqli-admin/all_content_list/{page}/{contentTypeIdentifier}
+    path: /sqli-admin/all_content_list/{contentTypeIdentifier}/{page}
     defaults:
         page: 1
-        contentTypeIdentifier: false
+        contentTypeIdentifier: 'false'
         _controller: SQLI\EzToolboxBundle\Controller\SQLIContentListController::listAction
 
 #Export Contents in CSV
 sqli_eztoolbox_export:
-    path: /sqli-admin/all_content_list/{page}/{contentTypeIdentifier}/export
+    path: /sqli-admin/all_content_list/{contentTypeIdentifier}/{page}/export
     defaults:
         page: 1
-        contentTypeIdentifier: false
+        contentTypeIdentifier: 'false'
         _controller: SQLI\EzToolboxBundle\Controller\SQLIContentListController::exportCSV
-
-# FosRestBundle used for api rest
-api:
-    resource: api_routes.yaml
-    prefix: /api/

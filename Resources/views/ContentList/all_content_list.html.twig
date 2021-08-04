@@ -16,7 +16,7 @@
 {%- endblock -%}
 
 {% block javascripts %}
-    <script src="{{ asset('sqli-eztoolbox/Resources/asset/js/dropdown.js')}}"></script>
+    <script src="{{ asset('sqli-eztoolbox/Resources/asset/js/dropdown.js') }}"></script>
 {% endblock %}
 
 {%- block content -%}
@@ -24,13 +24,17 @@
     <section class="container my-4">
         <div class="my-4">
             <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="contentTypeFilter" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {% if app.request.get('contentTypeIdentifier') == false %}
-                    Content Type
+                <button class="btn btn-secondary dropdown-toggle"
+                        type="button" id="contentTypeFilter"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                    {% if app.request.get('contentTypeIdentifier') == 'false' %}
+                        Content Type
                     {% else %}
                         {% for group, types in contentTypes %}
                             {% for type in types %}
-                                {% if type.identifier == app.request.get('contentTypeIdentifier')  %}
+                                {% if type.identifier == app.request.get('contentTypeIdentifier') %}
                                     {{ type.name }}
                                 {% endif %}
                             {% endfor %}
@@ -41,20 +45,24 @@
                     {% for group, types in contentTypes %}
                         <h6 class="dropdown-header">{{ group }}</h6>
                         {% for type in types %}
-                            <a class="dropdown-item" href="{{ path('sqli_eztoolbox_all_content_list', { 'contentTypeIdentifier': type.identifier }) }}">{{ type.name }}</a>
+                            <a class="dropdown-item"
+                               href="{{ path('sqli_eztoolbox_all_content_list',
+                                   { 'contentTypeIdentifier': type.identifier }) }}">{{ type.name }}</a>
                         {% endfor %}
                     {% endfor %}
                 </div>
                 {% if app.request.get('contentTypeIdentifier') != false %}
                     <button class="btn btn-secondary" type="button" id="exportCSV">
-                        <a class="text-decoration-none text-reset" href="{{ path('sqli_eztoolbox_all_content_list', { 'contentTypeIdentifier': app.request.get('contentTypeIdentifier') }) }}">Export CSV</a>
+                        <a class="text-decoration-none text-reset"
+                           href="{{ path('sqli_eztoolbox_all_content_list',
+                               { 'contentTypeIdentifier': app.request.get('contentTypeIdentifier') }) }}">Export CSV</a>
                     </button>
                 {% endif %}
             </div>
         </div>
         <div class="ez-table-header">
-            <div class="ez-table-header__headline">{{ "Content List"}} --
-                    {{ 'num_of_content' | trans({'totalCount' : totalCount}, 'sqli_admin') }}
+            <div class="ez-table-header__headline">{{ "Content List" }} --
+                {{ 'num_of_content' | trans({'totalCount' : totalCount}, 'sqli_admin') }}
             </div>
         </div>
         <table class="table">
@@ -67,17 +75,19 @@
             </tr>
             </thead>
             <tbody>
-            {% for article in articles %}
+            {% for content in paginator %}
                 <tr>
-                    <td><a href={{ez_path(article)}}>{{ ez_content_name(article.contentInfo) }}</a></td>
-                    <td>{{ article.contentInfo.contentTypeId }}</td>
-                    <td>{{ article.contentInfo.modificationDate|ez_full_datetime }}</td>
-                    <td>{{ article.contentInfo.publishedDate|ez_full_datetime }}</td>
+                    <td><a href={{ ez_path(content) }}>{{ ez_content_name(content.contentInfo) }}</a></td>
+                    <td>{{ content.contentInfo.contentTypeId }}</td>
+                    <td>{{ content.contentInfo.modificationDate|ez_full_datetime }}</td>
+                    <td>{{ content.contentInfo.publishedDate|ez_full_datetime }}</td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
-        {{ pagerfanta(articles, 'ez') }}
+        {{ pagerfanta(paginator, 'ez',
+            {'routeName': 'sqli_eztoolbox_all_content_list',
+                'routeParams': {'contentTypeIdentifier': selectedContentType}}) }}
     </section>
 
 {%- endblock -%}
