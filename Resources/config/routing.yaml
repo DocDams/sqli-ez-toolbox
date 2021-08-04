@@ -44,6 +44,14 @@ sqli_eztoolbox_all_content_list:
         contentTypeIdentifier: false
         _controller: SQLI\EzToolboxBundle\Controller\SQLIContentListController::listAction
 
+#Export Contents in CSV
+sqli_eztoolbox_export:
+    path: /sqli-admin/all_content_list/{page}/{contentTypeIdentifier}/export
+    defaults:
+        page: 1
+        contentTypeIdentifier: false
+        _controller: SQLI\EzToolboxBundle\Controller\SQLIContentListController::exportCSV
+
 # FosRestBundle used for api rest
 api:
     resource: api_routes.yaml
