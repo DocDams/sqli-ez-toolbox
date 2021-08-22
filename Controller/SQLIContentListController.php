@@ -90,10 +90,31 @@ class SQLIContentListController extends Controller
     {
         $filename = uniqid('/tmp/sqlitoolbox_') . ".csv";
         $query = new LocationQuery();
-        $query->filter = new Criterion\ContentTypeIdentifier($contentTypeIdentifier);
-        $result = $this->searchService->findContent($query, ['useAlwaysAvailable' => true]);
 
-        $fp = fopen($filename, 'w');
+        $query->filter = new Criterion\ContentTypeIdentifier($contentTypeIdentifier);
+        $limit = 25;
+        $query->limit = $limit;
+        $result = $this->searchService->findContent($query, ['useAlwaysAvailable' => true]);
+        $alreadyFound = [];
+        $finalSearchHits = [];
+        $finalSearchHits = $result->searchHits;
+        while (!(sizeof($result->searchHits) < 25)) {
+            foreach ($result->searchHits as $searchHit) {
+                $contentId = $searchHit->valueObject->id;
+                $alreadyFound[] = $contentId;
+            }
+            $query->filter = new Criterion\LogicalAnd(
+                [
+                    new Criterion\LogicalNot(
+                        new Criterion\ContentId($alreadyFound)
+                    ),
+                    new Criterion\ContentTypeIdentifier($contentTypeIdentifier)
+                ]
+            );
+            $result = $this->searchService->findContent($query, ['useAlwaysAvailable' => true]);
+            $finalSearchHits = array_merge($finalSearchHits, $result->searchHits);
+        }
+        $fp = fopen($filename, 'a+');
 
         // Build Headers
         $headers = [];
@@ -102,9 +123,9 @@ class SQLIContentListController extends Controller
             array_push($headers, $fieldDefinition->identifier);
         }
 
-        fputcsv($fp, $headers, ';');
+        fputcsv($fp, $headers);
 
-        foreach ($result->searchHits as $searchHit) {
+        foreach ($finalSearchHits as $searchHit) {
             /** @var Content $content */
             $content = $searchHit->valueObject;
             $row = [];
@@ -113,9 +134,8 @@ class SQLIContentListController extends Controller
                 $fieldValue = $field->__toString();
                 $row[] = $fieldValue;
             }
-            fputcsv($fp, $row, ';');
+            fputcsv($fp, $row);
         }
-
         fclose($fp);
         $stream = new Stream($filename);
         $response = new BinaryFileResponse($stream);

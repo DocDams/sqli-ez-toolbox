@@ -51,11 +51,11 @@
                         {% endfor %}
                     {% endfor %}
                 </div>
-                {% if app.request.get('contentTypeIdentifier') != false %}
-                    <button class="btn btn-secondary" type="button" id="exportCSV">
+                {% if app.request.get('contentTypeIdentifier') != 'false' %}
+                    <button class="btn btn-secondary" type="submit" id="exportCSV">
                         <a class="text-decoration-none text-reset"
-                           href="{{ path('sqli_eztoolbox_all_content_list',
-                               { 'contentTypeIdentifier': app.request.get('contentTypeIdentifier') }) }}">Export CSV</a>
+                           href="{{ path('sqli_eztoolbox_export',
+                               { 'contentTypeIdentifier': selectedContentType }) }}" target="_new">Export CSV</a>
                     </button>
                 {% endif %}
             </div>

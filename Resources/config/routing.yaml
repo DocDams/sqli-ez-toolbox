@@ -36,6 +36,14 @@ sqli_eztoolbox_entitymanager_entity_homepage:
         sort_column: 'id'
         sort_order: 'ASC'
 
+#Export Contents in CSV
+sqli_eztoolbox_export:
+    path: /sqli-admin/all_content_list/{contentTypeIdentifier}/export
+    defaults:
+        #        page: 1
+        contentTypeIdentifier: 'false'
+        _controller: SQLI\EzToolboxBundle\Controller\SQLIContentListController::exportCSV
+
 # Listing Content route
 sqli_eztoolbox_all_content_list:
     path: /sqli-admin/all_content_list/{contentTypeIdentifier}/{page}
@@ -44,10 +52,3 @@ sqli_eztoolbox_all_content_list:
         contentTypeIdentifier: 'false'
         _controller: SQLI\EzToolboxBundle\Controller\SQLIContentListController::listAction
 
-#Export Contents in CSV
-sqli_eztoolbox_export:
-    path: /sqli-admin/all_content_list/{contentTypeIdentifier}/{page}/export
-    defaults:
-        page: 1
-        contentTypeIdentifier: 'false'
-        _controller: SQLI\EzToolboxBundle\Controller\SQLIContentListController::exportCSV
