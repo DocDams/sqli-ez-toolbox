@@ -1,0 +1,14 @@
+#Content List
+content_list.num_of_content: >-
+  {totalCount, plural,
+    =0 {Aucun Content Trouvé  }
+    one {1 Content Trouvé}
+    other {# Contents Trouvés}
+  }
+
+content_list.title: 'Liste de Contents'
+content_list.content_name: 'Nom du Content'
+content_list.content_type: 'Type du Content'
+content_list.modified: 'Dernière modification'
+content_listpublished: 'Date De publication'
+

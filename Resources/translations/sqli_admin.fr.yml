@@ -37,3 +37,4 @@ element__sidebar_right__edit: "Editer"
 # Main bar
 sqli_admin__menu_root: "SQLI Toolbox"
 sqli_admin__menu_entities_tab__default: "Entités Doctrine"
+
