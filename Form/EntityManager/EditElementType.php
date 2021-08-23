@@ -2,10 +2,15 @@
 
 namespace SQLI\EzToolboxBundle\Form\EntityManager;
 
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\EntityRepository;
+use ReflectionClass;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -52,6 +57,10 @@ class EditElementType extends AbstractType
                 if (!empty($propertyInfos['description'])) {
                     $params['attr']['title'] = $propertyInfos['description'];
                 }
+                // If context is defined as view, readonly parameter is added
+                if ($options['context'] == 'view') {
+                    $params['attr']['readonly'] = true;
+                }
 
                 $formType = null;
                 if (is_array($propertyInfos['choices']) && !empty($propertyInfos['choices'])) {
@@ -64,11 +73,12 @@ class EditElementType extends AbstractType
                         [],
                         'forms'
                     );
-                }
-
-                // If context is defined as view, readonly parameter is added
-                if ($options['context'] == 'view') {
-                    $params['attr']['readonly'] = true;
+                } elseif (!is_null($propertyInfos['manytoone'])) {
+                    $formType = EntityType::class;
+                    $params['class'] = $propertyInfos['manytoone']['targetEntity'];
+                    $params['attr']['manytoone'] = true;
+                } elseif (!is_null($propertyInfos['onetomany'])) {
+                    $params['attr']['onetomany'] = true;
                 }
 
                 // Add field on Form

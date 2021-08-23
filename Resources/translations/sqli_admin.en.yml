@@ -38,3 +38,8 @@ element__sidebar_right__edit: "Edit"
 # Main bar
 sqli_admin__menu_root: "SQLI Toolbox"
 sqli_admin__menu_entities_tab__default: "Doctrine Entities"
+
+#Doctrine Entities - Relationship attributes
+entity.fields.onetomany: "OnetoMany relation: "
+entity.fields.manytoone: "ManytoOne relation: "
+entity.edition.onetomany: "Add/Edit/Remove from: "
