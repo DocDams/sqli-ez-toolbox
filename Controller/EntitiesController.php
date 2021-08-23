@@ -346,6 +346,7 @@ class EntitiesController extends AbstractController
                     $params['form'] = $form->createView();
                     $params['fqcn'] = $fqcn;
                     $params['class'] = $entity['class'];
+                    $params['element'] = $element;
 
                     return $this
                         ->render(
@@ -405,6 +406,7 @@ class EntitiesController extends AbstractController
                         $params['form'] = $form->createView();
                         $params['fqcn'] = $fqcn;
                         $params['tabname'] = $entityAnnotation->getTabname();
+                        $params['class'] = $entity['class'];
 
                         return $this
                             ->render(
