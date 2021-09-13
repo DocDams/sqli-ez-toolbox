@@ -24,6 +24,17 @@ sqli_eztoolbox_entitymanager_entity_export_csv:
     path: /sqli-admin/entity/{fqcn}/csv
     controller: SQLI\EzToolboxBundle\Controller\EntitiesController::exportCSV
 
+sqli_eztoolbox_generate_migration:
+    path: /sqli-admin/content_migration/{type}/{contentTypeGroupIdentifier}
+    defaults:
+        type: 1
+        contentTypeGroupIdentifier: 'false'
+        _controller: SQLI\EzToolboxBundle\Controller\ExtractDataController::migrationType
+
+sqli_eztoolbox_migration_command:
+    path: /sqli-admin/content_migration/{type}/{contentTypeGroupIdentifier}/migrate
+    controller: SQLI\EzToolboxBundle\Controller\ExtractDataController::migrationCommand
+
 sqli_eztoolbox_entitymanager_entity_homepage_reset_filter:
     path: /sqli-admin/entity/{fqcn}/reset
     controller: SQLI\EzToolboxBundle\Controller\EntitiesController::resetFilter

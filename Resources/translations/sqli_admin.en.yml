@@ -38,3 +38,13 @@ element__sidebar_right__edit: "Edit"
 # Main bar
 sqli_admin__menu_root: "SQLI Toolbox"
 sqli_admin__menu_entities_tab__default: "Doctrine Entities"
+sqli_admin__menu_generate_migration: "Content Migration"
+
+# Migration Menu
+migration.title: "Content Migration"
+migration.type.choice: "Generate Migration file either from Contents or Content Types"
+migration.contenttype_display.list.column.name: "Name"
+migration.contenttype_display.list.column.ID: "ID"
+migration.contenttype_display.list.column.number: "Number of Content Types"
+migration.contenttype_display.list.column.identifier: "Identifier"
+migration.contenttype_display.list.column.modification_date: "Modification Date"

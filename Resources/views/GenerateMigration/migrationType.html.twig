@@ -1,0 +1,145 @@
+{% extends '@ezdesign/ui/layout.html.twig' %}
+
+{% trans_default_domain 'sqli_admin' %}
+
+{% block title %}{{ 'Content List' }}{% endblock %}
+
+{%- block breadcrumbs -%}
+    {% include '@ezdesign/ui/breadcrumbs.html.twig' with { items: [
+        { value: 'migration.title'|trans }
+    ]} %}
+{%- endblock -%}
+
+{%- block page_title -%}
+    {% include '@ezdesign/ui/page_title.html.twig' with {
+        title: 'migration.title'|trans,
+        icon_name: 'article'
+    } %}
+{%- endblock -%}
+
+{% block javascripts %}
+    <script src="{{ asset('sqli-eztoolbox/Resources/asset/js/dropdown.js') }}"></script>
+{% endblock %}
+
+{%- block content -%}
+{#    {{ dump(contentTypes) }} {{ dump(contentTypeGroups) }}#}
+    <section class="container my-4">
+        <div class="my-4">
+            {# Button which allow to chose to display Content or Content Types #}
+            <div class="dropdown">
+                {% set type = app.request.get('type') %}
+                <button class="btn btn-secondary dropdown-toggle"
+                        type="button" id="contentTypeFilter"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                    {% if type == 'false' %}
+                        Content Type
+                    {% else %}
+                        {% if type == 1 %} Content Type {% else %} Content {% endif %}
+                    {% endif %}
+                </button>
+                <div class="dropdown-menu" aria-labelledby="contentTypeFilter">
+                    <a class="dropdown-item"
+                   href="{{ path('sqli_eztoolbox_generate_migration',
+                       { 'type': 1 }) }}">Content Type</a>
+                    <a class="dropdown-item"
+                   href="{{ path('sqli_eztoolbox_generate_migration',
+                       { 'type': 2 }) }}">Content</a>
+                </div>
+            {% if app.request.get('contentTypeGroupIdentifier') != 'false' %}
+                <button class="btn btn-secondary" type="submit" id="exportCSV">
+                    <a class="text-decoration-none text-reset"
+                       href="{{ path('sqli_eztoolbox_migration_command',
+                           { 'type': app.request.get('type'),
+                             'contentTypeGroupIdentifier': app.request.get('contentTypeGroupIdentifier')}) }}" target="_new">Generate Migration File</a>
+                </button>
+            {% else %}
+                <button class="btn btn-secondary" type="submit" id="exportCSV">
+                    <a class="text-decoration-none text-reset"
+                       href="{{ path('sqli_eztoolbox_migration_command',
+                           { 'type': app.request.get('type'),
+                              'contentTypeGroupIdentifier': 'false'}) }}" target="_new">Generate Migration File</a>
+                </button>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="container ez-container">
+        <div class="ez-table-header">
+            <div class="ez-table-header__headline">
+                {{ 'migration.type.choice'|trans }}
+            </div>
+        </div>
+        <table class="ez-table table table-hover">
+            {% set contentTypeGroupIdentifier = app.request.get('contentTypeGroupIdentifier') %}
+            {# Content Type Display #}
+            {% if contentTypeGroupIdentifier == 'false' %}
+                <thead>
+                <tr>
+                    <th class="ez-table__header-cell ez-table__header-cell--after-icon">{{ 'migration.contenttype_display.list.column.name'|trans }}</th>
+                    <th class="ez-table__header-cell">{{ 'migration.contenttype_display.list.column.ID'|trans }}</th>
+                    <th class="ez-table__header-cell">{{ 'migration.contenttype_display.list.column.number'|trans }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for contentTypeGroup in contentTypeGroups %}
+                    <tr>
+                        <td class="ez-table__cell ez-table__cell--name ez-table__cell--after-icon">
+                            {% set view_url = path('sqli_eztoolbox_generate_migration', {
+                                'type': app.request.get('type'),
+                                'contentTypeGroupIdentifier': contentTypeGroup.identifier })
+                            %}
+
+                            <a href="{{ view_url }}" title="{{ contentTypeGroup.identifier }}">
+                                {{ contentTypeGroup.identifier }}
+                            </a>
+                        </td>
+                        <td class="ez-table__cell">{{ contentTypeGroup.id }}</td>
+                        <td class="ez-table__cell">{{ contentTypes[contentTypeGroup.identifier]|length }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            {% elseif contentTypeGroupIdentifier != 'false' %}
+                <thead>
+                <tr>
+                    <th class="ez-table__header-cell ez-table__header-cell--after-icon">{{ 'migration.contenttype_display.list.column.name'|trans }}</th>
+                    <th class="ez-table__header-cell">{{ 'migration.contenttype_display.list.column.identifier'|trans }}</th>
+                    <th class="ez-table__header-cell">{{ 'migration.contenttype_display.list.column.ID'|trans }}</th>
+                    <th class="ez-table__header-cell">{{ 'migration.contenttype_display.list.column.modification_date'|trans }}</th>
+                </tr>
+                </thead>
+                {% for contentTypeKey, contentType in contentTypes[contentTypeGroupIdentifier] %}
+                    <tbody>
+                        <tr>
+                            <td class="ez-table__cell">
+                                {% set contentTypeGroupId = null %}
+                                {% for contentTypeGroup in contentTypeGroups %}
+                                   {% if contentTypeGroup.identifier == contentTypeGroupIdentifier %}
+                                         {% set contentTypeGroupId = contentTypeGroup.id %}
+                                   {%  endif %}
+                                {%  endfor %}
+                                {% set view_url = path('ezplatform.content_type.view', {
+                                    'contentTypeGroupId': contentTypeGroupId,
+                                    'contentTypeId': contentType.id
+                                }) %}
+
+                                <a href="{{ view_url }}" title="{{ contentType.name }}">{{ contentType.name  }}</a
+                            </td>
+                            <td class="ez-table__cell">{{ contentType.identifier }}</td>
+                            <td class="ez-table__cell">{{ contentType.id }}</td>
+                            <td class="ez-table__cell">{{ contentType.modificationDate|ez_full_datetime }}</td>
+                        </tr>
+                    </tbody>
+                {% endfor %}
+            {% endif %}
+            {# Content Display #}
+
+        </table>
+
+    </section>
+
+{%- endblock -%}
+
+

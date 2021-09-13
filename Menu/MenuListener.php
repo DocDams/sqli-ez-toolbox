@@ -12,6 +12,7 @@ class MenuListener implements EventSubscriberInterface
 {
     public const SQLI_ADMIN_MENU_ROOT = "sqli_admin__menu_root";
     public const SQLI_ADMIN_MENU_ENTITIES_TAB_PREFIX = "sqli_admin__menu_entities_tab__";
+    public const SQLI_ADMIN_MENU_GENERATE_MIGRATION = "sqli_admin__menu_generate_migration";
     /** @var AuthorizationCheckerInterface */
     private $authorizationChecker;
     /** @var TabEntityHelper */
@@ -63,5 +64,15 @@ class MenuListener implements EventSubscriberInterface
                 )->setExtra('translation_domain', 'sqli_admin');
             }
         }
+
+        //SQLI Content Extract
+        $menu[self::SQLI_ADMIN_MENU_ROOT]->addChild(
+            self::SQLI_ADMIN_MENU_GENERATE_MIGRATION,
+            [
+                'label' => self::SQLI_ADMIN_MENU_GENERATE_MIGRATION,
+                'route' => 'sqli_eztoolbox_generate_migration',
+            ]
+        )->setExtra('translation_domain', 'sqli_admin');
+
     }
 }
