@@ -1,0 +1,94 @@
+{% extends "@SQLIEzToolbox/GenerateMigration/migrationType.html.twig" %}
+{% trans_default_domain 'sqli_admin' %}
+
+{% block content %}
+    {{ parent() }}
+    <section class="container ez-container">
+        <div class="ez-table-header">
+            <div class="ez-table-header__headline">
+                {{ 'migration.type.choice'|trans }}
+            </div>
+        </div>
+        <table class="ez-table table table-hover">
+            {% set contentTypeGroupIdentifier = app.request.get('contentTypeGroupIdentifier') %}
+            {# Content Type Display #}
+            {% if contentTypeGroupIdentifier == 'false' %}
+                {{ form_start(form, {'attr': {'class': 'ez-form-validate'}}) }}
+                <thead>
+                <tr>
+                    <th class="ez-table__header-cell ez-table__header-cell--after-icon"> Checkbox </th>
+                    <th class="ez-table__header-cell">{{ 'migration.contenttype_display.list.column.name'|trans }}</th>
+                    <th class="ez-table__header-cell">{{ 'migration.contenttype_display.list.column.ID'|trans }}</th>
+                    <th class="ez-table__header-cell">{{ 'migration.contenttype_display.list.column.number'|trans }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for contentTypeGroup in contentTypeGroups %}
+                    <tr>
+                        <td class="ez-table__cell ez-table__cell--name ez-table__cell--after-icon">
+                            {{ form_row(attribute(form.children, contentTypeGroup.identifier)) }}
+                        </td>
+                        <td class="ez-table__cell">
+                            {% set view_url = path('sqli_eztoolbox_generate_migration', {
+                                'type': app.request.get('type'),
+                                'contentTypeGroupIdentifier': contentTypeGroup.identifier })
+                            %}
+
+                            <a href="{{ view_url }}" title="{{ contentTypeGroup.identifier }}">
+                                {{ contentTypeGroup.identifier }}
+                            </a>
+                        </td>
+                        <td class="ez-table__cell">{{ contentTypeGroup.id }}</td>
+                        <td class="ez-table__cell">{{ contentTypes[contentTypeGroup.identifier]|length }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {{ form_row(attribute(form.children, "submit")) }}
+            {{ form_end(form) }}
+            {% elseif contentTypeGroupIdentifier != 'false' %}
+                {{ form_start(form, {'attr': {'class': 'ez-form-validate'}}) }}
+                <thead>
+                <tr>
+                    <th class="ez-table__header-cell ez-table__header-cell--after-icon"> Checkbox</th>
+                    <th class="ez-table__header-cell">{{ 'migration.contenttype_display.list.column.name'|trans }}</th>
+                    <th class="ez-table__header-cell">{{ 'migration.contenttype_display.list.column.identifier'|trans }}</th>
+                    <th class="ez-table__header-cell">{{ 'migration.contenttype_display.list.column.ID'|trans }}</th>
+                    <th class="ez-table__header-cell">{{ 'migration.contenttype_display.list.column.modification_date'|trans }}</th>
+                </tr>
+                </thead>
+                {% for contentType in contentTypes[contentTypeGroupIdentifier] %}
+                    <tbody>
+                    <tr>
+                        <td class="ez-table__cell">
+                            {{ form_row(attribute(form.children, contentType.identifier)) }}
+                        </td>
+                        <td class="ez-table__cell">
+                            {% set contentTypeGroupId = null %}
+                            {% for contentTypeGroup in contentTypeGroups %}
+                                {% if contentTypeGroup.identifier == contentTypeGroupIdentifier %}
+                                    {% set contentTypeGroupId = contentTypeGroup.id %}
+                                {%  endif %}
+                            {%  endfor %}
+                            {% set view_url = path('ezplatform.content_type.view', {
+                                'contentTypeGroupId': contentTypeGroupId,
+                                'contentTypeId': contentType.id
+                            }) %}
+
+                            <a href="{{ view_url }}" title="{{ contentType.name }}">{{ contentType.name  }}</a
+                        </td>
+                        <td class="ez-table__cell">{{ contentType.identifier }}</td>
+                        <td class="ez-table__cell">{{ contentType.id }}</td>
+                        <td class="ez-table__cell">{{ contentType.modificationDate|ez_full_datetime }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                </table>
+                {{ form_row(attribute(form.children, "submit")) }}
+                {{ form_end(form) }}
+        {% endif %}
+            {# Content Display #}
+
+
+    </section>
+{% endblock %}
