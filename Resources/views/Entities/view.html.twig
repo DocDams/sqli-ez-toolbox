@@ -1,0 +1,79 @@
+{% extends viewbaseLayout is defined ? viewbaseLayout : '@ezdesign/ui/layout.html.twig' %}
+
+{% form_theme form with '@SQLIEzToolbox/form_fields.html.twig' only %}
+
+{% trans_default_domain 'sqli_admin' %}
+
+{% block breadcrumbs %}
+    {% set keytrad = constant('SQLI\\EzToolboxBundle\\Menu\\MenuListener::SQLI_ADMIN_MENU_ENTITIES_TAB_PREFIX') ~ class.annotation.tabname %}
+    {% include '@ezdesign/ui/breadcrumbs.html.twig' with { items: [
+        { value: 'breadcrumb.admin'|trans(domain='messages')|desc('Admin') },
+        { value: keytrad|trans( {}, 'sqli_admin' )|desc('Entities'),
+            url: path( 'sqli_eztoolbox_entitymanager_homepage', { 'tabname': class.annotation.tabname } ) },
+        { value: fqcn,
+            url: path( 'sqli_eztoolbox_entitymanager_entity_homepage', { 'fqcn': fqcn } ) },
+        { value: 'entity.button.alt.view'|trans },
+    ]} only %}
+{% endblock %}
+
+{% block title %}{{ 'entity.visualisation.page.title'|trans|desc('Entity page title') }}{% endblock %}
+
+{% block page_title %}
+    {% include '@ezdesign/ui/page_title.html.twig' with {
+        title: 'entity.visualisation.page.title'|trans|desc('Entity page title'),
+        icon_name: 'object-state'
+    } %}
+{% endblock %}
+
+{% block content %}
+
+    {% set compound_id = [] %}
+    {% for column_name in class.primary_key %}
+        {% set compound_id= compound_id |merge( { (column_name):(form.children.id.vars.value) } ) %}
+    {% endfor %}
+    {% set compound_id = compound_id|json_encode %}
+
+        <div class="row align-items-stretch ez-main-row">
+            {% block left_sidebar %}{% endblock left_sidebar %}
+            <div class="container px-0 pb-4 mt-3 ez-content-edit-container">
+                {{ form_start(form, {'attr': {'class': 'ez-form-validate'}}) }}
+
+                {% for field in form.children %}
+                    {% if not field.rendered %}
+                        {{ form_row(field) }}
+                    {% endif %}
+                {% endfor %}
+
+                {{ form_end(form) }}
+            </div>
+        {% block right_sidebar_wrapper %}
+            <div class="col-sm-1 pt-4 px-0 bg-secondary ez-context-menu">
+                <div class="ez-sticky-container">
+                    {% if class.annotation.update and is_granted( 'ez:sqli_admin:entity_edit_element' ) %}
+                        {% set sidebar_right = knp_menu_get('sqli_eztoolbox.admin.edit_element.sidebar_right',
+                            [],
+                            {
+                                'edit_button_name': path('sqli_eztoolbox_entitymanager_entity_edit_element',
+                                {'compound_id': compound_id,
+                                    'fqcn': fqcn}),
+                                'cancel_url': path( 'sqli_eztoolbox_entitymanager_entity_homepage',
+                                { 'fqcn': fqcn } )
+                            }
+                        ) %}
+                    {% else %}
+                        {% set sidebar_right = knp_menu_get('sqli_eztoolbox.admin.edit_element.sidebar_right',
+                            [],
+                            {
+                                'cancel_url': path( 'sqli_eztoolbox_entitymanager_entity_homepage',
+                                { 'fqcn': fqcn } )
+                            }
+                        ) %}
+                    {% endif %}
+                    {{ knp_menu_render(sidebar_right, {'template': '@ezdesign/ui/menu/sidebar_right.html.twig'}) }}
+                </div>
+                +
+            </div>
+
+        {% endblock %}
+        </div>
+{% endblock %}

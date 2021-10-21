@@ -33,7 +33,7 @@
 
 # PHPUnit
 /app/phpunit.xml
-/phpunit.xml
+#/phpunit.xml
 
 # Build data
 /build/
@@ -49,3 +49,6 @@
 
 # PHPStorm
 /.idea/
+# Sonarqube
+/.scannerwork/
+/.phpunit.result.cache

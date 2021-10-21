@@ -144,6 +144,15 @@
             {% endif %}
         {% endfor %}
         <td>
+            {% if is_granted( 'ez:sqli_admin:entity_view_element' ) %}
+                <a href="{{ path( 'sqli_eztoolbox_entitymanager_entity_view_element',
+                    { 'fqcn': fqcn, 'compound_id': compound_id }) }}">
+                    <svg class="ez-icon ez-icon-view" style="width: 1.5rem;height: 1.5rem;">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink"
+                             xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#view"></use>
+                    </svg>
+                </a>
+            {% endif %}
             {% if class.annotation.update and is_granted( 'ez:sqli_admin:entity_edit_element' ) %}
                 <a href="{{ path( 'sqli_eztoolbox_entitymanager_entity_edit_element',
                     { 'fqcn': fqcn, 'compound_id': compound_id }) }}">

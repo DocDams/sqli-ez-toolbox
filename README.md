@@ -27,7 +27,7 @@ return [
 
 ### Add routes
 
-In `config/routes/sqli_eztoolbox.yml` :
+In `config/routes/sqli_eztoolbox.yaml` :
 
 ```yml
 # SQLI Admin routes
@@ -46,12 +46,12 @@ php bin/console cache:clear
 
 ##### Full example
 
-In `config/packages/sqli_eztoolbox.yml` :
+In `config/packages/sqli_eztoolbox.yaml` add the localisations and namespaces of the entities :
 
 ```yaml
 sqli_ez_toolbox:
     entities:
-        - { directory: 'AcmeBundle/Entity/Doctrine' }
+        - { directory: 'Entity/Doctrine', namespace: 'App\Entity'}
     admin_logger:
         enabled: true
     storage_filename_cleaner:

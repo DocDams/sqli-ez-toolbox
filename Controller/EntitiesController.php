@@ -295,6 +295,61 @@ class EntitiesController extends AbstractController
      *
      * @param string $fqcn FQCN
      * @param Request $request
+     * @return RedirectResponse|Response
+     * @throws ReflectionException
+     */
+    public function viewElement(string $fqcn, string $compound_id, Request $request): Response
+    {
+        $context = 'view';
+        $this->denyAccessUnlessGranted('ez:sqli_admin:entity_view_element');
+
+        // Check if class annotations allow visibility
+        $entity = $this->entityHelper->getEntity($fqcn, false);
+
+        if (array_key_exists('class', $entity) && array_key_exists('annotation', $entity['class'])) {
+            $entityAnnotation = $entity['class']['annotation'];
+            // Check if annotation exists
+            if ($entityAnnotation instanceof Entity) {
+                // Check if modification is allowed
+                $compound_id = json_decode($compound_id, true);
+                    if (!empty($compound_id)) {
+                        // Find element
+                        $element = $this->entityHelper->findOneBy($fqcn, $compound_id);
+
+                        // Build form according to element and entity informations
+                        $form = $this->createForm(
+                            EditElementType::class,
+                            $element,
+                            ['entity' => $entity, 'context' => $context]
+                        );
+                        $form->handleRequest($request);
+
+                        // Display form
+                        $params['form'] = $form->createView();
+                        $params['fqcn'] = $fqcn;
+                        $params['class'] = $entity['class'];
+
+                        return $this
+                            ->render(
+                                '@SQLIEzToolbox/Entities/view.html.twig',
+                                $params
+                            );
+                    }
+                }
+            }
+        // Redirect to entity homepage (list of elements)
+        return $this->redirectToRoute(
+            'sqli_eztoolbox_entitymanager_entity_homepage',
+            ['fqcn' => $fqcn]
+        );
+    }
+
+
+    /**
+     * Show edit form and save modifications
+     *
+     * @param string $fqcn FQCN
+     * @param Request $request
      * @param EntityHelper $entityHelper
      * @return RedirectResponse|Response
      * @throws ReflectionException

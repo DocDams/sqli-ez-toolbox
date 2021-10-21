@@ -6,3 +6,4 @@ role.policy.sqli_admin.entity_remove_element: 'SQLI Admin / Delete element'
 role.policy.sqli_admin.entity_edit_element: 'SQLI Admin / Edit element'
 role.policy.sqli_admin.entity_create_element: 'SQLI Admin / Create element'
 form.button.label.submit: "Save"
+form.edit.type_object.invalid: "Given data cannot be serialized, please verify and retry"

@@ -2,7 +2,9 @@ role.policy.sqli_admin: 'SQLI Admin'
 role.policy.sqli_admin.all_functions: 'SQLI Admin / Toutes les fonctions'
 role.policy.sqli_admin.list_entities: 'SQLI Admin / Voir les entités'
 role.policy.sqli_admin.entity_show: 'SQLI Admin / Voir une entité'
+role.policy.sqli_admin.entity_view_element: 'SQLI Admin / Voir un élément'
 role.policy.sqli_admin.entity_remove_element: 'SQLI Admin / Supprimer un élément'
 role.policy.sqli_admin.entity_edit_element: 'SQLI Admin / Editer un élément'
 role.policy.sqli_admin.entity_create_element: 'SQLI Admin / Créer un élément'
 form.button.label.submit: "Enregistrer"
+form.edit.type_object.invalid: "Les données décrites ne peuvent être sérialisées, veuillez vous assurer de leur validité"
