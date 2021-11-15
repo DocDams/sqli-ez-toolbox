@@ -28,7 +28,8 @@
   "require": {
     "ibexa/oss": "^3.3",
     "netgen/tagsbundle": "^4.0",
-    "ext-json": "*"
+    "ext-json": "*",
+    "ext-openssl": "*"
   },
   "suggest": {
     "tanoconsulting/ezmigrationbundle2": "main"
