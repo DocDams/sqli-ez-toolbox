@@ -2,7 +2,7 @@
 
 namespace SQLI\EzToolboxBundle\Services\Parameter;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use eZ\Publish\API\Repository\Exceptions\InvalidArgumentException;
 use eZ\Publish\API\Repository\Exceptions\NotFoundException;
 use eZ\Publish\API\Repository\ObjectStateService;
@@ -25,13 +25,13 @@ abstract class ParameterHandlerAbstractObjectState implements ParameterHandlerIn
     protected $stateHandler;
     /** @var ObjectStateService */
     protected $objectStateService;
-    /** @var EntityManager */
+    /** @var EntityManagerInterface */
     protected $entityManager;
 
     public function __construct(
         Repository $repository,
         ObjectStateHandler $objectStateHandler,
-        EntityManager $entityManager
+        EntityManagerInterface $entityManager
     ) {
         $this->repository = $repository;
         $this->stateHandler = $objectStateHandler;
