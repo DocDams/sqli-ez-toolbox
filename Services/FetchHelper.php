@@ -202,11 +202,11 @@ class FetchHelper
      * Fetch ancestor of $location with specified $contentType
      *
      * @param Location|int $location
-     * @param string $contentType
+     * @param string|string[] $contentType
      * @return Location|null
      * @throws InvalidArgumentException
      */
-    public function fetchAncestors($location, string $contentType): ?array
+    public function fetchAncestors($location, $contentType): ?array
     {
         if (!$location instanceof Location) {
             try {
@@ -230,13 +230,13 @@ class FetchHelper
      * Fetch ancestor of $location with specified $contentType
      *
      * @param Location|int $location
-     * @param string $contentType
+     * @param string|string[] $contentType
      * @param bool $highest
      *      param which specifies if fetchAncestor must return the highest ancestor in tree structure (smallest depth)
      * @return Location|null
      * @throws InvalidArgumentException
      */
-    public function fetchAncestor($location, string $contentType, bool $highest = true): ?Location
+    public function fetchAncestor($location, $contentType, bool $highest = true): ?Location
     {
         $results = $this->fetchAncestors($location, $contentType);
         $itemHit = null;
