@@ -27,9 +27,11 @@ class DataFormatterHelper
 
                 return number_format((float)$number, 2, ",", " ");
             case "price":
-                $number = $this->format($data, "amount");
+                // $pattern should contains currency code according to ISO 4217
+                $pattern = $pattern ?: "EUR";
 
-                return "$number €";
+                $numberFormatter = new \NumberFormatter(locale_get_default(), \NumberFormatter::CURRENCY);
+                return $numberFormatter->formatCurrency((float)$data, $pattern);
             case "french_date":
                 $pattern = is_null($pattern) ? 'l d F à H:i' : $pattern;
                 $data = $this->toDateTime($data);
