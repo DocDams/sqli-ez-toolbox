@@ -119,7 +119,7 @@
 {% endblock %}
 
 {% block sqli_entity_element %}
-    {# Generate compound ID #}
+    {# Generate compound ID #}
     {% set compound_id = [] %}
     {% for column_name in class.primary_key %}
         {% set compound_id = compound_id|merge( { (column_name): sqli_admin_attribute( element, column_name ) } ) %}
@@ -134,7 +134,9 @@
                 {% if property_infos.extra_link == "content" %}
                     <td><a href="{{ path( '_ez_content_view', { 'contentId': value } ) }}">{{ value }}</a></td>
                 {% elseif property_infos.extra_link == "location" %}
-                    <td><a href="{{ path( '_ezpublishLocation', { 'locationId': value } ) }}">{{ value }}</a></td>
+                    {% set location = fetch_location(value) %}
+                    <td><a href="{{ path( '_ez_content_view',
+                            { 'locationId': location.id, 'contentId': location.content.id } ) }}">{{ value }}</a></td>
                 {% elseif property_infos.extra_link == "tag" and bundle_exists( 'NetgenTagsBundle' ) %}
                     <td><a href="{{ path('netgen_tags_admin_tag_show', { 'tagId': value }) }}">{{ value }}</a></td>
                 {% else %}
