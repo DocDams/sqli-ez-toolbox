@@ -3,6 +3,7 @@
 namespace SQLI\EzToolboxBundle\Menu;
 
 use Ibexa\AdminUi\Menu\Event\ConfigureMenuEvent;
+use Ibexa\Core\MVC\Symfony\Security\Authorization\Attribute;
 use ReflectionException;
 use SQLI\EzToolboxBundle\Services\TabEntityHelper;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -30,30 +31,33 @@ class MenuListener implements EventSubscriberInterface
      */
     public static function getSubscribedEvents(): array
     {
-        return array(ConfigureMenuEvent::MAIN_MENU => 'onMainMenuBuild');
+        return [
+            ConfigureMenuEvent::MAIN_MENU => ['onMainMenuConfigure', 0],
+        ];
     }
 
     /**
      * @param ConfigureMenuEvent $event
      * @throws ReflectionException
      */
-    public function onMainMenuBuild(ConfigureMenuEvent $event): void
+    public function onMainMenuConfigure(ConfigureMenuEvent $event): void
     {
-        $menu = $event->getMenu();
-
-        $menu->addChild(
-            self::SQLI_ADMIN_MENU_ROOT,
-            [
-                'label' => self::SQLI_ADMIN_MENU_ROOT,
-            ]
-        )->setExtra('translation_domain', 'sqli_admin');
-
-        // SQLI Entity Manager
-        if ($this->authorizationChecker->isGranted('ez:sqli_admin:list_entities')) {
+        $rootMenu = $event->getMenu()->getRoot();
+        if ($this->authorizationChecker->isGranted(new Attribute('sqli_admin','list_entities'))) {
+            $customMenuItem = $rootMenu->addChild(self::SQLI_ADMIN_MENU_ROOT,[
+                'attributes' => [
+                    'data-tooltip-placement' => 'right',
+                    'data-tooltip-extra-class' => 'ibexa-tooltip--info-neon',
+                ],
+                'extras' => [
+                    'icon' => 'view-list',
+                    'orderNumber' => 90,
+                ],
+            ])->setExtra('translation_domain', 'sqli_admin');
             // Read "tabname" entity's annotations to generate submenu items
             $tabClasses = $this->tabEntityHelper->entitiesGroupedByTab();
             foreach (array_keys($tabClasses) as $tabname) {
-                $menu[self::SQLI_ADMIN_MENU_ROOT]->addChild(
+                $customMenuItem->addChild(
                     self::SQLI_ADMIN_MENU_ENTITIES_TAB_PREFIX . $tabname,
                     [
                         'label' => self::SQLI_ADMIN_MENU_ENTITIES_TAB_PREFIX . $tabname,

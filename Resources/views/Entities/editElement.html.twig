@@ -1,4 +1,4 @@
-{% extends viewbaseLayout is defined ? viewbaseLayout : '@ezdesign/ui/layout.html.twig' %}
+{% extends viewbaseLayout is defined ? viewbaseLayout : '@ibexadesign/ui/layout.html.twig' %}
 
 {% form_theme form with '@SQLIEzToolbox/form_fields.html.twig' only %}
 
@@ -6,7 +6,7 @@
 
 {% block breadcrumbs %}
     {% set keytrad = constant('SQLI\\EzToolboxBundle\\Menu\\MenuListener::SQLI_ADMIN_MENU_ENTITIES_TAB_PREFIX') ~ class.annotation.tabname %}
-    {% include '@ezdesign/ui/breadcrumbs.html.twig' with { items: [
+    {% include '@ibexadesign/ui/breadcrumbs.html.twig' with { items: [
         { value: 'breadcrumb.admin'|trans(domain='messages')|desc('Admin') },
         { value: keytrad|trans( {}, 'sqli_admin' )|desc('Entities'),
             url: path( 'sqli_eztoolbox_entitymanager_homepage', { 'tabname': class.annotation.tabname } ) },
@@ -19,7 +19,7 @@
 {% block title %}{{ 'entity.edition.page.title'|trans|desc('Entity page title') }}{% endblock %}
 
 {% block page_title %}
-    {% include '@ezdesign/ui/page_title.html.twig' with {
+    {% include '@ibexadesign/ui/page_title.html.twig' with {
         title: 'entity.edition.page.title'|trans|desc('Entity page title'),
         icon_name: 'object-state'
     } %}
@@ -50,7 +50,7 @@
                             { 'fqcn': fqcn } )
                         }
                     ) %}
-                    {{ knp_menu_render(sidebar_right, {'template': '@ezdesign/ui/menu/sidebar_right.html.twig'}) }}
+                    {{ knp_menu_render(sidebar_right, {'template': '@ibexadesign/ui/menu/sidebar_right.html.twig'}) }}
                 </div>
             </div>
         {% endblock %}

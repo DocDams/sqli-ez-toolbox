@@ -26,7 +26,6 @@ class TabEntityHelper
 
         // Annotated classes
         $annotatedClasses = $this->entityHelper->getAnnotatedClasses();
-
         foreach ($annotatedClasses as $fqcn => $annotatedClass) {
             // Get tabname
             $tabname = $annotatedClass['annotation']->getTabname();

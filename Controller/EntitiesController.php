@@ -4,6 +4,7 @@ namespace SQLI\EzToolboxBundle\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Ibexa\AdminUi\Notification\FlashBagNotificationHandler;
+use Ibexa\Core\MVC\Symfony\Security\Authorization\Attribute;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Pagerfanta;
 use ReflectionException;
@@ -54,7 +55,7 @@ class EntitiesController extends AbstractController
      */
     public function listAllEntities(string $tabname, TabEntityHelper $tabEntityHelper): Response
     {
-        $this->denyAccessUnlessGranted('ez:sqli_admin:list_entities');
+        $this->denyAccessUnlessGranted(new Attribute('sqli_admin','list_entities'));
 
         $tabs = $tabEntityHelper->entitiesGroupedByTab();
         $params['tabname'] = $tabname;
@@ -83,7 +84,7 @@ class EntitiesController extends AbstractController
         EntityHelper $entityHelper,
         FilterEntityHelper $filterEntityHelper
     ): Response {
-        $this->denyAccessUnlessGranted('ez:sqli_admin:entity_show');
+        $this->denyAccessUnlessGranted(new Attribute('sqli_admin','entity_show'));
 
         $classInformations = $entityHelper->getAnnotatedClass($fqcn);
 
@@ -138,7 +139,7 @@ class EntitiesController extends AbstractController
      */
     public function removeElement(string $fqcn, string $compound_id, EntityHelper $entityHelper): Response
     {
-        $this->denyAccessUnlessGranted('ez:sqli_admin:entity_remove_element');
+        $this->denyAccessUnlessGranted(new Attribute('sqli_admin','entity_remove_element'));
 
         $removeSuccessfull = false;
 
@@ -219,7 +220,7 @@ class EntitiesController extends AbstractController
         Request $request,
         EntityHelper $entityHelper
     ): Response {
-        $this->denyAccessUnlessGranted('ez:sqli_admin:entity_edit_element');
+        $this->denyAccessUnlessGranted(new Attribute('sqli_admin','entity_edit_element'));
 
         $updateSuccessfull = false;
 
@@ -301,7 +302,7 @@ class EntitiesController extends AbstractController
     public function viewElement(string $fqcn, string $compound_id, Request $request): Response
     {
         $context = 'view';
-        $this->denyAccessUnlessGranted('ez:sqli_admin:entity_view_element');
+        $this->denyAccessUnlessGranted(new Attribute('sqli_admin','entity_view_element'));
 
         // Check if class annotations allow visibility
         $entity = $this->entityHelper->getEntity($fqcn, false);
@@ -356,7 +357,7 @@ class EntitiesController extends AbstractController
      */
     public function createElement(string $fqcn, Request $request, EntityHelper $entityHelper): Response
     {
-        $this->denyAccessUnlessGranted('ez:sqli_admin:entity_edit_element');
+        $this->denyAccessUnlessGranted(new Attribute('sqli_admin','entity_edit_element'));
 
         $updateSuccessfull = false;
 
@@ -428,7 +429,7 @@ class EntitiesController extends AbstractController
      */
     public function exportCSV(string $fqcn): StreamedResponse
     {
-        $this->denyAccessUnlessGranted('ez:sqli_admin:entity_export_csv');
+        $this->denyAccessUnlessGranted(new Attribute('sqli_admin','entity_export_csv'));
 
         $response = new StreamedResponse();
 
