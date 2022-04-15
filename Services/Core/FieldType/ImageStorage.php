@@ -2,9 +2,9 @@
 
 namespace SQLI\EzToolboxBundle\Services\Core\FieldType;
 
-use eZ\Publish\Core\FieldType\Image\ImageStorage as BaseImageStorage;
-use eZ\Publish\SPI\Persistence\Content\Field;
-use eZ\Publish\SPI\Persistence\Content\VersionInfo;
+use Ibexa\Core\FieldType\Image\ImageStorage as BaseImageStorage;
+use Ibexa\Contracts\Core\Persistence\Content\Field;
+use Ibexa\Contracts\Core\Persistence\Content\VersionInfo;
 
 class ImageStorage extends BaseImageStorage
 {

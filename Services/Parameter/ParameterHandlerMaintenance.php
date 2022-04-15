@@ -5,7 +5,7 @@ namespace SQLI\EzToolboxBundle\Services\Parameter;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Exception;
-use eZ\Publish\API\Repository\Values\Content\Query\Criterion;
+use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
 use SQLI\EzToolboxBundle\Entity\Doctrine\Parameter;
 use SQLI\EzToolboxBundle\Exceptions\ParameterHandlerContentExpectedException;
 use Symfony\Component\Console\Output\OutputInterface;

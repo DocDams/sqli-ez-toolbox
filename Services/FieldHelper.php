@@ -2,11 +2,11 @@
 
 namespace SQLI\EzToolboxBundle\Services;
 
-use eZ\Publish\API\Repository\Values\Content\Content;
-use eZ\Publish\API\Repository\Values\Content\Field;
-use eZ\Publish\Core\FieldType\Selection\Value;
-use eZ\Publish\Core\Helper\FieldHelper as EzFieldHelper;
-use eZ\Publish\Core\Helper\TranslationHelper;
+use Ibexa\Contracts\Core\Repository\Values\Content\Content;
+use Ibexa\Contracts\Core\Repository\Values\Content\Field;
+use Ibexa\Core\FieldType\Selection\Value;
+use Ibexa\Core\Helper\FieldHelper as EzFieldHelper;
+use Ibexa\Core\Helper\TranslationHelper;
 
 class FieldHelper
 {
@@ -28,7 +28,7 @@ class FieldHelper
      *                                     Null by default (takes current locale).
      *
      * @return bool
-     * @see \eZ\Publish\Core\Helper\FieldHelper
+     * @see \Ibexa\Core\Helper\FieldHelper
      *
      * Checks if a given field is considered empty.
      * This method accepts field as Objects or by identifiers.

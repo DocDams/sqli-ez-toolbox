@@ -3,7 +3,7 @@
 namespace SQLI\EzToolboxBundle\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
-use EzSystems\EzPlatformAdminUi\Notification\FlashBagNotificationHandler;
+use Ibexa\AdminUi\Notification\FlashBagNotificationHandler;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Pagerfanta;
 use ReflectionException;

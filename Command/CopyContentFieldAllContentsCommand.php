@@ -3,18 +3,18 @@
 namespace SQLI\EzToolboxBundle\Command;
 
 use Exception;
-use eZ\Publish\API\Repository\ContentService;
-use eZ\Publish\API\Repository\Exceptions\InvalidArgumentException;
-use eZ\Publish\API\Repository\Exceptions\NotFoundException;
-use eZ\Publish\API\Repository\Exceptions\UnauthorizedException;
-use eZ\Publish\API\Repository\Repository;
-use eZ\Publish\API\Repository\SearchService;
-use eZ\Publish\API\Repository\Values\Content\Content;
-use eZ\Publish\API\Repository\Values\Content\LocationQuery;
-use eZ\Publish\API\Repository\Values\Content\Query\Criterion;
-use eZ\Publish\API\Repository\Values\Content\Query\SortClause\ContentId;
-use eZ\Publish\Core\FieldType\DateAndTime\Value;
-use EzSystems\EzPlatformRichText\eZ\FieldType\RichText\Type;
+use Ibexa\Contracts\Core\Repository\ContentService;
+use Ibexa\Contracts\Core\Repository\Exceptions\InvalidArgumentException;
+use Ibexa\Contracts\Core\Repository\Exceptions\NotFoundException;
+use Ibexa\Contracts\Core\Repository\Exceptions\UnauthorizedException;
+use Ibexa\Contracts\Core\Repository\Repository;
+use Ibexa\Contracts\Core\Repository\SearchService;
+use Ibexa\Contracts\Core\Repository\Values\Content\Content;
+use Ibexa\Contracts\Core\Repository\Values\Content\LocationQuery;
+use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
+use Ibexa\Contracts\Core\Repository\Values\Content\Query\SortClause\ContentId;
+use Ibexa\Core\FieldType\DateAndTime\Value;
+use Ibexa\FieldTypeRichText\FieldType\RichText\Type;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -203,7 +203,7 @@ class CopyContentFieldAllContentsCommand extends Command
                         )->fieldTypeIdentifier
                     ) {
                         case "ezdate":
-                            /** @var \eZ\Publish\Core\FieldType\Date\Value $fieldValue */
+                            /** @var \Ibexa\Core\FieldType\Date\Value $fieldValue */
                             $fieldValue = $contentDraft->getFieldValue(
                                 $this->oldContentFieldIdentifier,
                                 $availableLanguageCode

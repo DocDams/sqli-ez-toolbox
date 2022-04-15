@@ -3,15 +3,15 @@
 namespace SQLI\EzToolboxBundle\Services\Parameter;
 
 use Doctrine\ORM\EntityManagerInterface;
-use eZ\Publish\API\Repository\Exceptions\InvalidArgumentException;
-use eZ\Publish\API\Repository\Exceptions\NotFoundException;
-use eZ\Publish\API\Repository\ObjectStateService;
-use eZ\Publish\API\Repository\Repository;
-use eZ\Publish\API\Repository\Values\Content\Content;
-use eZ\Publish\API\Repository\Values\Content\ContentInfo;
-use eZ\Publish\API\Repository\Values\Content\Query;
-use eZ\Publish\API\Repository\Values\Content\Query\Criterion;
-use eZ\Publish\Core\Persistence\Cache\ObjectStateHandler;
+use Ibexa\Contracts\Core\Repository\Exceptions\InvalidArgumentException;
+use Ibexa\Contracts\Core\Repository\Exceptions\NotFoundException;
+use Ibexa\Contracts\Core\Repository\ObjectStateService;
+use Ibexa\Contracts\Core\Repository\Repository;
+use Ibexa\Contracts\Core\Repository\Values\Content\Content;
+use Ibexa\Contracts\Core\Repository\Values\Content\ContentInfo;
+use Ibexa\Contracts\Core\Repository\Values\Content\Query;
+use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
+use Ibexa\Core\Persistence\Cache\ObjectStateHandler;
 use SQLI\EzToolboxBundle\Exceptions\ParameterHandlerContentExpectedException;
 use SQLI\EzToolboxBundle\Exceptions\ParameterHandlerDataUnexpectedException;
 use Symfony\Component\Console\Output\OutputInterface;

@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace  SQLI\EzToolboxBundle\FieldType\SqliToolbox;
 
 use SQLI\EzToolboxBundle\Form\Type\SqliToolboxType;
-use eZ\Publish\SPI\FieldType\Generic\Type as GenericType;
-use eZ\Publish\SPI\FieldType\Indexable;
-use eZ\Publish\SPI\Persistence\Content\Field;
-use eZ\Publish\SPI\Persistence\Content\Type\FieldDefinition;
-use EzSystems\EzPlatformContentForms\Data\Content\FieldData;
-use EzSystems\EzPlatformContentForms\FieldType\FieldValueFormMapperInterface;
+use Ibexa\Contracts\Core\FieldType\Generic\Type as GenericType;
+use Ibexa\Contracts\Core\FieldType\Indexable;
+use Ibexa\Contracts\Core\Persistence\Content\Field;
+use Ibexa\Contracts\Core\Persistence\Content\Type\FieldDefinition;
+use Ibexa\Contracts\ContentForms\Data\Content\FieldData;
+use Ibexa\Contracts\ContentForms\FieldType\FieldValueFormMapperInterface;
 use Symfony\Component\Form\FormInterface;
 
 class Type extends GenericType implements FieldValueFormMapperInterface, Indexable
@@ -37,10 +37,10 @@ class Type extends GenericType implements FieldValueFormMapperInterface, Indexab
     /**
      * Get index data for field for search backend.
      *
-     * @param \eZ\Publish\SPI\Persistence\Content\Field $field
-     * @param \eZ\Publish\SPI\Persistence\Content\Type\FieldDefinition $fieldDefinition
+     * @param \Ibexa\Contracts\Core\Persistence\Content\Field $field
+     * @param \Ibexa\Contracts\Core\Persistence\Content\Type\FieldDefinition $fieldDefinition
      *
-     * @return \eZ\Publish\SPI\Search\Field[]
+     * @return \Ibexa\SPI\Search\Field[]
      */
     public function getIndexData(Field $field, FieldDefinition $fieldDefinition)
     {
@@ -50,7 +50,7 @@ class Type extends GenericType implements FieldValueFormMapperInterface, Indexab
     /**
      * Get index field types for search backend.
      *
-     * @return \eZ\Publish\SPI\Search\FieldType[]
+     * @return \Ibexa\SPI\Search\FieldType[]
      */
     public function getIndexDefinition()
     {

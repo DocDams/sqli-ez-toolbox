@@ -8,8 +8,8 @@
 
 namespace SQLI\EzToolboxBundle\Menu;
 
-use EzSystems\EzPlatformAdminUi\Menu\AbstractBuilder;
-use EzSystems\EzPlatformAdminUi\Menu\MenuItemFactory;
+use Ibexa\Contracts\AdminUi\Menu\AbstractBuilder;
+use Ibexa\AdminUi\Menu\MenuItemFactory;
 use InvalidArgumentException;
 use Knp\Menu\ItemInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;

@@ -3,36 +3,36 @@
 namespace SQLI\EzToolboxBundle\Services\Listener;
 
 use Exception;
-use eZ\Publish\API\Repository\Events\Content\CopyContentEvent;
-use eZ\Publish\API\Repository\Events\Content\DeleteContentEvent;
-use eZ\Publish\API\Repository\Events\Content\HideContentEvent;
-use eZ\Publish\API\Repository\Events\Content\PublishVersionEvent;
-use eZ\Publish\API\Repository\Events\Content\RevealContentEvent;
-use eZ\Publish\API\Repository\Events\Location\CopySubtreeEvent;
-use eZ\Publish\API\Repository\Events\Location\CreateLocationEvent;
-use eZ\Publish\API\Repository\Events\Location\DeleteLocationEvent;
-use eZ\Publish\API\Repository\Events\Location\HideLocationEvent;
-use eZ\Publish\API\Repository\Events\Location\MoveSubtreeEvent;
-use eZ\Publish\API\Repository\Events\Location\UnhideLocationEvent;
-use eZ\Publish\API\Repository\Events\ObjectState\SetContentStateEvent;
-use eZ\Publish\API\Repository\Events\Section\AssignSectionToSubtreeEvent;
-use eZ\Publish\API\Repository\Events\Trash\TrashEvent;
-use eZ\Publish\API\Repository\Events\User\CreateUserEvent;
-use eZ\Publish\API\Repository\Events\User\DeleteUserEvent;
-use eZ\Publish\API\Repository\Events\User\UpdateUserEvent;
-use eZ\Publish\API\Repository\Exceptions\NotFoundException;
-use eZ\Publish\API\Repository\Exceptions\UnauthorizedException;
-use eZ\Publish\API\Repository\Repository;
-use eZ\Publish\API\Repository\Values\Content\ContentInfo;
-use eZ\Publish\API\Repository\Values\Content\Location;
-use eZ\Publish\Core\MVC\Symfony\Security\UserInterface;
-use eZ\Publish\Core\MVC\Symfony\SiteAccess;
+use Ibexa\Contracts\Core\Repository\Events\Content\CopyContentEvent;
+use Ibexa\Contracts\Core\Repository\Events\Content\DeleteContentEvent;
+use Ibexa\Contracts\Core\Repository\Events\Content\HideContentEvent;
+use Ibexa\Contracts\Core\Repository\Events\Content\PublishVersionEvent;
+use Ibexa\Contracts\Core\Repository\Events\Content\RevealContentEvent;
+use Ibexa\Contracts\Core\Repository\Events\Location\CopySubtreeEvent;
+use Ibexa\Contracts\Core\Repository\Events\Location\CreateLocationEvent;
+use Ibexa\Contracts\Core\Repository\Events\Location\DeleteLocationEvent;
+use Ibexa\Contracts\Core\Repository\Events\Location\HideLocationEvent;
+use Ibexa\Contracts\Core\Repository\Events\Location\MoveSubtreeEvent;
+use Ibexa\Contracts\Core\Repository\Events\Location\UnhideLocationEvent;
+use Ibexa\Contracts\Core\Repository\Events\ObjectState\SetContentStateEvent;
+use Ibexa\Contracts\Core\Repository\Events\Section\AssignSectionToSubtreeEvent;
+use Ibexa\Contracts\Core\Repository\Events\Trash\TrashEvent;
+use Ibexa\Contracts\Core\Repository\Events\User\CreateUserEvent;
+use Ibexa\Contracts\Core\Repository\Events\User\DeleteUserEvent;
+use Ibexa\Contracts\Core\Repository\Events\User\UpdateUserEvent;
+use Ibexa\Contracts\Core\Repository\Exceptions\NotFoundException;
+use Ibexa\Contracts\Core\Repository\Exceptions\UnauthorizedException;
+use Ibexa\Contracts\Core\Repository\Repository;
+use Ibexa\Contracts\Core\Repository\Values\Content\ContentInfo;
+use Ibexa\Contracts\Core\Repository\Values\Content\Location;
+use Ibexa\Core\MVC\Symfony\Security\UserInterface;
+use Ibexa\Core\MVC\Symfony\SiteAccess;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
-use Netgen\TagsBundle\API\Repository\Events\Tags\CreateTagEvent;
-use Netgen\TagsBundle\API\Repository\Events\Tags\DeleteTagEvent;
-use Netgen\TagsBundle\API\Repository\Events\Tags\UpdateTagEvent;
-use Netgen\TagsBundle\API\Repository\TagsService;
+//use Netgen\TagsBundle\API\Repository\Events\Tags\CreateTagEvent;
+//use Netgen\TagsBundle\API\Repository\Events\Tags\DeleteTagEvent;
+//use Netgen\TagsBundle\API\Repository\Events\Tags\UpdateTagEvent;
+//use Netgen\TagsBundle\API\Repository\TagsService;
 use SQLI\EzToolboxBundle\Services\Formatter\SqliSimpleLogFormatter;
 use SQLI\EzToolboxBundle\Services\SiteAccessUtilsTrait;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -63,14 +63,14 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
         Repository $repository,
         $logDir,
         RequestStack $requestStack,
-        TagsService $tagsService,
+        //TagsService $tagsService,
         $adminLoggerEnabled,
         SiteAccess $siteAccess
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->repository = $repository;
         $this->request = $requestStack->getCurrentRequest();
-        $this->tagsService = $tagsService;
+        //$this->tagsService = $tagsService;
         $this->adminLoggerEnabled = (bool)$adminLoggerEnabled;
 
         // Handler and formatter
@@ -108,9 +108,9 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
             PublishVersionEvent::class => 'logIfPublishVersionEvent',
             CopyContentEvent::class => 'logIfCopyContentEvent',
             DeleteContentEvent::class => 'logIfDeleteContentEvent',
-            CreateTagEvent::class => 'logIfCreateTagEvent',
-            UpdateTagEvent::class => 'logIfUpdateTagEvent',
-            DeleteTagEvent::class => 'logIfDeleteTagEvent',
+//            CreateTagEvent::class => 'logIfCreateTagEvent',
+//            UpdateTagEvent::class => 'logIfUpdateTagEvent',
+//            DeleteTagEvent::class => 'logIfDeleteTagEvent',
             MoveSubtreeEvent::class => 'logIfMoveSubtreeEvent',
             CopySubtreeEvent::class => 'logIfCopySubtreeEvent',
             CreateLocationEvent::class => 'logIfCreateLocationEvent',
@@ -226,7 +226,7 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
      * @throws NotFoundException
      * @throws UnauthorizedException
      */
-    public function logIfCreateTagEvent(CreateTagEvent $event)
+    /*public function logIfCreateTagEvent(CreateTagEvent $event)
     {
         // Log only for admin siteaccesses
         if (!$this->adminLoggerEnabled || !$this->isAdminSiteAccess()) {
@@ -243,12 +243,12 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
         $this->logger->notice("  - tag name : " . $event->getTag()->getKeyword());
         $this->logger->notice("  - tag parent id : " . $event->getTag()->parentTagId);
         $this->logger->notice("  - tag parent name : " . $parentTagName);
-    }
+    }*/
 
     /**
      * @param UpdateTagEvent $event
      */
-    public function logIfUpdateTagEvent(UpdateTagEvent $event)
+    /*public function logIfUpdateTagEvent(UpdateTagEvent $event)
     {
         // Log only for admin siteaccesses
         if (!$this->adminLoggerEnabled || !$this->isAdminSiteAccess()) {
@@ -259,12 +259,12 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
         $this->logUserInformations();
         $this->logger->notice("  - tag id : " . $event->getTag()->id);
         $this->logger->notice("  - new tag name : " . $event->getTag()->getKeyword());
-    }
+    }*/
 
     /**
      * @param DeleteTagEvent $event
      */
-    public function logIfDeleteTagEvent(DeleteTagEvent $event)
+    /*public function logIfDeleteTagEvent(DeleteTagEvent $event)
     {
         // Log only for admin siteaccesses
         if (!$this->adminLoggerEnabled || !$this->isAdminSiteAccess()) {
@@ -274,7 +274,7 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
         $this->logger->notice("Tag delete :");
         $this->logUserInformations();
         $this->logger->notice("  - tag id : " . $event->getTag()->id);
-    }
+    }*/
 
     /**
      * @param MoveSubtreeEvent $event

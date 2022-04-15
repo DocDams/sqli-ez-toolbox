@@ -6,7 +6,6 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use SQLI\EzToolboxBundle\Entity\Doctrine\Parameter;
-use SQLI\EzToolboxBundle\Exceptions\ParameterHandlerDataUnexpectedException;
 use SQLI\EzToolboxBundle\Exceptions\ParameterHandlerUnknownParameterValueException;
 use Symfony\Component\Console\Output\OutputInterface;
 

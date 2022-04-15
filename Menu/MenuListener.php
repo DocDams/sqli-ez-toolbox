@@ -2,7 +2,7 @@
 
 namespace SQLI\EzToolboxBundle\Menu;
 
-use EzSystems\EzPlatformAdminUi\Menu\Event\ConfigureMenuEvent;
+use Ibexa\AdminUi\Menu\Event\ConfigureMenuEvent;
 use ReflectionException;
 use SQLI\EzToolboxBundle\Services\TabEntityHelper;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;

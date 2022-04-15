@@ -26,8 +26,7 @@
     "MIT"
   ],
   "require": {
-    "ibexa/oss": "^3.3",
-    "netgen/tagsbundle": "^4.0",
+    "ibexa/oss": "^4.0.2",
     "ext-json": "*",
     "ext-openssl": "*"
   },

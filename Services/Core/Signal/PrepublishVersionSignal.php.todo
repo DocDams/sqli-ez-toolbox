@@ -1,8 +1,8 @@
 <?php
-
+#TODO remplacement signalslot par eventlistener
 namespace SQLI\EzToolboxBundle\Services\Core\Signal;
 
-use eZ\Publish\API\Repository\Values\Content\Language;
+use Ibexa\Contracts\Core\Repository\Values\Content\Language;
 use eZ\Publish\Core\SignalSlot\Signal;
 
 class PrepublishVersionSignal extends Signal
@@ -27,7 +27,7 @@ class PrepublishVersionSignal extends Signal
      * The list is taken from the <code>$translations</code> argument of
      * the ContentService::publishVersion API.
      *
-     * @see \eZ\Publish\API\Repository\ContentService::publishVersion
+     * @see \Ibexa\Contracts\Core\Repository\ContentService::publishVersion
      *
      * Other translations were copied from the previously published Version.
      *

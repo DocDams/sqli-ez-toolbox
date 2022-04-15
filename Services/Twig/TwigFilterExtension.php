@@ -2,13 +2,13 @@
 
 namespace SQLI\EzToolboxBundle\Services\Twig;
 
-use eZ\Publish\API\Repository\Repository;
-use eZ\Publish\API\Repository\Values\Content\Content;
-use eZ\Publish\API\Repository\Values\Content\Field;
-use eZ\Publish\API\Repository\Values\User\UserReference;
-use eZ\Publish\Core\Base\Exceptions\InvalidArgumentType;
-use eZ\Publish\Core\MVC\ConfigResolverInterface;
-use eZ\Publish\Core\MVC\Symfony\Templating\Twig\Extension\ContentExtension;
+use Ibexa\Contracts\Core\Repository\Repository;
+use Ibexa\Contracts\Core\Repository\Values\Content\Content;
+use Ibexa\Contracts\Core\Repository\Values\Content\Field;
+use Ibexa\Contracts\Core\Repository\Values\User\UserReference;
+use Ibexa\Core\Base\Exceptions\InvalidArgumentType;
+use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
+use Ibexa\Core\MVC\Symfony\Templating\Twig\Extension\ContentExtension;
 use SQLI\EzToolboxBundle\Services\DataFormatterHelper;
 use SQLI\EzToolboxBundle\Services\FieldHelper;
 use Twig\Extension\AbstractExtension;
@@ -111,7 +111,7 @@ class TwigFilterExtension extends AbstractExtension
             // Load Content
             $content = $this->repository->sudo(
                 function (Repository $repository) use ($content) {
-                    /* @var $repository \eZ\Publish\Core\Repository\Repository */
+                    /* @var $repository \Ibexa\Core\Repository\Repository */
                     return $repository->getContentService()->loadContent(intval($content));
                 }
             );

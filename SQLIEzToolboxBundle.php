@@ -20,7 +20,7 @@ class SQLIEzToolboxBundle extends Bundle
     {
         parent::build($container);
 
-        $eZExtension = $container->getExtension('ezpublish');
+        $eZExtension = $container->getExtension('ibexa');
         $eZExtension->addPolicyProvider(new SQLIEzToolboxPolicyProvider());
         $container->addCompilerPass(new ParameterHandlerTagCompilerPass());
     }

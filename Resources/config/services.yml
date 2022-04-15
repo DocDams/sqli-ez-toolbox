@@ -1,5 +1,6 @@
 parameters:
-    ezpublish.signalslot.service.content.class: SQLI\EzToolboxBundle\Services\Core\ContentService
+    #TODO remplacement signalslot par eventlistener
+    #ezpublish.signalslot.service.content.class: SQLI\EzToolboxBundle\Services\Core\ContentService
 
 services:
     _defaults:
@@ -10,10 +11,10 @@ services:
             $logDir: "%kernel.logs_dir%"
             $adminLoggerEnabled: "%sqli_ez_toolbox.admin_logger.enabled%"
 
-    eZ\Publish\Core\Helper\TranslationHelper: '@ezpublish.translation_helper'
-    eZ\Publish\Core\Helper\FieldHelper: '@ezpublish.field_helper'
-    eZ\Publish\Core\MVC\Symfony\View\ViewManagerInterface: '@ezpublish.view_manager'
-    eZ\Publish\Core\MVC\Symfony\Templating\Twig\Extension\ContentExtension: '@ezpublish.twig.extension.content'
+#    Ibexa\Core\Helper\TranslationHelper: '@Ibexa\Core\Helper\TranslationHelper'
+#    Ibexa\Core\Helper\FieldHelper: '@Ibexa\Core\Helper\FieldHelper'
+    Ibexa\Core\MVC\Symfony\View\ViewManagerInterface: '@Ibexa\Bundle\Core\View\Manager'
+#    Ibexa\Core\MVC\Symfony\Templating\Twig\Extension\ContentExtension: '@ezpublish.twig.extension.content'
 
     SQLI\EzToolboxBundle\Command\:
         resource: "../../Command/*"
@@ -36,7 +37,7 @@ services:
     SQLI\EzToolboxBundle\QueryType\:
         resource: ../../QueryType/
         tags:
-            - { name: ezpublish.query_type }
+            - { name: ibexa.query_type }
 
     SQLI\EzToolboxBundle\Annotations\SQLIAnnotationManager:
         arguments:
@@ -52,9 +53,9 @@ services:
 
     SQLI\EzToolboxBundle\FieldType\SqliToolbox\Type:
         tags:
-            - { name: ezplatform.field_type, alias: sqlitoolbox }
-            - { name: ezplatform.field_type.form_mapper.value, fieldType: sqlitoolbox }
-            - { name: ezplatform.field_type.indexable, alias: sqlitoolbox }
+            - { name: ibexa.field_type, alias: sqlitoolbox }
+            - { name: ibexa.field_type.form_mapper.value, fieldType: sqlitoolbox }
+            - { name: ibexa.field_type.indexable, alias: sqlitoolbox }
 
     SQLI\EzToolboxBundle\Serializer\SqliToolbox\ValueNormalizer:
         tags:

@@ -2,10 +2,10 @@
 
 namespace SQLI\EzToolboxBundle\QueryType;
 
-use eZ\Publish\API\Repository\Values\Content\LocationQuery;
-use eZ\Publish\API\Repository\Values\Content\Query;
-use eZ\Publish\Core\QueryType\OptionsResolverBasedQueryType;
-use eZ\Publish\Core\QueryType\QueryType;
+use Ibexa\Contracts\Core\Repository\Values\Content\LocationQuery;
+use Ibexa\Contracts\Core\Repository\Values\Content\Query;
+use Ibexa\Core\QueryType\OptionsResolverBasedQueryType;
+use Ibexa\Core\QueryType\QueryType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ContentChildrenQueryType extends OptionsResolverBasedQueryType implements QueryType

@@ -1,9 +1,9 @@
 <?php
-
+#TODO remplacement signalslot par eventlistener
 namespace SQLI\EzToolboxBundle\Services\Core;
 
-use eZ\Publish\API\Repository\Values\Content\Language;
-use eZ\Publish\API\Repository\Values\Content\VersionInfo;
+use Ibexa\Contracts\Core\Repository\Values\Content\Language;
+use Ibexa\Contracts\Core\Repository\Values\Content\VersionInfo;
 use eZ\Publish\Core\SignalSlot\ContentService as ContentServiceBase;
 use SQLI\EzToolboxBundle\Services\Core\Signal\PrepublishVersionSignal;
 
