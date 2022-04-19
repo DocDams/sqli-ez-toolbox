@@ -33,10 +33,10 @@
     {% endfor %}
     {% set compound_id = compound_id|json_encode %}
 
-        <div class="row align-items-stretch ez-main-row">
+        <div class="row align-items-stretch ibexa-main-row">
             {% block left_sidebar %}{% endblock left_sidebar %}
-            <div class="container px-0 pb-4 mt-3 ez-content-edit-container">
-                {{ form_start(form, {'attr': {'class': 'ez-form-validate'}}) }}
+            <div class="container px-0 pb-4 mt-3 ibexa-content-edit-container">
+                {{ form_start(form, {'attr': {'class': 'ibexa-form-validate'}}) }}
 
                 {% for field in form.children %}
                     {% if not field.rendered %}
@@ -47,9 +47,9 @@
                 {{ form_end(form) }}
             </div>
         {% block right_sidebar_wrapper %}
-            <div class="col-sm-1 pt-4 px-0 bg-secondary ez-context-menu">
-                <div class="ez-sticky-container">
-                    {% if class.annotation.update and is_granted( 'ez:sqli_admin:entity_edit_element' ) %}
+            <div class="col-sm-1 pt-4 px-0 bg-secondary ibexa-context-menu">
+                <div class="ibexa-sticky-container">
+                    {% if class.annotation.update and has_access( 'sqli_admin','entity_edit_element' ) %}
                         {% set sidebar_right = knp_menu_get('sqli_eztoolbox.admin.edit_element.sidebar_right',
                             [],
                             {

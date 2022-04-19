@@ -25,14 +25,14 @@
     <section class="container my-4">
         {# Filters filter_form #}
         {{ form_start( filter_form ) }}
-        <table class="table ez-table--list">
+        <table class="table ibexa-table--list">
             <thead>
             <tr>
-                <th class="ez-table__cell ez-table__cell--header" colspan="4">Filtre</th>
+                <th class="ibexa-table__cell ibexa-table__cell--header" colspan="4">Filtre</th>
             </tr>
             </thead>
             <tbody>
-            <tr class="ez-table__row">
+            <tr class="ibexa-table__row">
                 <td>
                     {{ form_widget( filter_form.column_name ) }}
                 </td>
@@ -54,8 +54,8 @@
         </table>
         {{ form_end( filter_form ) }}
 
-        <div class="ez-table-header">
-            <div class="ez-table-header__headline">
+        <div class="ibexa-table-header">
+            <div class="ibexa-table-header__headline">
                 {{ "entity.elements.table.header"|trans({'%fqcn%': fqcn})|raw }}
             </div>
             <div>
@@ -80,9 +80,9 @@
                                             'sort_column': property_name,
                                             'sort_order': 'ASC'
                                         }) }}">
-                                        <svg class="ez-icon ez-icon-caret-up" style="width: 1.5rem;height: 1.5rem;">
+                                        <svg class="ibexa-icon ibexa-icon-caret-up" style="width: 1.5rem;height: 1.5rem;">
                                             <use xmlns:xlink="http://www.w3.org/1999/xlink"
-                                                 xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#caret-up"></use>
+                                                 xlink:href="/bundles/ibexaadminui/img/ibexa-icons.svg#caret-up"></use>
                                         </svg>
                                     </a>
                                     {{ property_name }}
@@ -93,9 +93,9 @@
                                             'sort_column': property_name,
                                             'sort_order': 'DESC'
                                         }) }}">
-                                        <svg class="ez-icon ez-icon-caret-down" style="width: 1.5rem;height: 1.5rem;">
+                                        <svg class="ibexa-icon ibexa-icon-caret-down" style="width: 1.5rem;height: 1.5rem;">
                                             <use xmlns:xlink="http://www.w3.org/1999/xlink"
-                                                 xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#caret-down"></use>
+                                                 xlink:href="/bundles/ibexaadminui/img/ibexa-icons.svg#caret-down"></use>
                                         </svg>
                                     </a>
                                 </span>
@@ -114,7 +114,7 @@
                 </tbody>
             </table>
         {% endif %}
-        {{ pagerfanta(pager, 'ez') }}
+        {{ pagerfanta(pager, 'ibexa') }}
     </section>
 {% endblock %}
 
@@ -146,30 +146,30 @@
             {% endif %}
         {% endfor %}
         <td>
-            {% if is_granted( 'ez:sqli_admin:entity_view_element' ) %}
+            {% if has_access( 'sqli_admin','entity_view_element' ) %}
                 <a href="{{ path( 'sqli_eztoolbox_entitymanager_entity_view_element',
                     { 'fqcn': fqcn, 'compound_id': compound_id }) }}">
-                    <svg class="ez-icon ez-icon-view" style="width: 1.5rem;height: 1.5rem;">
+                    <svg class="ibexa-icon ibexa-icon-view" style="width: 1.5rem;height: 1.5rem;">
                         <use xmlns:xlink="http://www.w3.org/1999/xlink"
-                             xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#view"></use>
+                             xlink:href="/bundles/ibexaadminui/img/ibexa-icons.svg#view"></use>
                     </svg>
                 </a>
             {% endif %}
-            {% if class.annotation.update and is_granted( 'ez:sqli_admin:entity_edit_element' ) %}
+            {% if class.annotation.update and has_access( 'sqli_admin','entity_edit_element' ) %}
                 <a href="{{ path( 'sqli_eztoolbox_entitymanager_entity_edit_element',
                     { 'fqcn': fqcn, 'compound_id': compound_id }) }}">
-                    <svg class="ez-icon ez-icon-edit" style="width: 1.5rem;height: 1.5rem;">
+                    <svg class="ibexa-icon ibexa-icon-edit" style="width: 1.5rem;height: 1.5rem;">
                         <use xmlns:xlink="http://www.w3.org/1999/xlink"
-                             xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#edit"></use>
+                             xlink:href="/bundles/ibexaadminui/img/ibexa-icons.svg#edit"></use>
                     </svg>
                 </a>
             {% endif %}
-            {% if class.annotation.delete and is_granted( 'ez:sqli_admin:entity_remove_element' ) %}
+            {% if class.annotation.delete and has_access( 'sqli_admin','entity_remove_element' ) %}
                 <a href="{{ path( 'sqli_eztoolbox_entitymanager_entity_remove_element',
                     { 'fqcn': fqcn, 'compound_id': compound_id }) }}">
-                    <svg class="ez-icon ez-icon-trash" style="width: 1.5rem;height: 1.5rem;">
+                    <svg class="ibexa-icon ibexa-icon-trash" style="width: 1.5rem;height: 1.5rem;">
                         <use xmlns:xlink="http://www.w3.org/1999/xlink"
-                             xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#trash"></use>
+                             xlink:href="/bundles/ibexaadminui/img/ibexa-icons.svg#trash"></use>
                     </svg>
                 </a>
             {% endif %}
@@ -178,26 +178,26 @@
 {% endblock %}
 
 {% block sqli_entity_create_element %}
-    {% if class.annotation.create and is_granted( 'ez:sqli_admin:entity_create_element' ) %}
+    {% if class.annotation.create and has_access( 'sqli_admin','entity_create_element' ) %}
         <a title="{{ 'entity.button.alt.create'|trans|desc('Create a new line') }}"
            href="{{ path( 'sqli_eztoolbox_entitymanager_entity_create_element',
                { 'fqcn': fqcn } ) }}"
            class="btn btn-primary">
-            <svg class="ez-icon ez-icon-create">
-                <use xlink:href="{{ asset('bundles/ezplatformadminui/img/ez-icons.svg') }}#create"></use>
+            <svg class="ibexa-icon ibexa-icon-create">
+                <use xlink:href="{{ asset('bundles/ibexaadminui/img/ibexa-icons.svg') }}#create"></use>
             </svg>
         </a>
     {% endif %}
 {% endblock %}
 
 {% block sqli_entity_export_csv %}
-    {% if class.annotation.csv_exportable and is_granted( 'ez:sqli_admin:entity_export_csv' ) %}
+    {% if class.annotation.csv_exportable and has_access( 'sqli_admin','entity_export_csv' ) %}
         <a title="{{ 'entity.button.alt.export_csv'|trans|desc('Export into CSV file') }}"
            href="{{ path( 'sqli_eztoolbox_entitymanager_entity_export_csv',
                { 'fqcn': fqcn } ) }}"
            class="btn btn-primary">
-            <svg class="ez-icon ez-icon-form-data">
-                <use xlink:href="{{ asset('bundles/ezplatformadminui/img/ez-icons.svg') }}#form-data"></use>
+            <svg class="ibexa-icon ibexa-icon-form-data">
+                <use xlink:href="{{ asset('bundles/ibexaadminui/img/ibexa-icons.svg') }}#form-data"></use>
             </svg>
         </a>
     {% endif %}

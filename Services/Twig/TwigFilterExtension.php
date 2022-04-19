@@ -2,6 +2,7 @@
 
 namespace SQLI\EzToolboxBundle\Services\Twig;
 
+use eZ\Publish\Core\MVC\Symfony\Security\Authorization\Attribute;
 use Ibexa\Contracts\Core\Repository\Repository;
 use Ibexa\Contracts\Core\Repository\Values\Content\Content;
 use Ibexa\Contracts\Core\Repository\Values\Content\Field;
@@ -11,6 +12,7 @@ use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
 use Ibexa\Core\MVC\Symfony\Templating\Twig\Extension\ContentExtension;
 use SQLI\EzToolboxBundle\Services\DataFormatterHelper;
 use SQLI\EzToolboxBundle\Services\FieldHelper;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
@@ -27,19 +29,23 @@ class TwigFilterExtension extends AbstractExtension
     private $fieldHelper;
     /** @var ContentExtension */
     private $contentExtension;
+    /** @var AuthorizationCheckerInterface */
+    protected $authorizationChecker;
 
     public function __construct(
         Repository $repository,
         DataFormatterHelper $dataFormatterHelper,
         ConfigResolverInterface $configResolver,
         FieldHelper $fieldHelper,
-        ContentExtension $contentExtension
+        ContentExtension $contentExtension,
+        AuthorizationCheckerInterface $authorizationChecker
     ) {
         $this->repository = $repository;
         $this->dataFormatterHelper = $dataFormatterHelper;
         $this->configResolver = $configResolver;
         $this->fieldHelper = $fieldHelper;
         $this->contentExtension = $contentExtension;
+        $this->authorizationChecker = $authorizationChecker;
     }
 
     public function getFunctions()
@@ -51,6 +57,7 @@ class TwigFilterExtension extends AbstractExtension
                 new TwigFunction('is_anonymous_user', [$this, 'isAnonymousUser']),
                 new TwigFunction('content_name', [$this, 'getContentName']),
                 new TwigFunction('ez_parameter', [$this, 'getParameter']),
+                new TwigFunction('has_access', [$this, 'hasAccess']),
                 new TwigFunction('ez_selection_value', [$this->fieldHelper, 'ezselectionSelectedOptionValue']),
             ];
     }
@@ -142,6 +149,13 @@ class TwigFilterExtension extends AbstractExtension
         }
 
         return false;
+    }
+
+    public function hasAccess(string $module, string $function): bool
+    {
+        return $this->authorizationChecker->isGranted(
+            new Attribute($module, $function)
+        );
     }
 
     public function getName()

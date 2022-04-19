@@ -1,7 +1,7 @@
 {
   "name": "sqli/eztoolbox",
   "description": "SQLI eZToolbox is a bundle used in SQLI projects gathering some bundles like \"SQLI Entities Manager\", \"SQLI Command Toolbox\", some helpers and some Twig operators",
-  "keywords": ["sqli", "ezplatform", "crud", "entities", "toolbox", "ibexa", "oss", "content", "commerce", "dxp"],
+  "keywords": ["sqli", "ibexa", "crud", "entities", "toolbox", "ibexa", "oss", "content", "commerce", "dxp"],
   "homepage": "https://github.com/DocDams/sqli-eztoolbox",
   "type": "symfony-bundle",
   "authors": [

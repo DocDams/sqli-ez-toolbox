@@ -21,8 +21,8 @@
 
 {% block content %}
     <section class="container my-4">
-        <div class="ez-table-header">
-            <div class="ez-table-header__headline">{{ "entities.list.table.header"|trans }}</div>
+        <div class="ibexa-table-header">
+            <div class="ibexa-table-header__headline">{{ "entities.list.table.header"|trans }}</div>
         </div>
         {% if classes|length == 0 %}
             <p class="alert alert-warning">{{ 'entities.list.table.no_entities_configured'|trans }}</p>
@@ -40,7 +40,7 @@
                         <tr>
                             <td>
                                 <span title="{{ block('class_annotation_properties') }}">
-                                    {% if is_granted( 'ez:sqli_admin:entity_show' ) %}
+                                    {% if has_access( 'sqli_admin','entity_show' ) %}
                                         <a href="{{ path( 'sqli_eztoolbox_entitymanager_entity_homepage',
                                             {'fqcn': fqcn}) }}">{{ class_infos.classname }}
                                         </a>
