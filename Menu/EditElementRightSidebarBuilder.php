@@ -65,7 +65,7 @@ class EditElementRightSidebarBuilder extends AbstractBuilder
                 self::ITEM__SAVE,
                 [
                     'attributes' => [
-                        'class' => 'btn--trigger',
+                        'class' => 'ibexa-btn--trigger',
                         'data-click' => sprintf('#%s', $options['save_button_name']),
                     ],
                     'label' => $this->translator->trans(self::ITEM__SAVE, [], 'sqli_admin'),
