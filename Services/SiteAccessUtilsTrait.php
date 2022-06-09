@@ -23,8 +23,8 @@ trait SiteAccessUtilsTrait
     {
         $this->siteAccess = $siteAccess;
         $this->siteaccessAdminGroup = [];
-        if ($parameterBag->has('ezpublish.siteaccess.groups')) {
-            $siteaccessAdminGroup = $parameterBag->get('ezpublish.siteaccess.groups');
+        if ($parameterBag->has('ibexa.siteaccess.groups')) {
+            $siteaccessAdminGroup = $parameterBag->get('ibexa.siteaccess.groups');
             $this->siteaccessAdminGroup = $siteaccessAdminGroup['admin_group'];
         }
     }
