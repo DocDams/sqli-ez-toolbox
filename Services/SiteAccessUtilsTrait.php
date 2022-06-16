@@ -2,46 +2,48 @@
 
 namespace SQLI\EzToolboxBundle\Services;
 
-use Ibexa\Core\MVC\Symfony\SiteAccess;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Ibexa\Bundle\AdminUi\IbexaAdminUiBundle;
+use Ibexa\Core\Base\Exceptions\NotFoundException;
+use Ibexa\Core\MVC\Symfony\SiteAccess\SiteAccessService;
 
 trait SiteAccessUtilsTrait
 {
-    /** @var SiteAccess */
-    protected $siteAccess;
-    /** @var array */
-    protected $siteaccessAdminGroup;
+    protected SiteAccessService $siteAccessService;
 
     /**
      * autowiring
      *
      * @required
-     * @param SiteAccess $siteAccess
-     * @param ParameterBagInterface $parameterBag
+     *
+     * @param SiteAccessService $siteAccessService
      */
-    public function setSiteAccessSettings(SiteAccess $siteAccess, ParameterBagInterface $parameterBag): void
+    public function setSiteAccessSettings(SiteAccessService $siteAccessService): void
     {
-        $this->siteAccess = $siteAccess;
-        $this->siteaccessAdminGroup = [];
-        if ($parameterBag->has('ibexa.siteaccess.groups')) {
-            $siteaccessAdminGroup = $parameterBag->get('ibexa.siteaccess.groups');
-            $this->siteaccessAdminGroup = $siteaccessAdminGroup['admin_group'];
-        }
+        $this->siteAccessService = $siteAccessService;
     }
 
     /**
      * Check if specified (or current if null) siteaccess name is in admin group
      *
-     * @param string|null $siteaccess
+     * @param string|null $siteAccessName
+     *
      * @return bool
+     * @throws NotFoundException
      */
-    public function isAdminSiteAccess(?string $siteaccess = null): bool
+    public function isAdminSiteAccess(?string $siteAccessName = null): bool
     {
-        if (is_null($siteaccess)) {
-            $siteaccess = $this->getSiteAccessName();
+        if (is_null($siteAccessName)) {
+            $siteAccessName = $this->getSiteAccessName();
         }
 
-        return in_array($siteaccess, $this->siteaccessAdminGroup);
+        $siteaccess = $this->siteAccessService->get($siteAccessName);
+        foreach ($siteaccess->groups as $siteAccessGroup) {
+            if ($siteAccessGroup->getName() === IbexaAdminUiBundle::ADMIN_GROUP_NAME) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -49,6 +51,6 @@ trait SiteAccessUtilsTrait
      */
     public function getSiteAccessName(): string
     {
-        return $this->siteAccess->name;
+        return $this->siteAccessService->getCurrent()->name;
     }
 }
