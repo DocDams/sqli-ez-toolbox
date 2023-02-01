@@ -36,7 +36,7 @@ class Parameter
      */
     private $value;
     /**
-     * @var stdClass
+     * @var mixed
      *
      * @ORM\Column(name="params", type="object", nullable=true)
      * @SQLIAdmin\EntityProperty(
@@ -106,7 +106,7 @@ class Parameter
     /**
      * @return mixed
      */
-    public function getParams(): stdClass
+    public function getParams()
     {
         return $this->params;
     }
