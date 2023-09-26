@@ -1,0 +1,93 @@
+{% extends '@ezdesign/ui/layout.html.twig' %}
+
+{% block title %}{{ 'Content List' }}{% endblock %}
+
+{%- block breadcrumbs -%}
+    {% include '@ezdesign/ui/breadcrumbs.html.twig' with { items: [
+        { value: 'content_list.title'|trans|desc('Content List') }
+    ]} %}
+{%- endblock -%}
+
+{%- block page_title -%}
+    {% include '@ezdesign/ui/page_title.html.twig' with {
+        title: 'content_list.title'|trans|desc('Content List'),
+        icon_name: 'article'
+    } %}
+{%- endblock -%}
+
+{% block javascripts %}
+    <script src="{{ asset('sqli-eztoolbox/Resources/asset/js/dropdown.js') }}"></script>
+{% endblock %}
+
+{%- block content -%}
+
+    <section class="container my-4">
+        <div class="my-4">
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle"
+                        type="button" id="contentTypeFilter"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                    {% if app.request.get('contentTypeIdentifier') == 'false' %}
+                        Content Type
+                    {% else %}
+                        {% for group, types in contentTypes %}
+                            {% for type in types %}
+                                {% if type.identifier == app.request.get('contentTypeIdentifier') %}
+                                    {{ type.name }}
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
+                </button>
+                <div class="dropdown-menu" aria-labelledby="contentTypeFilter">
+                    {% for group, types in contentTypes %}
+                        <h6 class="dropdown-header">{{ group }}</h6>
+                        {% for type in types %}
+                            <a class="dropdown-item"
+                               href="{{ path('sqli_eztoolbox_all_content_list',
+                                   { 'contentTypeIdentifier': type.identifier }) }}">{{ type.name }}</a>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+                {% if app.request.get('contentTypeIdentifier') != 'false' %}
+                    <button class="btn btn-secondary" type="submit" id="exportCSV">
+                        <a class="text-decoration-none text-reset"
+                           href="{{ path('sqli_eztoolbox_export',
+                               { 'contentTypeIdentifier': selectedContentType }) }}" target="_new">Export CSV</a>
+                    </button>
+                {% endif %}
+            </div>
+        </div>
+        <div class="ez-table-header">
+            <div class="ez-table-header__headline">{{ "Content List" }} --
+                {{ 'num_of_content' | trans({'totalCount' : totalCount}, 'sqli_admin') }}
+            </div>
+        </div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>{{ 'content_list.content_name' | trans({}, 'sqli_admin') }}</th>
+                <th>{{ 'content_list.content_type' | trans({}, 'sqli_admin') }}</th>
+                <th>{{ 'content_list.modified' | trans({}, 'sqli_admin') }}</th>
+                <th>{{ 'content_list.published' | trans({}, 'sqli_admin') }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for content in paginator %}
+                <tr>
+                    <td><a href={{ ez_path(content) }}>{{ ez_content_name(content.contentInfo) }}</a></td>
+                    <td>{{ content.contentInfo.contentTypeId }}</td>
+                    <td>{{ content.contentInfo.modificationDate|ez_full_datetime }}</td>
+                    <td>{{ content.contentInfo.publishedDate|ez_full_datetime }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {{ pagerfanta(paginator, 'ez',
+            {'routeName': 'sqli_eztoolbox_all_content_list',
+                'routeParams': {'contentTypeIdentifier': selectedContentType}}) }}
+    </section>
+
+{%- endblock -%}
