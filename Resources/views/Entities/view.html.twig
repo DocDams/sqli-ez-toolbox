@@ -33,19 +33,47 @@
     {% endfor %}
     {% set compound_id = compound_id|json_encode %}
 
-        <div class="row align-items-stretch ez-main-row">
-            {% block left_sidebar %}{% endblock left_sidebar %}
-            <div class="container px-0 pb-4 mt-3 ez-content-edit-container">
-                {{ form_start(form, {'attr': {'class': 'ez-form-validate'}}) }}
+    <div class="row align-items-stretch ez-main-row">
+        {% block left_sidebar %}{% endblock left_sidebar %}
+        <div class="container px-0 pb-4 mt-3 ez-content-edit-container">
+            {{ form_start(form, {'attr': {'class': 'ez-form-validate'}}) }}
+            {% for field in form.children %}
+                {# Case where a field is a many-to-one relation (only a link to the object is provided #}
+                {% if not field.rendered and field.vars.attr.manytoone is defined %}
+                    {{ form_label(field, null, {'label_attr':{'class':'ez-field-edit__label'}}) }}
+                    {% for property_name, property_infos in class.properties %}
+                        {% if property_name ==  field.vars.name %}
+                            {% set manytoone = property_infos.manytoone %}
+                            {% set pKeyValue = attribute(field.vars.data,manytoone.targetEntityPKey) %}
+                            <a href="{{ path( 'sqli_eztoolbox_entitymanager_entity_view_element',
+                                { 'fqcn': manytoone.targetEntity,
+                                    'compound_id': '{"'~manytoone.targetEntityPKey~'"'~":"~'"'~pKeyValue~'"}' }) }}">
+                                {{ 'entity.fields.manytoone'|trans }} {{ manytoone.targetEntity }}
+                            </a><br>
+                        {% endif %}
+                    {% endfor %}
+                    {# Case where a field is a one-to-many relation (the field is not rendered) #}
+                {% elseif not field.rendered and field.vars.attr.onetomany is defined %}
+                    {{ form_label(field, null, {'label_attr':{'class':'ez-field-edit__label'}}) }}
+                    {% set manytoone_id = null %}
+                    {% set manytoone_id = attribute(form.vars.data, class.primary_key[0]) %}
+                    {% for property_name, property_infos in class.properties %}
+                        {% if property_name == field.vars.name %}
+                            <a href="{{ path( 'sqli_eztoolbox_entitymanager_entity_homepage',
+                                { 'fqcn': property_infos.onetomany.targetEntity,
+                                    'manytoone_id' : manytoone_id,
+                                    'mappedBy': property_infos.onetomany.mappedBy }) }}">
+                                {{ 'entity.fields.onetomany'|trans }}{{ property_infos.onetomany.targetEntity}}
+                            </a><br>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    {{ form_row(field) }}
+                {% endif %}
+            {% endfor %}
+            {{ form_end(form, {'render_rest': false}) }}
+        </div>
 
-                {% for field in form.children %}
-                    {% if not field.rendered %}
-                        {{ form_row(field) }}
-                    {% endif %}
-                {% endfor %}
-
-                {{ form_end(form) }}
-            </div>
         {% block right_sidebar_wrapper %}
             <div class="col-sm-1 pt-4 px-0 bg-secondary ez-context-menu">
                 <div class="ez-sticky-container">
@@ -75,5 +103,5 @@
             </div>
 
         {% endblock %}
-        </div>
+    </div>
 {% endblock %}
