@@ -35,6 +35,35 @@ _sqli_eztoolbox:
     resource: "@SQLIEzToolboxBundle/Resources/config/routing.yaml"
     prefix: /
 ```
+### Using attributes 
+
+If you're integrating new entities using attribute-based mapping in your Symfony application, you need to update the Doctrine configuration in the `doctrine.yaml` file to include these new mappings.
+
+1. **Navigate to Doctrine Configuration**:
+
+   Open the `doctrine.yaml` file located in `/config/packages/doctrine.yaml`.
+
+2. **Update Mappings Section**:
+
+   Add or modify the `mappings` section to include the new entity namespace and directory:
+
+    ```yaml
+    mappings:
+        Test:
+            is_bundle: false
+            dir: '%kernel.project_dir%/src/Entity/Test'
+            prefix: 'App\Entity\Test'
+            alias: Test
+            type: attribute
+    ```
+
+   Replace `Test` with your desired alias for the entity namespace. Ensure that the `dir` points to the correct directory containing your entity classes.
+
+3. **Save Changes**:
+
+   Save the changes to the `doctrine.yaml` file.
+
+4. **Clear Cache (if needed)**
 
 ### Clear cache
 

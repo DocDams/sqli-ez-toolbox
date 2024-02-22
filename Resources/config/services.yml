@@ -46,6 +46,12 @@ services:
             - "%kernel.project_dir%"
             - "@annotation_reader"
 
+    SQLI\EzToolboxBundle\Attributes\SQLIAttributesManager:
+        arguments:
+            - "Entity"
+            - "%sqli_ez_toolbox.entities%"
+            - "%kernel.project_dir%"
+
     # Handler Parameters
     SQLI\EzToolboxBundle\Services\Parameter\ParameterHandlerMaintenance:
         tags:

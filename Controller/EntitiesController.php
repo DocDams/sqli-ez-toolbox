@@ -87,7 +87,6 @@ class EntitiesController extends AbstractController
         $this->denyAccessUnlessGranted(new Attribute('sqli_admin','entity_show'));
 
         $classInformations = $entityHelper->getAnnotatedClass($fqcn);
-
         $sort = ['column_name' => $sort_column, 'order' => $sort_order];
 
         // FormType : class_informations

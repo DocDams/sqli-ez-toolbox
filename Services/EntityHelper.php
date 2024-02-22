@@ -6,25 +6,18 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use ReflectionException;
 use SQLI\EzToolboxBundle\Annotations\SQLIAnnotationManager;
+use SQLI\EzToolboxBundle\Attributes\SQLIAttributesManager;
 use SQLI\EzToolboxBundle\Classes\Filter;
 
 class EntityHelper
 {
-    /** @var EntityManagerInterface */
-    private $entityManager;
-    /** @var SQLIAnnotationManager */
-    private $annotationManager;
-    /** @var FilterEntityHelper */
-    private $filterEntityHelper;
-
     public function __construct(
-        EntityManagerInterface $entityManager,
-        SQLIAnnotationManager $annotationManager,
-        FilterEntityHelper $filterEntityHelper
+
+        private EntityManagerInterface $entityManager,
+        private SQLIAttributesManager $attributesManager,
+        private SQLIAnnotationManager $annotationManager,
+        private FilterEntityHelper $filterEntityHelper
     ) {
-        $this->entityManager = $entityManager;
-        $this->annotationManager = $annotationManager;
-        $this->filterEntityHelper = $filterEntityHelper;
     }
 
     /**
@@ -82,9 +75,14 @@ class EntityHelper
      */
     public function getAnnotatedClasses(): array
     {
+        $annotatedClasses = $this->attributesManager->getAttributedClasses();
+        /*dump($annotatedClasses);
         $annotatedClasses = $this->annotationManager->getAnnotatedClasses();
+        dd($annotatedClasses);*/
+/*        $annotatingLogic = $this->getParameter('sqli_ez_toolbox.annotating_logic');*/
 
         foreach ($annotatedClasses as $annotatedFQCN => &$annotatedClass) {
+
             $annotatedClass['count'] = $this->count($annotatedFQCN);
         }
 
@@ -100,6 +98,7 @@ class EntityHelper
     public function count(string $entityClass): int
     {
         return $this->entityManager->getRepository($entityClass)->count([]);
+
     }
 
     /**
