@@ -81,13 +81,19 @@ Attributes are directly integrated into the PHP language and are therefore nativ
    Add or modify the `mappings` section to include the new entity namespace and directory:
 
     ```yaml
-    mappings:
-        Test:
-            is_bundle: false
-            dir: '%kernel.project_dir%/src/Entity/Test'
-            prefix: 'App\Entity\Test'
-            alias: Test
-            type: attribute
+   mappings:
+      App:
+          is_bundle: false
+          dir: '%kernel.project_dir%/src/Entity/Doctrine'
+          prefix: 'App\Entity\Doctrine'
+          alias: App
+          type: annotation
+      Test:
+          is_bundle: false
+          dir: '%kernel.project_dir%/src/Entity/Test'
+          prefix: 'App\Entity\Test'
+          alias: Test
+          type: attribute
     ```
 
    Replace `Test` with your desired alias for the entity namespace. Ensure that the `dir` points to the correct directory containing your entity classes.
@@ -98,7 +104,8 @@ Attributes are directly integrated into the PHP language and are therefore nativ
    ```yaml
    sqli_ez_toolbox:
        entities:
-           - { directory: 'Entity/Doctrine', namespace: 'App\Entity'}
+           - { directory: 'Entity/Doctrine', namespace: 'App\Entity\Doctrine'}
+           - { directory: 'Entity/Test', namespace: 'App\Entity\Test'}
        mapping:
            type: 'attribute'
        admin_logger:
