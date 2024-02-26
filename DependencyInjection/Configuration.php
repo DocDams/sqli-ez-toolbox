@@ -33,6 +33,11 @@ class Configuration implements ConfigurationInterface
             ->end()
             ->end()
             ->end() // entities
+            ->arrayNode('mapping')
+            ->children()
+            ->scalarNode('type')->defaultValue('annotation')->end()
+            ->end()
+            ->end() // mapping
             ->arrayNode('admin_logger')
             ->addDefaultsIfNotSet()
             ->children()

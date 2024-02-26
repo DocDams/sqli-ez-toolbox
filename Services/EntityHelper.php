@@ -8,16 +8,29 @@ use ReflectionException;
 use SQLI\EzToolboxBundle\Annotations\SQLIAnnotationManager;
 use SQLI\EzToolboxBundle\Attributes\SQLIAttributesManager;
 use SQLI\EzToolboxBundle\Classes\Filter;
-
+use Symfony\Component\DependencyInjection\ContainerInterface;
 class EntityHelper
 {
-    public function __construct(
+    const ANNOTATION = "annotation";
+    const ATTRIBUTE = "attribute";
 
+    public function __construct(
         private EntityManagerInterface $entityManager,
         private SQLIAttributesManager $attributesManager,
         private SQLIAnnotationManager $annotationManager,
-        private FilterEntityHelper $filterEntityHelper
+        private FilterEntityHelper $filterEntityHelper,
+        private ContainerInterface $container,
     ) {
+    }
+
+    /**
+     * Get the annotation mapping type from the configuration file
+     *
+     */
+    public function getMappingType(): string
+    {
+        // Access the parameter from the container
+        return $this->container->getParameter('sqli_ez_toolbox.mapping.type');
     }
 
     /**
@@ -75,14 +88,19 @@ class EntityHelper
      */
     public function getAnnotatedClasses(): array
     {
-        $annotatedClasses = $this->attributesManager->getAttributedClasses();
-        /*dump($annotatedClasses);
-        $annotatedClasses = $this->annotationManager->getAnnotatedClasses();
-        dd($annotatedClasses);*/
-/*        $annotatingLogic = $this->getParameter('sqli_ez_toolbox.annotating_logic');*/
+        $mapping_type=$this->getMappingType();
+
+        if( $mapping_type !== self::ANNOTATION && $mapping_type !== self::ATTRIBUTE)
+            throw new \UnexpectedValueException("Unexpected mapping type '{$mapping_type}'. EntityHelper expects either 'annotation' or 'attribute'. Please review your SQLIToolBox configuration file.");
+
+
+        if($mapping_type== self::ANNOTATION){
+            $annotatedClasses = $this->annotationManager->getAnnotatedClasses();
+        }else {
+            $annotatedClasses = $this->attributesManager->getAttributedClasses();
+        }
 
         foreach ($annotatedClasses as $annotatedFQCN => &$annotatedClass) {
-
             $annotatedClass['count'] = $this->count($annotatedFQCN);
         }
 
@@ -91,14 +109,12 @@ class EntityHelper
 
     /**
      * Count number of element for an entity
-     *
      * @param string $entityClass FQCN
      * @return int
      */
     public function count(string $entityClass): int
     {
         return $this->entityManager->getRepository($entityClass)->count([]);
-
     }
 
     /**
@@ -201,4 +217,5 @@ class EntityHelper
             return strval($object[$property_name]);
         }
     }
+
 }

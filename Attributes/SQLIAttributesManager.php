@@ -97,11 +97,13 @@ class SQLIAttributesManager
 
                         // TODO Find a solution to get the class object with default values
                         $classAttribute = new SQLIToolBoxEntity(
-                            create: $classAttributeArguments['create'],
-                            update: $classAttributeArguments['update'],
-                            delete: $classAttributeArguments['delete'],
-                            description: $classAttributeArguments['description'],
-                            tabname: $classAttributeArguments['tabname'],
+                            create: $classAttributeArguments['create'] ?? false,
+                            update: $classAttributeArguments['update'] ?? false,
+                            delete: $classAttributeArguments['delete'] ?? false,
+                            description: $classAttributeArguments['description'] ?? "",
+                            max_per_page: $classAttributeArguments['max_per_page'] ?? 10,
+                            csv_exportable: $classAttributeArguments['csv_exportable'] ?? false,
+                            tabname: $classAttributeArguments['tabname'] ?? "default",
                         );
                         break;
                     }
@@ -167,7 +169,7 @@ class SQLIAttributesManager
                         if ( $attributeInstance instanceof Column){
                             $columnType = $attributeInstance->type;
                             //  $required = $columnType == "boolean" ? false : !boolval($nullablePropertyAnnotation->nullable);
-                            // TODO Verify this logic in the main bundle
+
                             $required = !$attributeInstance->nullable;
                         }
 
@@ -189,7 +191,6 @@ class SQLIAttributesManager
                     }
 
 
-                    // TODO Vérifier si on change clé $attributeClassname et attribute
                     $annotatedClasses[$this->attributeClassName][$classNamespace] =
                         [
                             'classname' => $className,
