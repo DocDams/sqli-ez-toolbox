@@ -9,6 +9,7 @@ use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Pagerfanta;
 use ReflectionException;
 use SQLI\EzToolboxBundle\Annotations\Annotation\Entity;
+use SQLI\EzToolboxBundle\Attributes\Attribute\SQLIToolBoxEntity;
 use SQLI\EzToolboxBundle\Classes\Filter;
 use SQLI\EzToolboxBundle\Form\EntityManager\EditElementType;
 use SQLI\EzToolboxBundle\Form\EntityManager\FilterType;
@@ -85,7 +86,6 @@ class EntitiesController extends AbstractController
         FilterEntityHelper $filterEntityHelper
     ): Response {
         $this->denyAccessUnlessGranted(new Attribute('sqli_admin','entity_show'));
-
         $classInformations = $entityHelper->getAnnotatedClass($fqcn);
         $sort = ['column_name' => $sort_column, 'order' => $sort_order];
 
@@ -148,7 +148,7 @@ class EntitiesController extends AbstractController
         if (array_key_exists('class', $entity) && array_key_exists('annotation', $entity['class'])) {
             $entityAnnotation = $entity['class']['annotation'];
             // Check if annotation exists
-            if ($entityAnnotation instanceof Entity) {
+            if ($entityAnnotation instanceof Entity || $entityAnnotation instanceof SQLIToolBoxEntity ) {
                 // Check if deletion is allowed
                 if ($entityAnnotation->isDelete()) {
                     // Try to decode compound Id
@@ -229,7 +229,7 @@ class EntitiesController extends AbstractController
         if (array_key_exists('class', $entity) && array_key_exists('annotation', $entity['class'])) {
             $entityAnnotation = $entity['class']['annotation'];
             // Check if annotation exists
-            if ($entityAnnotation instanceof Entity) {
+            if ($entityAnnotation instanceof Entity || $entityAnnotation instanceof SQLIToolBoxEntity ) {
                 // Check if modification is allowed
                 if ($entityAnnotation->isUpdate()) {
                     // Try to decode compound Id
@@ -307,11 +307,13 @@ class EntitiesController extends AbstractController
         $entity = $this->entityHelper->getEntity($fqcn, false);
 
         if (array_key_exists('class', $entity) && array_key_exists('annotation', $entity['class'])) {
+
             $entityAnnotation = $entity['class']['annotation'];
             // Check if annotation exists
-            if ($entityAnnotation instanceof Entity) {
+            if ($entityAnnotation instanceof Entity || $entityAnnotation instanceof SQLIToolBoxEntity ) {
                 // Check if modification is allowed
                 $compound_id = json_decode($compound_id, true);
+
                     if (!empty($compound_id)) {
                         // Find element
                         $element = $this->entityHelper->findOneBy($fqcn, $compound_id);
@@ -366,9 +368,11 @@ class EntitiesController extends AbstractController
         if (array_key_exists('class', $entity) && array_key_exists('annotation', $entity['class'])) {
             $entityAnnotation = $entity['class']['annotation'];
             // Check if annotation exists
-            if ($entityAnnotation instanceof Entity) {
+            if ($entityAnnotation instanceof Entity || $entityAnnotation instanceof SQLIToolBoxEntity ) {
                 // Check if modification is allowed
                 if ($entityAnnotation->isUpdate()) {
+
+                    //dd($entityAnnotation);
                     // New element
                     $element = new $fqcn();
 
@@ -438,7 +442,7 @@ class EntitiesController extends AbstractController
         if (array_key_exists('class', $entity) && array_key_exists('annotation', $entity['class'])) {
             $entityAnnotation = $entity['class']['annotation'];
             // Check if annotation exists
-            if ($entityAnnotation instanceof Entity) {
+            if ($entityAnnotation instanceof Entity || $entityAnnotation instanceof SQLIToolBoxEntity ) {
                 // Check if CSV exportation is allowed
                 if ($entityAnnotation->isCSVExportable()) {
                     // Find element

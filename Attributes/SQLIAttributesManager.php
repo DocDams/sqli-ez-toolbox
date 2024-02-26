@@ -95,7 +95,6 @@ class SQLIAttributesManager
                     if ($attribute->getName() === SQLIToolBoxEntity::class) {
                         $classAttributeArguments=$attribute->getArguments();
 
-                        // TODO Find a solution to get the class object with default values
                         $classAttribute = new SQLIToolBoxEntity(
                             create: $classAttributeArguments['create'] ?? false,
                             update: $classAttributeArguments['update'] ?? false,
