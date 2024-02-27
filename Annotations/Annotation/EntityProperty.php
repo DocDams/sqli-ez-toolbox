@@ -26,6 +26,22 @@ final class EntityProperty implements SQLIPropertyAnnotation
      */
     public $extra_link = null;
 
+
+    public function __construct(
+        bool $visible = true,
+        bool $readonly = false,
+        string $description = "",
+        ?array $choices = null,
+        ?string $extra_link = null
+    ) {
+        $this->visible = $visible;
+        $this->readonly = $readonly;
+        $this->description = $description;
+        $this->choices = $choices;
+        $this->extra_link = $extra_link;
+    }
+
+
     /**
      * @return bool
      */
