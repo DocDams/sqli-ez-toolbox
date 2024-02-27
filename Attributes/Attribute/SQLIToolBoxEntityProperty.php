@@ -31,7 +31,7 @@ final class SQLIToolBoxEntityProperty implements SQLIToolBoxClassProperty
      * @param array|null $choices
      * @param string|null $extra_link
      */
-    public function __construct(bool $visible= true, bool $readonly= false, string $description = "", ?array $choices= null, ?string $extra_link= null)
+    public function __construct(bool $visible= true, bool $readonly= false, string $description = "", ?array $choices= null, ?string $extra_link= "")
     {
         $this->visible = $visible;
         $this->readonly = $readonly;
