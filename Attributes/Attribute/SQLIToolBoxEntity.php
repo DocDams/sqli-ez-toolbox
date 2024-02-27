@@ -27,7 +27,7 @@ final class SQLIToolBoxEntity implements SQLIToolBoxClassAttribute
     /** @var string */
     public $tabname;
 
-    public function __construct(bool $create= false, bool $update= false, bool $delete = false, ?string $description = "", int $max_per_page = 10, bool $csv_exportable= false, string $tabname = "default")
+    public function __construct(bool $create= false, bool $update= false, bool $delete = false, string $description = "", int $max_per_page = 10, bool $csv_exportable= false, string $tabname = "default")
     {
               $this->create = $create;
 
@@ -35,7 +35,7 @@ final class SQLIToolBoxEntity implements SQLIToolBoxClassAttribute
 
               $this->delete = $delete;
 
-              $this->description = $description ?? '';
+              $this->description = $description;
 
               $this->max_per_page = max(10, $max_per_page); // Ensure max_per_page is non-negative
 
