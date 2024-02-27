@@ -27,23 +27,6 @@ final class Entity implements SQLIClassAnnotation
     /** @var string */
     public $tabname = "default";
 
-    public function __construct(
-        bool $create = false,
-        bool $update = false,
-        bool $delete = false,
-        string $description = "",
-        int $max_per_page = 10,
-        bool $csv_exportable = false,
-        string $tabname = "default"
-    ) {
-        $this->create = $create;
-        $this->update = $update;
-        $this->delete = $delete;
-        $this->description = $description;
-        $this->max_per_page = $max_per_page;
-        $this->csv_exportable = $csv_exportable;
-        $this->tabname = $tabname;
-    }
 
     /**
      * @return bool
