@@ -1,6 +1,6 @@
 <?php
 
-namespace Annotations\Annotation;
+namespace SQLI\EzToolboxBundle\tests\Annotations\Annotation;
 
 use PHPUnit\Framework\TestCase;
 use SQLI\EzToolboxBundle\Annotations\Annotation\Entity;
