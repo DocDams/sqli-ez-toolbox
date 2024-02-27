@@ -37,7 +37,8 @@ final class SQLIToolBoxEntity implements SQLIToolBoxClassAttribute
 
               $this->description = $description;
 
-              $this->max_per_page = $max_per_page;
+              $this->max_per_page = max(10, $max_per_page); // Ensure max_per_page is non-negative
+
 
               $this->csv_exportable = $csv_exportable;
 
