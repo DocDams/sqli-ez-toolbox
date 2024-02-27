@@ -52,7 +52,6 @@ class SQLIAnnotationManager
 
         // Only annotation in service declaration will be kept
         if (array_key_exists($this->annotation, $annotations)) {
-             //die('<pre>'.print_r($annotations, true).'</pre>');
             return $annotations[$this->annotation];
         }
 
@@ -109,6 +108,7 @@ class SQLIAnnotationManager
 
                 $reflectionProperties = $class->getProperties();
                 foreach ($reflectionProperties as $reflectionProperty) {
+
                     // Accessibility of each property
                     $accessibility = "public"; // public
                     if ($reflectionProperty->isPrivate()) {

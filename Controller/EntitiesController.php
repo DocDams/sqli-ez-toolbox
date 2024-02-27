@@ -372,7 +372,6 @@ class EntitiesController extends AbstractController
                 // Check if modification is allowed
                 if ($entityAnnotation->isUpdate()) {
 
-                    //dd($entityAnnotation);
                     // New element
                     $element = new $fqcn();
 
