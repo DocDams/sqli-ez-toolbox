@@ -33,6 +33,10 @@ class SQLIEzToolboxExtension extends Extension implements PrependExtensionInterf
             $config['entities']
         );
         $container->setParameter(
+            'sqli_ez_toolbox.mapping.type',
+            $config['mapping']['type']
+        );
+        $container->setParameter(
             'sqli_ez_toolbox.admin_logger.enabled',
             $config['admin_logger']['enabled']
         );
