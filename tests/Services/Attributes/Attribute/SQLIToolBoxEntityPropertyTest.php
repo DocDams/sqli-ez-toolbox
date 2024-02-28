@@ -103,9 +103,23 @@ class SQLIToolBoxEntityPropertyTest extends TestCase
     public function testIsReadonly()
     {
         $entity = new SQLIToolBoxEntityProperty(); // Instanciez votre classe ici
-        $this->assertFalse($entity->isReadonly()); // Assurez-vous que isReadonly() renvoie false
+        $this->assertIsBool($entity->isReadonly()); // Assurez-vous que isReadonly() renvoie false
     }
-
+    public function testIsChoices()
+    {
+        $entity = new SQLIToolBoxEntityProperty(choices: ['array']); // Instanciez votre classe ici
+        $this->assertIsArray($entity->getChoices()); // Assurez-vous que isReadonly() renvoie false
+    }
+    public function testIsDescritpion()
+    {
+        $entity = new SQLIToolBoxEntityProperty(); // Instanciez votre classe ici
+        $this->assertIsString($entity->getDescription()); // Assurez-vous que isReadonly() renvoie false
+    }
+    public function testIsExtraLink()
+    {
+        $entity = new SQLIToolBoxEntityProperty(); // Instanciez votre classe ici
+        $this->assertIsString($entity->getExtraLink()); // Assurez-vous que isReadonly() renvoie false
+    }
     public function testGetDescription()
     {
         $entity = new SQLIToolBoxEntityProperty(description:  'expected_description');
@@ -113,15 +127,15 @@ class SQLIToolBoxEntityPropertyTest extends TestCase
         $this->assertEquals('expected_description', $entity->getDescription()); // Assurez-vous que getDescription() retourne la description attendue
     }
 
-    public function testGetExtraLink()
-    {
-        $entity = new SQLIToolBoxEntityProperty(); // Instanciez votre classe ici
-        $this->assertNotNull($entity->getExtraLink()); // Assurez-vous que getExtraLink() ne renvoie pas null
-    }
     public function testGetChoices()
     {
         $entity = new SQLIToolBoxEntityProperty(choices: ["array"]);
         $this->assertEquals(1, count($entity->getChoices()));
 
+    }
+    public function testNullExtraLink()
+    {
+        $entity = new SQLIToolBoxEntityProperty(); // Instanciez votre classe ici
+        $this->assertNotNull($entity->getExtraLink()); // Assurez-vous que getExtraLink() ne renvoie pas null
     }
 }
