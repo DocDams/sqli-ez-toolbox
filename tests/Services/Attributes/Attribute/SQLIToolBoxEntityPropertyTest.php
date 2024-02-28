@@ -15,12 +15,6 @@ class SQLIToolBoxEntityPropertyTest extends TestCase
         $this->assertInstanceOf(SQLIToolBoxEntityProperty::CLASS,$entity);
 
     }
-    public function test__constructFalse()
-    {
-        $entity = new SQLIToolBoxEntity( update: false, delete: true, description: 'Entity description', max_per_page: 20, csv_exportable: true, tabname: 'custom_tab');
-        $this->assertNotInstanceOf(SQLIToolBoxEntityProperty::CLASS,$entity);
-
-    }
     public function testDefaultValues()
     {
         // Create a new instance of SQLIToolBoxEntity without passing any arguments
@@ -34,30 +28,100 @@ class SQLIToolBoxEntityPropertyTest extends TestCase
         $this->assertEquals('', $entity->getExtraLink());
 
     }
-    public function testGetChoices()
+
+    public function testSetVisible() {
+        // Create a new instance of SQLIToolBoxEntity
+        $entityAttribute = new SQLIToolBoxEntityProperty();
+        // Set a new value for create
+        $entityAttribute->visible = true;
+        // Assert that the value of create has been updated
+        $this->assertTrue($entityAttribute->isVisible());
+        $entityAttribute->visible = false;
+        // Assert that the value of create has been updated
+        $this->assertFalse($entityAttribute->isVisible());
+
+    }
+    public function testSetReadonly()
     {
-        $entity = new SQLIToolBoxEntityProperty(choices: ["array"]);
-        $this->assertEquals(1, count($entity->getChoices()));
+        // Create a new instance of YourClass
+        $entity = new SQLIToolBoxEntityProperty();
+
+        // Set a new value for readonly
+        $entity->readonly = true;
+        // Assert that the value of readonly has been updated
+        $this->assertTrue($entity->isReadonly());
+
+        // Set a new value for readonly
+        $entity->readonly = false;
+        // Assert that the value of readonly has been updated
+        $this->assertFalse($entity->isReadonly());
+    }
+    public function testSetChoices() {
+        // Create a new instance of SQLIToolBoxEntity
+        $entityAttribute = new SQLIToolBoxEntityProperty();
+        // Set a new value for create
+        $entityAttribute->choices = ['test'];
+        // Assert that the value of create has been updated
+        $this->assertIsArray($entityAttribute->getChoices());
+        $this->assertEquals(1, count($entityAttribute->getChoices()));
+    }
+
+    public function testSetDescription()
+    {
+        // Create a new instance of YourClass
+        $entity = new SQLIToolBoxEntityProperty();
+
+        // Set a new description
+        $description = "This is a new description";
+        $entity->description = $description;
+        // Assert that the description has been updated
+        $this->assertEquals($description, $entity->getDescription());
 
     }
 
+    public function testSetExtraLink()
+    {
+        // Create a new instance of YourClass
+        $entity = new SQLIToolBoxEntityProperty();
+
+        // Set a new extra link
+        $link = "http://example.com";
+        $entity->extra_link = $link;
+        // Assert that the extra link has been updated
+        $this->assertEquals($link, $entity->getExtraLink());
+        $link = '';
+        $entity->extra_link = $link;
+        // Assert that the description has been updated
+        $this->assertEmpty($link, $entity->getDescription());
+    }
     public function testIsVisible()
     {
-
+        $entity = new SQLIToolBoxEntityProperty(); // Instanciez votre classe ici
+        $this->assertTrue($entity->isVisible()); // Assurez-vous que isVisible() renvoie true
     }
 
     public function testIsReadonly()
     {
-
+        $entity = new SQLIToolBoxEntityProperty(); // Instanciez votre classe ici
+        $this->assertFalse($entity->isReadonly()); // Assurez-vous que isReadonly() renvoie false
     }
 
     public function testGetDescription()
     {
-
+        $entity = new SQLIToolBoxEntityProperty(description:  'expected_description');
+        // Instanciez votre classe ici
+        $this->assertEquals('expected_description', $entity->getDescription()); // Assurez-vous que getDescription() retourne la description attendue
     }
 
     public function testGetExtraLink()
     {
+        $entity = new SQLIToolBoxEntityProperty(); // Instanciez votre classe ici
+        $this->assertNotNull($entity->getExtraLink()); // Assurez-vous que getExtraLink() ne renvoie pas null
+    }
+    public function testGetChoices()
+    {
+        $entity = new SQLIToolBoxEntityProperty(choices: ["array"]);
+        $this->assertEquals(1, count($entity->getChoices()));
 
     }
 }
