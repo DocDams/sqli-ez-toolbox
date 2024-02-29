@@ -9,6 +9,7 @@ use SQLI\EzToolboxBundle\Annotations\SQLIAnnotationManager;
 use SQLI\EzToolboxBundle\Attributes\SQLIAttributesManager;
 use SQLI\EzToolboxBundle\Classes\Filter;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+
 class EntityHelper
 {
     const ANNOTATION = "annotation";
@@ -88,15 +89,16 @@ class EntityHelper
      */
     public function getAnnotatedClasses(): array
     {
-        $mapping_type=$this->getMappingType();
+        $mapping_type = $this->getMappingType();
 
-        if( $mapping_type !== self::ANNOTATION && $mapping_type !== self::ATTRIBUTE)
+        if ($mapping_type !== self::ANNOTATION && $mapping_type !== self::ATTRIBUTE) {
             throw new \UnexpectedValueException("Unexpected mapping type '{$mapping_type}'. EntityHelper expects either 'annotation' or 'attribute'. Please review your SQLIToolBox configuration file.");
+        }
 
 
-        if($mapping_type== self::ANNOTATION){
+        if ($mapping_type == self::ANNOTATION) {
             $annotatedClasses = $this->annotationManager->getAnnotatedClasses();
-        }else {
+        } else {
             $annotatedClasses = $this->attributesManager->getAttributedClasses();
         }
 
@@ -212,10 +214,8 @@ class EntityHelper
             return date_format($object[$property_name], "c");
         } elseif ($object[$property_name] instanceof \stdClass) {
             return (serialize($object[$property_name]));
-        }
-        else {
+        } else {
             return strval($object[$property_name]);
         }
     }
-
 }

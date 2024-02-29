@@ -15,7 +15,7 @@ final class Value implements ValueInterface
     /** @var string|null */
     private $pkValue;
 
-    public function __construct(?string $className = null, ?string $pkKey = null ,?string $pkValue = null)
+    public function __construct(?string $className = null, ?string $pkKey = null, ?string $pkValue = null)
     {
         $this->className = $className;
         $this->pkKey = $pkKey;

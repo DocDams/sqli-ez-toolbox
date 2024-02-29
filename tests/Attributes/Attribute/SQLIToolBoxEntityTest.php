@@ -106,8 +106,4 @@ class SQLIToolBoxEntityTest extends TestCase
         // Assert that the value of create has been updated
         $this->assertTrue($entityAttribute->isCreate());
     }
-
-
-
-
 }

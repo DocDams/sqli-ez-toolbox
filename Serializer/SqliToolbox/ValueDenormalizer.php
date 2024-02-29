@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SQLI\EzToolboxBundle\Serializer\SqliToolbox;
@@ -10,7 +11,7 @@ final class ValueDenormalizer implements DenormalizerInterface
 {
     public function denormalize($data, string $class, string $format = null, array $context = [])
     {
-        if (is_array($data) && count($data)==3) {
+        if (is_array($data) && count($data) == 3) {
             return new $class($data['className'], $data['pkKey'], $data['pkValue']);
         }
     }

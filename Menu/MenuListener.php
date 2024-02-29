@@ -43,8 +43,8 @@ class MenuListener implements EventSubscriberInterface
     public function onMainMenuConfigure(ConfigureMenuEvent $event): void
     {
         $rootMenu = $event->getMenu()->getRoot();
-        if ($this->authorizationChecker->isGranted(new Attribute('sqli_admin','list_entities'))) {
-            $customMenuItem = $rootMenu->addChild(self::SQLI_ADMIN_MENU_ROOT,[
+        if ($this->authorizationChecker->isGranted(new Attribute('sqli_admin', 'list_entities'))) {
+            $customMenuItem = $rootMenu->addChild(self::SQLI_ADMIN_MENU_ROOT, [
                 'attributes' => [
                     'data-tooltip-placement' => 'right',
                     'data-tooltip-extra-class' => 'ibexa-tooltip--info-neon',

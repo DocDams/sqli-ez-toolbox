@@ -14,7 +14,6 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class SQLIAttributesManager
 {
-
     /**
      * Classname of annotation
      * @var string
@@ -93,7 +92,7 @@ class SQLIAttributesManager
                 $classAttribute = null;
                 foreach ($class->getAttributes() as $attribute) {
                     if ($attribute->getName() === SQLIToolBoxEntity::class) {
-                        $classAttributeArguments=$attribute->getArguments();
+                        $classAttributeArguments = $attribute->getArguments();
 
                         $classAttribute = new SQLIToolBoxEntity(
                             create: $classAttributeArguments['create'] ?? false,
@@ -109,7 +108,7 @@ class SQLIAttributesManager
                 }
 
                 // Check if $class use Doctrine\Entity Attribute
-                $classDoctrineAttribute=null;
+                $classDoctrineAttribute = null;
                 foreach ($class->getAttributes() as $attribute) {
                     if ($attribute->getName() === Entity::class) {
                         $classDoctrineAttribute = Entity::class;
@@ -117,7 +116,7 @@ class SQLIAttributesManager
                     }
                 }
 
-                if ($classAttribute===null && $classDoctrineAttribute===null) {
+                if ($classAttribute === null && $classDoctrineAttribute === null) {
                     // No SQLIClassAnnotation or isn't an entity, ignore her
                     continue;
                 }
@@ -161,11 +160,9 @@ class SQLIAttributesManager
                             // Get choices
                             $choices = $attributeInstance->getChoices();
                             $extraLink = $attributeInstance->getExtraLink();
-
-
                         }
 
-                        if ( $attributeInstance instanceof Column){
+                        if ($attributeInstance instanceof Column) {
                             $columnType = $attributeInstance->type;
                             //  $required = $columnType == "boolean" ? false : !boolval($nullablePropertyAnnotation->nullable);
 
@@ -184,9 +181,9 @@ class SQLIAttributesManager
                         ];
 
                         //Get The Primary Keys
-                         if ( $attributeInstance instanceof Id){
-                             $compoundPrimaryKey[] = $reflectionProperty->getName();
-                         }
+                        if ($attributeInstance instanceof Id) {
+                            $compoundPrimaryKey[] = $reflectionProperty->getName();
+                        }
                     }
 
 
@@ -202,5 +199,4 @@ class SQLIAttributesManager
         }
         return $annotatedClasses;
     }
-
 }

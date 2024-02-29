@@ -19,7 +19,6 @@ use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
 use Ibexa\Core\Helper\FieldHelper;
 use Ibexa\Core\Helper\TranslationHelper;
 
-
 class FetchHelper
 {
     public const LIMIT = 25;
@@ -334,7 +333,8 @@ class FetchHelper
         $content = $location->getContent();
 
         // Check if $location has a relation in field
-        if ($content->getContentType()->getFieldDefinition($fieldIdentifier) == null ||
+        if (
+            $content->getContentType()->getFieldDefinition($fieldIdentifier) == null ||
             $this->fieldhelper->isFieldEmpty($content, $fieldIdentifier)
         ) {
             // No relation to a header object then check parent location

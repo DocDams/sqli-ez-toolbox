@@ -7,7 +7,6 @@ use SQLI\EzToolboxBundle\Annotations\Annotation\Entity;
 
 class EntityTest extends TestCase
 {
-
     /**
      * @covers \SQLI\EzToolboxBundle\Annotations\Annotation\Entity::__construct
      */

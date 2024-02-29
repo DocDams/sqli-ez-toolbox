@@ -108,7 +108,6 @@ class SQLIAnnotationManager
 
                 $reflectionProperties = $class->getProperties();
                 foreach ($reflectionProperties as $reflectionProperty) {
-
                     // Accessibility of each property
                     $accessibility = "public"; // public
                     if ($reflectionProperty->isPrivate()) {
