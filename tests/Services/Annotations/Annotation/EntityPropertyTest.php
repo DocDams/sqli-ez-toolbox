@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 class EntityPropertyTest extends TestCase
 {
 
-    public function test__construct()
+    public function testConstruct()
     {
         $entity = new EntityProperty();
         $this->assertInstanceOf(EntityProperty::CLASS, $entity);
