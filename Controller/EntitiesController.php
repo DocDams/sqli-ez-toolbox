@@ -59,6 +59,8 @@ class EntitiesController extends AbstractController
         $this->denyAccessUnlessGranted(new Attribute('sqli_admin', 'list_entities'));
 
         $tabs = $tabEntityHelper->entitiesGroupedByTab();
+
+        $params = [];
         $params['tabname'] = $tabname;
         $params['classes'] = $tabs[$tabname];
 
@@ -244,6 +246,7 @@ class EntitiesController extends AbstractController
                         $form = $this->createForm(EditElementType::class, $element, ['entity' => $entity]);
                         $form->handleRequest($request);
 
+                        $params = [];
                         if ($form->isSubmitted() && $form->isValid()) {
                             // Form is valid, update element
                             $this->entityManager->persist($element);
@@ -324,7 +327,7 @@ class EntitiesController extends AbstractController
                         ['entity' => $entity, 'context' => $context]
                     );
                     $form->handleRequest($request);
-
+                    $params = [];
                     // Display form
                     $params['form'] = $form->createView();
                     $params['fqcn'] = $fqcn;
@@ -385,6 +388,7 @@ class EntitiesController extends AbstractController
                         $updateSuccessfull = true;
                     } else {
                         // Display form
+                        $params = [];
                         $params['form'] = $form->createView();
                         $params['fqcn'] = $fqcn;
                         $params['tabname'] = $entityAnnotation->getTabname();

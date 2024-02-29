@@ -7,8 +7,8 @@ use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Id;
 use ReflectionClass;
 use ReflectionException;
-use SQLI\EzToolboxBundle\Attributes\Attribute\SQLIToolBoxClassProperty;
 use SQLI\EzToolboxBundle\Attributes\Attribute\SQLIToolBoxEntity;
+use SQLI\EzToolboxBundle\Attributes\Attribute\SQLIToolBoxEntityProperty;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -150,8 +150,8 @@ class SQLIAttributesManager
                         $attributeInstance = $attribute->newInstance();
 
                         // Vérifier si l'attribut est une instance de SQLIToolBoxClassProperty
-                        if ($attributeInstance instanceof SQLIToolBoxClassProperty) {
-                            // Check if a visibility information defined on entity's property thanks to 'visible' attribute
+                        if ($attributeInstance instanceof SQLIToolBoxEntityProperty) {
+                        // Check if a visibility information defined on entity's property with 'visible' attribute
                             $visible = $attributeInstance->isVisible();
                             // Check if property must be only in readonly
                             $readonly = $attributeInstance->isReadonly();
@@ -164,7 +164,6 @@ class SQLIAttributesManager
 
                         if ($attributeInstance instanceof Column) {
                             $columnType = $attributeInstance->type;
-                            //  $required = $columnType == "boolean" ? false : !boolval($nullablePropertyAnnotation->nullable);
 
                             $required = !$attributeInstance->nullable;
                         }

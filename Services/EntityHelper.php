@@ -12,8 +12,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class EntityHelper
 {
-    const ANNOTATION = "annotation";
-    const ATTRIBUTE = "attribute";
+    private const ANNOTATION = "annotation";
+    private const ATTRIBUTE = "attribute";
 
     public function __construct(
         private EntityManagerInterface $entityManager,
@@ -92,7 +92,9 @@ class EntityHelper
         $mapping_type = $this->getMappingType();
 
         if ($mapping_type !== self::ANNOTATION && $mapping_type !== self::ATTRIBUTE) {
-            throw new \UnexpectedValueException("Unexpected mapping type '{$mapping_type}'. EntityHelper expects either 'annotation' or 'attribute'. Please review your SQLIToolBox configuration file.");
+            throw new \UnexpectedValueException("Unexpected mapping type '{$mapping_type}'. 
+            EntityHelper expects either 'annotation' or 'attribute'. 
+            Please review your SQLIToolBox configuration file.");
         }
 
 
