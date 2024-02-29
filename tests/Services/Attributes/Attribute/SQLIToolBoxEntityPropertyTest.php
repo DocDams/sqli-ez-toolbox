@@ -54,7 +54,6 @@ class SQLIToolBoxEntityPropertyTest extends TestCase
         $entity = new SQLIToolBoxEntityProperty();
         $description = "This is a new description";
         $entity->description = $description;
-
         $this->assertEquals($description, $entity->getDescription());
 
     }
