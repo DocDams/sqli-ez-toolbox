@@ -45,8 +45,6 @@ class EntityPropertyTest extends TestCase
         $entity->readonly = true;
         // Assert that the value of readonly has been updated
         $this->assertTrue($entity->isReadonly());
-
-        // Set a new value for readonly
         $entity->readonly = false;
         // Assert that the value of readonly has been updated
         $this->assertFalse($entity->isReadonly());
