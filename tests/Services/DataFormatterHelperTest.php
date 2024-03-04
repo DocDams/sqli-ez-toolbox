@@ -42,6 +42,7 @@ class DataFormatterHelperTest extends TestCase
      */
     public function testFormatFrenchDate(): void
     {
+        // @phpstan-ignore-next-line
         $date = \DateTime::createFromFormat('U', 1623094200);
         $formattedData = $this->dataFormatterHelper->format($date, 'french_date');
         $this->assertSame("Lundi 07 Juin à 19:30", $formattedData);
@@ -116,6 +117,7 @@ class DataFormatterHelperTest extends TestCase
     public function testToDateTimeDatetimeNotGiven(): void
     {
         $currentTimestamp = date('now');
+        // @phpstan-ignore-next-line
         $datetime = $this->dataFormatterHelper->toDateTime(false);
         $this->assertGreaterThanOrEqual($currentTimestamp, $datetime->getTimestamp());
     }

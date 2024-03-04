@@ -16,18 +16,21 @@ class DataFormatterHelper
      * @param string $format
      * @param null $pattern
      * @return string
+     * @SuppressWarnings(PHPMD)
      */
+
+    //phpcs:@ignore
     public function format($data, string $format, $pattern = null): string
     {
         switch ($format) {
             case "float":
-                return preg_replace('#^([0-9\s]+),([0-9]+)$#', '$1.$2', $data);
+                return preg_replace('#^([0-9\s]+),(\d+)$#', '$1.$2', $data);
             case "amount":
                 $number = $this->format($data, "float");
 
                 return number_format((float)$number, 2, ",", " ");
             case "price":
-                // $pattern should contains currency code according to ISO 4217
+                // $pattern should contain currency code according to ISO 4217
                 $pattern = $pattern ?: "EUR";
 
                 $numberFormatter = new \NumberFormatter(locale_get_default(), \NumberFormatter::CURRENCY);
@@ -42,7 +45,7 @@ class DataFormatterHelper
 
                 return $this->humanFilesize($data, $pattern);
             case "datetime":
-                return $this->toDateTime($data);
+                return $this->toDateTime($data) . '';
             case "url":
                 $url = $data;
                 // Check if protocol is in $data
@@ -99,7 +102,7 @@ class DataFormatterHelper
      * @return string
      * @throws \Exception
      */
-    private function formatFrenchDate($date, $pattern = null): string
+    private function formatFrenchDate($date, ?string $pattern = null): string
     {
         $monthEn = [
             "January",
@@ -215,7 +218,7 @@ class DataFormatterHelper
     private function humanFilesize(int $bytes, int $decimals = 2): string
     {
         $sz = ["o", "Ko", "Mo", "Go", "To", "Po"];
-        $factor = (int)floor((strlen($bytes) - 1) / 3);
+        $factor = (int)floor((strlen($bytes . '') - 1) / 3);
 
         return sprintf("%.{$decimals}f ", $bytes / pow(1024, $factor)) . @$sz[$factor];
     }

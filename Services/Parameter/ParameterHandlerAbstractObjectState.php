@@ -64,7 +64,7 @@ abstract class ParameterHandlerAbstractObjectState implements ParameterHandlerIn
      * @throws NotFoundException
      * @throws InvalidArgumentException
      */
-    public function showParameter($paramName, $paramValue, OutputInterface $output = null)
+    public function showParameter($paramName, $paramValue, OutputInterface $output = null): void
     {
         /** @var ParameterHandlerInterface $parameterHandler */
         $groupState = $this->stateHandler->loadGroupByIdentifier($paramName);

@@ -9,10 +9,11 @@ use SQLI\EzToolboxBundle\Annotations\SQLIAnnotationManager;
 use SQLI\EzToolboxBundle\Attributes\SQLIAttributesManager;
 use SQLI\EzToolboxBundle\Classes\Filter;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+
 class EntityHelper
 {
-    const ANNOTATION = "annotation";
-    const ATTRIBUTE = "attribute";
+    private const ANNOTATION = "annotation";
+    private const ATTRIBUTE = "attribute";
 
     public function __construct(
         private EntityManagerInterface $entityManager,
@@ -39,11 +40,12 @@ class EntityHelper
      * @param string $fqcn
      * @param bool $fetchElements
      * @param bool|array $sort Array( 'column_name' => '', 'order' => 'ASC|DESC' )
-     * @return mixed
+     * @return array
      * @throws ReflectionException
      */
     public function getEntity(string $fqcn, $fetchElements = true, $sort = false): array
     {
+        $annotatedClass = [];
         $annotatedClass['fqcn'] = $fqcn;
         $annotatedClass['class'] = $this->getAnnotatedClass($fqcn);
 
@@ -77,7 +79,7 @@ class EntityHelper
     {
         $annotatedClasses = $this->getAnnotatedClasses();
 
-        return array_key_exists($fqcn, $annotatedClasses) ? $annotatedClasses[$fqcn] : null;
+        return $annotatedClasses[$fqcn] ?? null;
     }
 
     /**
@@ -88,15 +90,18 @@ class EntityHelper
      */
     public function getAnnotatedClasses(): array
     {
-        $mapping_type=$this->getMappingType();
+        $mapping_type = $this->getMappingType();
 
-        if( $mapping_type !== self::ANNOTATION && $mapping_type !== self::ATTRIBUTE)
-            throw new \UnexpectedValueException("Unexpected mapping type '{$mapping_type}'. EntityHelper expects either 'annotation' or 'attribute'. Please review your SQLIToolBox configuration file.");
+        if ($mapping_type !== self::ANNOTATION && $mapping_type !== self::ATTRIBUTE) {
+            throw new \UnexpectedValueException("Unexpected mapping type '{$mapping_type}'. 
+            EntityHelper expects either 'annotation' or 'attribute'. 
+            Please review your SQLIToolBox configuration file.");
+        }
 
 
-        if($mapping_type== self::ANNOTATION){
+        if ($mapping_type == self::ANNOTATION) {
             $annotatedClasses = $this->annotationManager->getAnnotatedClasses();
-        }else {
+        } else {
             $annotatedClasses = $this->attributesManager->getAttributedClasses();
         }
 
@@ -128,7 +133,6 @@ class EntityHelper
      */
     public function findAll(string $entityClass, $filteredColums = null, $filter = null, $sort = false): array
     {
-        /** @var $repository EntityRepository */
         $repository = $this->entityManager->getRepository($entityClass);
         $queryBuilder = $repository->createQueryBuilder('entity');
 
@@ -212,10 +216,8 @@ class EntityHelper
             return date_format($object[$property_name], "c");
         } elseif ($object[$property_name] instanceof \stdClass) {
             return (serialize($object[$property_name]));
-        }
-        else {
-            return strval($object[$property_name]);
+        } else {
+            return (string) $object[$property_name];
         }
     }
-
 }

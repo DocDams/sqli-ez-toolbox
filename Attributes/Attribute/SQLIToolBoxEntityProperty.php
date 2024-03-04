@@ -5,7 +5,6 @@ namespace SQLI\EzToolboxBundle\Attributes\Attribute;
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 final class SQLIToolBoxEntityProperty implements SQLIToolBoxClassProperty
 {
-
     /** @var bool */
     public $visible ;
 
@@ -31,7 +30,7 @@ final class SQLIToolBoxEntityProperty implements SQLIToolBoxClassProperty
      * @param array|null $choices
      * @param string|null $extra_link
      */
-    public function __construct(bool $visible= true, bool $readonly= false, string $description = "", ?array $choices= [], ?string $extra_link= '')
+    public function __construct(bool $visible = true, bool $readonly = false, string $description = "", ?array $choices = [], ?string $extra_link = '')
     {
         $this->visible = $visible;
         $this->readonly = $readonly;
@@ -79,9 +78,4 @@ final class SQLIToolBoxEntityProperty implements SQLIToolBoxClassProperty
     {
         return $this->extra_link;
     }
-
 }
-
-
-
-

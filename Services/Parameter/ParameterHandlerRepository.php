@@ -7,17 +7,16 @@ use SQLI\EzToolboxBundle\Exceptions\ParameterHandlerUnknownParameterNameExceptio
 class ParameterHandlerRepository
 {
     /** @var array<ParameterHandlerInterface> */
-    private $handlers;
+    private $handlers = array();
 
     public function __construct()
     {
-        $this->handlers = array();
     }
 
     /**
      * @param ParameterHandlerInterface $handler
      */
-    public function addHandler(ParameterHandlerInterface $handler)
+    public function addHandler(ParameterHandlerInterface $handler): void
     {
         $this->handlers[$handler::PARAMETER_NAME] = $handler;
     }

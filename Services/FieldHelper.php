@@ -4,6 +4,7 @@ namespace SQLI\EzToolboxBundle\Services;
 
 use Ibexa\Contracts\Core\Repository\Values\Content\Content;
 use Ibexa\Contracts\Core\Repository\Values\Content\Field;
+use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 use Ibexa\Core\FieldType\Selection\Value;
 use Ibexa\Core\Helper\FieldHelper as EzFieldHelper;
 use Ibexa\Core\Helper\TranslationHelper;
@@ -41,7 +42,7 @@ class FieldHelper
         }
 
         // Check if field exist in content type definition
-        if ($content->getContentType()->getFieldDefinition($fieldDefIdentifier) === null) {
+        if (!$content->getContentType()->getFieldDefinition($fieldDefIdentifier) instanceof FieldDefinition) {
             return true;
         }
 

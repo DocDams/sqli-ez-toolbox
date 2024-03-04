@@ -17,7 +17,7 @@ class SQLIToolBoxEntityTest extends TestCase
      * @covers \SQLI\EzToolboxBundle\Attributes\SQLIToolBoxEntity::isCsvExportable
      * @covers \SQLI\EzToolboxBundle\Attributes\SQLIToolBoxEntity::getTabname
      */
-    public function testPropertiesAreCorrectlyInitialized()
+    public function testPropertiesAreCorrectlyInitialized(): void
     {
         // Create a new instance of SQLIToolBoxEntity
         $entity = new SQLIToolBoxEntity(
@@ -50,7 +50,7 @@ class SQLIToolBoxEntityTest extends TestCase
      * @covers \SQLI\EzToolboxBundle\Attributes\SQLIToolBoxEntity::isCsvExportable
      * @covers \SQLI\EzToolboxBundle\Attributes\SQLIToolBoxEntity::getTabname
      */
-    public function testDefaultValues()
+    public function testDefaultValues(): void
     {
         // Create a new instance of SQLIToolBoxEntity without passing any arguments
         $entity = new SQLIToolBoxEntity();
@@ -69,7 +69,7 @@ class SQLIToolBoxEntityTest extends TestCase
      * @covers \SQLI\EzToolboxBundle\Attributes\SQLIToolBoxEntity::__construct
      * @covers \SQLI\EzToolboxBundle\Attributes\SQLIToolBoxEntity::getMaxPerPage
      */
-    public function testNegativeMaxPerPage()
+    public function testNegativeMaxPerPage(): void
     {
         // Create a new instance of SQLIToolBoxEntity with negative max_per_page value
         $entity = new SQLIToolBoxEntity(max_per_page: -10);
@@ -82,7 +82,7 @@ class SQLIToolBoxEntityTest extends TestCase
      * @covers \SQLI\EzToolboxBundle\Attributes\SQLIToolBoxEntity::__construct
      * @covers \SQLI\EzToolboxBundle\Attributes\SQLIToolBoxEntity::getTabname
      */
-    public function testDefaultTabname()
+    public function testDefaultTabname(): void
     {
         // Create a new instance of SQLIToolBoxEntity without specifying tabname
         $entityAttribute = new SQLIToolBoxEntity();
@@ -95,7 +95,7 @@ class SQLIToolBoxEntityTest extends TestCase
      * @covers \SQLI\EzToolboxBundle\Attributes\SQLIToolBoxEntity::__set
      * @covers \SQLI\EzToolboxBundle\Attributes\SQLIToolBoxEntity::isCreate
      */
-    public function testSetCreate()
+    public function testSetCreate(): void
     {
         // Create a new instance of SQLIToolBoxEntity
         $entityAttribute = new SQLIToolBoxEntity();
@@ -106,8 +106,4 @@ class SQLIToolBoxEntityTest extends TestCase
         // Assert that the value of create has been updated
         $this->assertTrue($entityAttribute->isCreate());
     }
-
-
-
-
 }

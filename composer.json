@@ -28,7 +28,8 @@
   "require": {
     "ibexa/oss": "^4.0.2",
     "ext-json": "*",
-    "ext-openssl": "*"
+    "ext-openssl": "*",
+    "http-interop/http-factory-guzzle": "^1.2"
   },
   "suggest": {
     "tanoconsulting/ezmigrationbundle2": "main"
@@ -40,6 +41,16 @@
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "^3.6",
-    "phpunit/phpunit": "^9.5"
+    "phpunit/phpunit": "^9.5",
+    "phpstan/phpstan": "^1.10",
+    "phpmd/phpmd": "^2.15",
+    "rector/rector": "^1.0"
+  },
+  "config": {
+    "allow-plugins": {
+      "php-http/discovery": true,
+      "ibexa/post-install": true,
+      "symfony/flex": true
+    }
   }
 }

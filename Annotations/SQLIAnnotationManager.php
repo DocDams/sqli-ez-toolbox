@@ -80,107 +80,130 @@ class SQLIAnnotationManager
             $path = $this->projectDir . '/src/' . $directory;
             $finder = new Finder();
             $finder->depth(0)->files()->in($path);
-
-            /** @var SplFileInfo $file */
-            foreach ($finder as $file) {
-                $className = $file->getBasename('.php');
-                $classNamespace = "$namespace\\$className";
-                // Create reflection class from generated namespace to read annotation
-                $class = new ReflectionClass($classNamespace);
-
-                // Search if $class use an SQLIClassAnnotation
-                $classAnnotation = $this
-                    ->annotationReader
-                    ->getClassAnnotation($class, SQLIEntity::class);
-                // Check if $class use Doctrine\Entity annotation
-                $classDoctrineAnnotation = $this
-                    ->annotationReader
-                    ->getClassAnnotation($class, Entity::class);
-
-                if (!$classAnnotation || !$classDoctrineAnnotation) {
-                    // No SQLIClassAnnotation or isn't an entity, ignore her
-                    continue;
-                }
-
-                // Prepare properties
-                $properties = [];
-                $compoundPrimaryKey = [];
-
-                $reflectionProperties = $class->getProperties();
-                foreach ($reflectionProperties as $reflectionProperty) {
-
-                    // Accessibility of each property
-                    $accessibility = "public"; // public
-                    if ($reflectionProperty->isPrivate()) {
-                        $accessibility = "private"; // private
-                    } elseif ($reflectionProperty->isProtected()) {
-                        $accessibility = "protected"; // protected
-                    }
-
-                    // Try to get an SQLIPropertyAnnotation
-                    $visible = true;
-                    $readonly = false;
-                    $required = true;
-                    $columnType = "string";
-                    $description = null;
-                    $choices = null;
-                    $extraLink = null;
-
-                    $propertyAnnotation = $this
-                        ->annotationReader
-                        ->getPropertyAnnotation($reflectionProperty, SQLIEntityProperty::class);
-
-                    if ($propertyAnnotation instanceof SQLIEntityProperty) {
-                        // Check if a visibility information defined on entity's property thanks to 'visible' annotation
-                        $visible = $propertyAnnotation->isVisible();
-                        // Check if property must be only in readonly
-                        $readonly = $propertyAnnotation->isReadonly();
-                        // Get property description
-                        $description = $propertyAnnotation->getDescription();
-                        // Get choices
-                        $choices = $propertyAnnotation->getChoices();
-                        $extraLink = $propertyAnnotation->getExtraLink();
-                    }
-
-                    // Check if nullable is sets to true
-                    $nullablePropertyAnnotation = $this
-                        ->annotationReader
-                        ->getPropertyAnnotation($reflectionProperty, Column::class);
-                    if ($nullablePropertyAnnotation) {
-                        $columnType = $nullablePropertyAnnotation->type;
-                        $required = $columnType == "boolean" ? false : !boolval($nullablePropertyAnnotation->nullable);
-                    }
-
-                    $properties[$reflectionProperty->getName()] = [
-                        'accessibility' => $accessibility,
-                        'visible' => $visible,
-                        'readonly' => $readonly,
-                        'required' => $required,
-                        'type' => $columnType,
-                        'description' => $description,
-                        'choices' => $choices,
-                        'extra_link' => $extraLink,
-                    ];
-
-                    // Build primary key from Doctrine\Id annotation
-                    if ($this->annotationReader->getPropertyAnnotation($reflectionProperty, Id::class)) {
-                        $compoundPrimaryKey[] = $reflectionProperty->getName();
-                    }
-                }
-
-                /** @var SQLIClassAnnotation $classAnnotation */
-                $annotationClassname = substr(strrchr(get_class($classAnnotation), '\\'), 1);
-
-                $annotatedClasses[$annotationClassname][$classNamespace] =
-                    [
-                        'classname' => $className,
-                        'annotation' => $classAnnotation,
-                        'properties' => $properties,
-                        'primary_key' => $compoundPrimaryKey,
-                    ];
-            }
+            $annotatedClasses = $this->getAnnotatedClassesArray($finder, $namespace, $annotatedClasses);
         }
 
         return $annotatedClasses;
+    }
+
+    /**
+     * @param Finder $finder
+     * @param mixed $namespace
+     * @param array $annotatedClasses
+     * @return array
+     * @throws ReflectionException
+     */
+    public function getAnnotatedClassesArray(Finder $finder, mixed $namespace, array $annotatedClasses): array
+    {
+        /** @var SplFileInfo $file */
+        foreach ($finder as $file) {
+            $className = $file->getBasename('.php');
+            $classNamespace = "$namespace\\$className";
+            // Create reflection class from generated namespace to read annotation
+            $class = new ReflectionClass($classNamespace);
+
+            // Search if $class use an SQLIClassAnnotation
+            $classAnnotation = $this
+                ->annotationReader
+                ->getClassAnnotation($class, SQLIEntity::class);
+            // Check if $class use Doctrine\Entity annotation
+            $classDoctrineAnnotation = $this
+                ->annotationReader
+                ->getClassAnnotation($class, Entity::class);
+
+            if (!$classAnnotation || !$classDoctrineAnnotation) {
+                // No SQLIClassAnnotation or isn't an entity, ignore her
+                continue;
+            }
+
+            // Prepare properties
+            $properties = [];
+            $compoundPrimaryKey = [];
+
+            $reflectionProperties = $class->getProperties();
+            list($properties, $compoundPrimaryKey) = $this->getAnnotatedProperties($reflectionProperties, $properties, $compoundPrimaryKey);
+
+            /** @var SQLIClassAnnotation $classAnnotation */
+            $annotationClassname = substr(strrchr(get_class($classAnnotation), '\\'), 1);
+
+            $annotatedClasses[$annotationClassname][$classNamespace] =
+                [
+                    'classname' => $className,
+                    'annotation' => $classAnnotation,
+                    'properties' => $properties,
+                    'primary_key' => $compoundPrimaryKey,
+                ];
+        }
+        return $annotatedClasses;
+    }
+
+    /**
+     * @param array $reflectionProperties
+     * @param array $properties
+     * @param array $compoundPrimaryKey
+     * @return array
+     */
+    public function getAnnotatedProperties(array $reflectionProperties, array $properties, array $compoundPrimaryKey): array
+    {
+        foreach ($reflectionProperties as $reflectionProperty) {
+            // Accessibility of each property
+            $accessibility = "public"; // public
+            if ($reflectionProperty->isPrivate()) {
+                $accessibility = "private"; // private
+            } elseif ($reflectionProperty->isProtected()) {
+                $accessibility = "protected"; // protected
+            }
+
+            // Try to get an SQLIPropertyAnnotation
+            $visible = true;
+            $readonly = false;
+            $required = true;
+            $columnType = "string";
+            $description = null;
+            $choices = null;
+            $extraLink = null;
+
+            $propertyAnnotation = $this
+                ->annotationReader
+                ->getPropertyAnnotation($reflectionProperty, SQLIEntityProperty::class);
+
+            if ($propertyAnnotation instanceof SQLIEntityProperty) {
+                // Check if a visibility information defined on entity's property thanks to 'visible' annotation
+                $visible = $propertyAnnotation->isVisible();
+                // Check if property must be only in readonly
+                $readonly = $propertyAnnotation->isReadonly();
+                // Get property description
+                $description = $propertyAnnotation->getDescription();
+                // Get choices
+                $choices = $propertyAnnotation->getChoices();
+                $extraLink = $propertyAnnotation->getExtraLink();
+            }
+
+            // Check if nullable is sets to true
+            $nullablePropertyAnnotation = $this
+                ->annotationReader
+                ->getPropertyAnnotation($reflectionProperty, Column::class);
+            if ($nullablePropertyAnnotation) {
+                $columnType = $nullablePropertyAnnotation->type;
+                $required = $columnType == "boolean" ? false : !(bool)$nullablePropertyAnnotation->nullable;
+            }
+
+            $properties[$reflectionProperty->getName()] = [
+                'accessibility' => $accessibility,
+                'visible' => $visible,
+                'readonly' => $readonly,
+                'required' => $required,
+                'type' => $columnType,
+                'description' => $description,
+                'choices' => $choices,
+                'extra_link' => $extraLink,
+            ];
+
+            // Build primary key from Doctrine\Id annotation
+            if ($this->annotationReader->getPropertyAnnotation($reflectionProperty, Id::class)) {
+                $compoundPrimaryKey[] = $reflectionProperty->getName();
+            }
+        }
+        return array($properties, $compoundPrimaryKey);
     }
 }

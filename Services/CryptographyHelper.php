@@ -89,10 +89,8 @@ class CryptographyHelper
                 $this->getOpenSSLInitializationVector()
             );
             $decryptedDatas  = unserialize($serializedDatas);
-            if ($checkSessionExpiration) {
-                if ($decryptedDatas['session'] !== session_id()) {
-                    throw new DecryptSessionExpiredException();
-                }
+            if ($checkSessionExpiration && $decryptedDatas['session'] !== session_id()) {
+                throw new DecryptSessionExpiredException();
             }
 
             return unserialize($decryptedDatas['data']);

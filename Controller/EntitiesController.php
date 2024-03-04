@@ -56,9 +56,11 @@ class EntitiesController extends AbstractController
      */
     public function listAllEntities(string $tabname, TabEntityHelper $tabEntityHelper): Response
     {
-        $this->denyAccessUnlessGranted(new Attribute('sqli_admin','list_entities'));
+        $this->denyAccessUnlessGranted(new Attribute('sqli_admin', 'list_entities'));
 
         $tabs = $tabEntityHelper->entitiesGroupedByTab();
+
+        $params = [];
         $params['tabname'] = $tabname;
         $params['classes'] = $tabs[$tabname];
 
@@ -85,7 +87,7 @@ class EntitiesController extends AbstractController
         EntityHelper $entityHelper,
         FilterEntityHelper $filterEntityHelper
     ): Response {
-        $this->denyAccessUnlessGranted(new Attribute('sqli_admin','entity_show'));
+        $this->denyAccessUnlessGranted(new Attribute('sqli_admin', 'entity_show'));
         $classInformations = $entityHelper->getAnnotatedClass($fqcn);
         $sort = ['column_name' => $sort_column, 'order' => $sort_order];
 
@@ -138,7 +140,7 @@ class EntitiesController extends AbstractController
      */
     public function removeElement(string $fqcn, string $compound_id, EntityHelper $entityHelper): Response
     {
-        $this->denyAccessUnlessGranted(new Attribute('sqli_admin','entity_remove_element'));
+        $this->denyAccessUnlessGranted(new Attribute('sqli_admin', 'entity_remove_element'));
 
         $removeSuccessfull = false;
 
@@ -148,7 +150,7 @@ class EntitiesController extends AbstractController
         if (array_key_exists('class', $entity) && array_key_exists('annotation', $entity['class'])) {
             $entityAnnotation = $entity['class']['annotation'];
             // Check if annotation exists
-            if ($entityAnnotation instanceof Entity || $entityAnnotation instanceof SQLIToolBoxEntity ) {
+            if ($entityAnnotation instanceof Entity || $entityAnnotation instanceof SQLIToolBoxEntity) {
                 // Check if deletion is allowed
                 if ($entityAnnotation->isDelete()) {
                     // Try to decode compound Id
@@ -219,7 +221,7 @@ class EntitiesController extends AbstractController
         Request $request,
         EntityHelper $entityHelper
     ): Response {
-        $this->denyAccessUnlessGranted(new Attribute('sqli_admin','entity_edit_element'));
+        $this->denyAccessUnlessGranted(new Attribute('sqli_admin', 'entity_edit_element'));
 
         $updateSuccessfull = false;
 
@@ -229,7 +231,7 @@ class EntitiesController extends AbstractController
         if (array_key_exists('class', $entity) && array_key_exists('annotation', $entity['class'])) {
             $entityAnnotation = $entity['class']['annotation'];
             // Check if annotation exists
-            if ($entityAnnotation instanceof Entity || $entityAnnotation instanceof SQLIToolBoxEntity ) {
+            if ($entityAnnotation instanceof Entity || $entityAnnotation instanceof SQLIToolBoxEntity) {
                 // Check if modification is allowed
                 if ($entityAnnotation->isUpdate()) {
                     // Try to decode compound Id
@@ -244,6 +246,7 @@ class EntitiesController extends AbstractController
                         $form = $this->createForm(EditElementType::class, $element, ['entity' => $entity]);
                         $form->handleRequest($request);
 
+                        $params = [];
                         if ($form->isSubmitted() && $form->isValid()) {
                             // Form is valid, update element
                             $this->entityManager->persist($element);
@@ -301,44 +304,43 @@ class EntitiesController extends AbstractController
     public function viewElement(string $fqcn, string $compound_id, Request $request): Response
     {
         $context = 'view';
-        $this->denyAccessUnlessGranted(new Attribute('sqli_admin','entity_view_element'));
+        $this->denyAccessUnlessGranted(new Attribute('sqli_admin', 'entity_view_element'));
 
         // Check if class annotations allow visibility
         $entity = $this->entityHelper->getEntity($fqcn, false);
 
         if (array_key_exists('class', $entity) && array_key_exists('annotation', $entity['class'])) {
-
             $entityAnnotation = $entity['class']['annotation'];
             // Check if annotation exists
-            if ($entityAnnotation instanceof Entity || $entityAnnotation instanceof SQLIToolBoxEntity ) {
+            if ($entityAnnotation instanceof Entity || $entityAnnotation instanceof SQLIToolBoxEntity) {
                 // Check if modification is allowed
                 $compound_id = json_decode($compound_id, true);
 
-                    if (!empty($compound_id)) {
-                        // Find element
-                        $element = $this->entityHelper->findOneBy($fqcn, $compound_id);
+                if (!empty($compound_id)) {
+                    // Find element
+                    $element = $this->entityHelper->findOneBy($fqcn, $compound_id);
 
-                        // Build form according to element and entity informations
-                        $form = $this->createForm(
-                            EditElementType::class,
-                            $element,
-                            ['entity' => $entity, 'context' => $context]
+                    // Build form according to element and entity informations
+                    $form = $this->createForm(
+                        EditElementType::class,
+                        $element,
+                        ['entity' => $entity, 'context' => $context]
+                    );
+                    $form->handleRequest($request);
+                    $params = [];
+                    // Display form
+                    $params['form'] = $form->createView();
+                    $params['fqcn'] = $fqcn;
+                    $params['class'] = $entity['class'];
+
+                    return $this
+                        ->render(
+                            '@SQLIEzToolbox/Entities/view.html.twig',
+                            $params
                         );
-                        $form->handleRequest($request);
-
-                        // Display form
-                        $params['form'] = $form->createView();
-                        $params['fqcn'] = $fqcn;
-                        $params['class'] = $entity['class'];
-
-                        return $this
-                            ->render(
-                                '@SQLIEzToolbox/Entities/view.html.twig',
-                                $params
-                            );
-                    }
                 }
             }
+        }
         // Redirect to entity homepage (list of elements)
         return $this->redirectToRoute(
             'sqli_eztoolbox_entitymanager_entity_homepage',
@@ -358,7 +360,7 @@ class EntitiesController extends AbstractController
      */
     public function createElement(string $fqcn, Request $request, EntityHelper $entityHelper): Response
     {
-        $this->denyAccessUnlessGranted(new Attribute('sqli_admin','entity_edit_element'));
+        $this->denyAccessUnlessGranted(new Attribute('sqli_admin', 'entity_edit_element'));
 
         $updateSuccessfull = false;
 
@@ -368,10 +370,9 @@ class EntitiesController extends AbstractController
         if (array_key_exists('class', $entity) && array_key_exists('annotation', $entity['class'])) {
             $entityAnnotation = $entity['class']['annotation'];
             // Check if annotation exists
-            if ($entityAnnotation instanceof Entity || $entityAnnotation instanceof SQLIToolBoxEntity ) {
+            if ($entityAnnotation instanceof Entity || $entityAnnotation instanceof SQLIToolBoxEntity) {
                 // Check if modification is allowed
                 if ($entityAnnotation->isUpdate()) {
-
                     // New element
                     $element = new $fqcn();
 
@@ -387,6 +388,7 @@ class EntitiesController extends AbstractController
                         $updateSuccessfull = true;
                     } else {
                         // Display form
+                        $params = [];
                         $params['form'] = $form->createView();
                         $params['fqcn'] = $fqcn;
                         $params['tabname'] = $entityAnnotation->getTabname();
@@ -431,7 +433,7 @@ class EntitiesController extends AbstractController
      */
     public function exportCSV(string $fqcn): StreamedResponse
     {
-        $this->denyAccessUnlessGranted(new Attribute('sqli_admin','entity_export_csv'));
+        $this->denyAccessUnlessGranted(new Attribute('sqli_admin', 'entity_export_csv'));
 
         $response = new StreamedResponse();
 
@@ -441,7 +443,7 @@ class EntitiesController extends AbstractController
         if (array_key_exists('class', $entity) && array_key_exists('annotation', $entity['class'])) {
             $entityAnnotation = $entity['class']['annotation'];
             // Check if annotation exists
-            if ($entityAnnotation instanceof Entity || $entityAnnotation instanceof SQLIToolBoxEntity ) {
+            if ($entityAnnotation instanceof Entity || $entityAnnotation instanceof SQLIToolBoxEntity) {
                 // Check if CSV exportation is allowed
                 if ($entityAnnotation->isCSVExportable()) {
                     // Find element

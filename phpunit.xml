@@ -13,6 +13,12 @@
         <testsuite name="SQLI\EzToolboxBundle\Services">
             <directory>tests/Services</directory>
         </testsuite>
+        <testsuite name="SQLI\EzToolboxBundle\Annotations">
+            <directory>tests/Annotations/Annotation</directory>
+        </testsuite>
+        <testsuite name="SQLI\EzToolboxBundle\Attributes">
+            <directory>tests/Attributes/Attribute</directory>
+        </testsuite>
     </testsuites>
 
     <filter>

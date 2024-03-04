@@ -19,7 +19,6 @@ use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
 use Ibexa\Core\Helper\FieldHelper;
 use Ibexa\Core\Helper\TranslationHelper;
 
-
 class FetchHelper
 {
     public const LIMIT = 25;
@@ -45,7 +44,6 @@ class FetchHelper
         FieldHelper $fieldhelper,
         TranslationHelper $translationhelper,
         ContentService $contentservice,
-        DataFormatterHelper $dataFormatterHelper
     ) {
         $this->configResolver = $configResolver;
         $this->searchService = $searchService;
@@ -53,7 +51,6 @@ class FetchHelper
         $this->fieldhelper = $fieldhelper;
         $this->translationhelper = $translationhelper;
         $this->contentservice = $contentservice;
-        $this->dataFormatterHelper = $dataFormatterHelper;
     }
 
     /**
@@ -103,7 +100,7 @@ class FetchHelper
      * @param int $limit
      * @param int $offset
      * @param SortClause[]|null $sortClauses If null, results will be sorted by priority
-     * @return Location[]
+     * @return array
      * @throws InvalidArgumentException
      */
     private function fetchLocationList(
@@ -204,7 +201,7 @@ class FetchHelper
      *
      * @param Location|int $location
      * @param string|string[] $contentType
-     * @return Location|null
+     * @return array|null
      * @throws InvalidArgumentException
      */
     public function fetchAncestors($location, $contentType): ?array
@@ -242,11 +239,7 @@ class FetchHelper
         $results = $this->fetchAncestors($location, $contentType);
         $itemHit = null;
         if (is_array($results) && count($results)) {
-            if ($highest) {
-                $itemHit = array_shift($results);
-            } else {
-                $itemHit = array_pop($results);
-            }
+            $itemHit = $highest ? array_shift($results) : array_pop($results);
         }
         return ($itemHit instanceof Location) ? $itemHit : null;
     }
@@ -334,7 +327,8 @@ class FetchHelper
         $content = $location->getContent();
 
         // Check if $location has a relation in field
-        if ($content->getContentType()->getFieldDefinition($fieldIdentifier) == null ||
+        if (
+            $content->getContentType()->getFieldDefinition($fieldIdentifier) == null ||
             $this->fieldhelper->isFieldEmpty($content, $fieldIdentifier)
         ) {
             // No relation to a header object then check parent location
@@ -365,16 +359,12 @@ class FetchHelper
      */
     public function fetchLocationFromContentInSubtree($content, $locationSubtree): ?Location
     {
-        if ($content instanceof Content) {
-            $contentId = $content->id;
-        } else {
-            $contentId = intval($content);
-        }
+        $contentId = $content instanceof Content ? $content->id : (int) $content;
 
         if (!$locationSubtree instanceof Location) {
-            $locationSubtree = $this->locationService->loadLocation(intval($locationSubtree));
+            $locationSubtree = $this->locationService->loadLocation((int) $locationSubtree);
         }
-
+        $params = [] ;
         $params[] = new Criterion\Subtree($locationSubtree->pathString);
         $params[] = new Criterion\ContentId($contentId);
 
