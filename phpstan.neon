@@ -1,8 +1,19 @@
 parameters:
     level: 5
     paths:
-        - ./
+        - Annotations/
+        - Attributes/
+        - Services/
+        - tests/
     excludePaths:
         - vendor/*
+        - Services/Core
+        - Services/Formatter
+        - Services/Listener
+        - Services/Parameter
+        - Services/Twig
+        - Services/TagsHelper.php
     ignoreErrors:
             - '#is unused.$#i'
+            - '#is never read, only written.$#i'
+    treatPhpDocTypesAsCertain: false

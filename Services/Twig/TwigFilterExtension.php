@@ -119,7 +119,7 @@ class TwigFilterExtension extends AbstractExtension
             $content = $this->repository->sudo(
                 function (Repository $repository) use ($content) {
                     /* @var $repository \Ibexa\Core\Repository\Repository */
-                    return $repository->getContentService()->loadContent(intval($content));
+                    return $repository->getContentService()->loadContent((int) $content);
                 }
             );
         }

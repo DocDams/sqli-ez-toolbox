@@ -42,22 +42,18 @@ abstract class ParameterHandlerAbstractEntity implements ParameterHandlerInterfa
      */
     public function setParameter($paramName, $paramValue, $contentIds, OutputInterface $output = null): bool
     {
-        if ($paramValue == self::PARAMETER_ENABLED || $paramValue == self::PARAMETER_DISABLED) {
-            if (
-                $parameter = $this->entityManager
-                ->getRepository(Parameter::class)
-                ->findOneByName(self::PARAMETER_NAME)
-            ) {
-                $parameter->setValue($paramValue);
-
-                $this->entityManager->persist($parameter);
-                $this->entityManager->flush();
-                if (isset($output)) {
-                    $output->writeln("  Status : " . $parameter->getValue());
-                }
-
-                return true;
+        if (
+            ($paramValue == self::PARAMETER_ENABLED || $paramValue == self::PARAMETER_DISABLED) && ($parameter = $this->entityManager
+            ->getRepository(Parameter::class)
+            ->findOneByName(self::PARAMETER_NAME))
+        ) {
+            $parameter->setValue($paramValue);
+            $this->entityManager->persist($parameter);
+            $this->entityManager->flush();
+            if (isset($output)) {
+                $output->writeln("  Status : " . $parameter->getValue());
             }
+            return true;
         }
         throw new ParameterHandlerUnknownParameterValueException("Unsupported value parameter $paramValue");
     }
@@ -68,7 +64,7 @@ abstract class ParameterHandlerAbstractEntity implements ParameterHandlerInterfa
      * @param OutputInterface|null $output
      * @return mixed|void
      */
-    public function showParameter($paramName, $paramValue, OutputInterface $output = null)
+    public function showParameter($paramName, $paramValue, OutputInterface $output = null): void
     {
         if (
             $parameter = $this->entityManager

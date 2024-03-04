@@ -42,7 +42,7 @@ class FilterEntityHelper
         // Get from session
         $filters = $this->session->get(self::SESSION_VARNAME, []);
 
-        return array_key_exists($fqcn, $filters) ? $filters[$fqcn] : null;
+        return $filters[$fqcn] ?? null;
     }
 
     /**
