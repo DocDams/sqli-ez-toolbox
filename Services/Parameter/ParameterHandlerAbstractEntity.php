@@ -62,7 +62,7 @@ abstract class ParameterHandlerAbstractEntity implements ParameterHandlerInterfa
      * @param $paramName
      * @param $paramValue
      * @param OutputInterface|null $output
-     * @return mixed|void
+     * @return void
      */
     public function showParameter($paramName, $paramValue, OutputInterface $output = null): void
     {

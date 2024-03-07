@@ -27,69 +27,7 @@ class EditElementType extends AbstractType
         $element = $options['entity'];
         foreach ($element['class']['properties'] as $propertyName => $propertyInfos) {
             // If property can be visible, add it to formbuilder
-            if ($propertyInfos['visible']) {
-                // FormType parameters
-                $params = [];
-
-                if ($propertyInfos['readonly']) {
-                    // Readonly attribute for this attribute
-                    $params['attr']['readonly'] = true;
-                    $params['attr']['class'] = 'bg-transparent';
-                }
-
-                // Is a required field ?
-                $params['required'] = $propertyInfos['required'];
-
-                // Add attribute step=any if it's a float field
-                switch ($propertyInfos['type']) {
-                    case "decimal":
-                    case "float":
-                        $params['attr']['step'] = 'any';
-                        break;
-                }
-
-                // If a description defined for property, add it in 'title' attribute of field
-                if (!empty($propertyInfos['description'])) {
-                    $params['attr']['title'] = $propertyInfos['description'];
-                }
-
-                $formType = null;
-                if (is_array($propertyInfos['choices']) && !empty($propertyInfos['choices'])) {
-                    $formType = ChoiceType::class;
-                    $params['choices'] = $propertyInfos['choices'];
-                } elseif ($propertyInfos['type'] === "object" || $propertyInfos['type'] === "array") {
-                    $formType = TextareaType::class;
-                    $params['invalid_message'] = $this->translator->trans(
-                        'form.edit.type_object.invalid',
-                        [],
-                        'forms'
-                    );
-                }
-
-                // If context is defined as view, readonly parameter is added
-                if ($options['context'] == 'view') {
-                    $params['attr']['readonly'] = true;
-                }
-
-                // Add field on Form
-                $builder->add($propertyName, $formType, $params);
-
-                // Support display of objects and arrays : serialize them before display
-                if ($propertyInfos['type'] === "object" || $propertyInfos['type'] === "array") {
-                    $builder->get($propertyName)->addViewTransformer(new CallbackTransformer(
-                        function ($toSerialize) {
-                            return serialize($toSerialize);
-                        },
-                        function ($toUnserialize) {
-                            try {
-                                return unserialize($toUnserialize);
-                            } catch (\Exception $e) {
-                                throw new TransformationFailedException();
-                            }
-                        }
-                    ));
-                }
-            }
+            $this->addElementToFormBuilder($propertyInfos, $options['context'], $builder, $propertyName);
         }
 
         // Add submit button if context is defined as edit
@@ -111,5 +49,90 @@ class EditElementType extends AbstractType
     {
         $resolver->setRequired('entity');
         $resolver->setDefault('context', 'edit');
+    }
+
+    /**
+     * @param $type
+     * @param FormBuilderInterface $builder
+     * @param int|string $propertyName
+     * @return void
+     */
+    public function serializeObjectOrArray($type, FormBuilderInterface $builder, int|string $propertyName): void
+    {
+        if ($type === "object" || $type === "array") {
+            $builder->get($propertyName)->addViewTransformer(new CallbackTransformer(
+                function ($toSerialize) {
+                    return serialize($toSerialize);
+                },
+                function ($toUnserialize) {
+                    try {
+                        return unserialize($toUnserialize);
+                    } catch (\Exception $e) {
+                        throw new TransformationFailedException();
+                    }
+                }
+            ));
+        }
+    }
+
+    /**
+     * @param mixed $propertyInfos
+     * @param $context
+     * @param FormBuilderInterface $builder
+     * @param int|string $propertyName
+     * @return void
+     */
+    public function addElementToFormBuilder(mixed $propertyInfos, $context, FormBuilderInterface $builder, int|string $propertyName): void
+    {
+
+        if ($propertyInfos['visible']) {
+            // FormType parameters
+            $params = [];
+
+            if ($propertyInfos['readonly']) {
+                // Readonly attribute for this attribute
+                $params['attr']['readonly'] = true;
+                $params['attr']['class'] = 'bg-transparent';
+            }
+
+            // Is a required field ?
+            $params['required'] = $propertyInfos['required'];
+
+            // Add attribute step=any if it's a float field
+            switch ($propertyInfos['type']) {
+                case "decimal":
+                case "float":
+                    $params['attr']['step'] = 'any';
+                    break;
+            }
+
+            // If a description defined for property, add it in 'title' attribute of field
+            if (!empty($propertyInfos['description'])) {
+                $params['attr']['title'] = $propertyInfos['description'];
+            }
+
+            $formType = null;
+            if (is_array($propertyInfos['choices']) && !empty($propertyInfos['choices'])) {
+                $formType = ChoiceType::class;
+                $params['choices'] = $propertyInfos['choices'];
+            } elseif ($propertyInfos['type'] === "object" || $propertyInfos['type'] === "array") {
+                $formType = TextareaType::class;
+                $params['invalid_message'] = $this->translator->trans(
+                    'form.edit.type_object.invalid',
+                    [],
+                    'forms'
+                );
+            }
+
+            // If context is defined as view, readonly parameter is added
+            if ($context == 'view') {
+                $params['attr']['readonly'] = true;
+            }
+
+            // Add field on Form
+            $builder->add($propertyName, $formType, $params);
+            // Support display of objects and arrays : serialize them before display
+            $this->serializeObjectOrArray($propertyInfos['type'], $builder, $propertyName);
+        }
     }
 }

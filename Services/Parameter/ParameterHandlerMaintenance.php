@@ -70,7 +70,7 @@ class ParameterHandlerMaintenance extends ParameterHandlerAbstractObjectState im
         if (
             $parameter = $this->entityManager->getRepository(Parameter::class)->findOneByName(self::PARAMETER_NAME)
         ) {
-            /** @var Parameter */
+            /** @var Parameter $paramValue */
             $parameter->setValue($paramValue);
 
             $this->entityManager->persist($parameter);

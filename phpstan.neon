@@ -1,19 +1,15 @@
 parameters:
     level: 5
     paths:
-        - Annotations/
-        - Attributes/
-        - Services/
-        - tests/
+        - ./
     excludePaths:
         - vendor/*
-        - Services/Core
-        - Services/Formatter
-        - Services/Listener
-        - Services/Parameter
-        - Services/Twig
         - Services/TagsHelper.php
+        - DependencyInjection/Configuration.php
+        - Command/ChildrenMoveCommand.php
     ignoreErrors:
             - '#is unused.$#i'
             - '#is never read, only written.$#i'
+            - '#^Call to an undefined method Doctrine\\ORM\\EntityRepository#i'
+            - '#^Return type \(void\) of method SQLI\\EzToolboxBundle\\Command#'
     treatPhpDocTypesAsCertain: false

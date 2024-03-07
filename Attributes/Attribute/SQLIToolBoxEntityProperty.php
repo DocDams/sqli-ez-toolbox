@@ -66,7 +66,7 @@ final class SQLIToolBoxEntityProperty implements SQLIToolBoxClassProperty
     /**
      * @return array|null
      */
-    public function getChoices() : array
+    public function getChoices(): ?array
     {
         return $this->choices;
     }
@@ -74,7 +74,7 @@ final class SQLIToolBoxEntityProperty implements SQLIToolBoxClassProperty
     /**
      * @return string
      */
-    public function getExtraLink() : string
+    public function getExtraLink(): string
     {
         return $this->extra_link;
     }

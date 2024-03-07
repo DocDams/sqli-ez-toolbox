@@ -132,7 +132,7 @@ class PublishAllContentsCommand extends Command
 
             // Publish each content
             foreach ($items as $index => $content) {
-                /** @var $content Content */
+                /** @var Content $content  */
                 $contentDraft = $this->contentService->createContentDraft($content->getVersionInfo()->getContentInfo());
                 $this->contentService->publishVersion($contentDraft->getVersionInfo());
 

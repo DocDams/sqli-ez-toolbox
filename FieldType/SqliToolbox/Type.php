@@ -37,12 +37,12 @@ class Type extends GenericType implements FieldValueFormMapperInterface, Indexab
     /**
      * Get index data for field for search backend.
      *
-     * @param \Ibexa\Contracts\Core\Persistence\Content\Field $field
-     * @param \Ibexa\Contracts\Core\Persistence\Content\Type\FieldDefinition $fieldDefinition
+     * @param Field $field
+     * @param FieldDefinition $fieldDefinition
      *
-     * @return \Ibexa\SPI\Search\Field[]
+     * @return array
      */
-    public function getIndexData(Field $field, FieldDefinition $fieldDefinition)
+    public function getIndexData(Field $field, FieldDefinition $fieldDefinition): array
     {
         return [];
     }
@@ -50,9 +50,9 @@ class Type extends GenericType implements FieldValueFormMapperInterface, Indexab
     /**
      * Get index field types for search backend.
      *
-     * @return \Ibexa\SPI\Search\FieldType[]
+     * @return array
      */
-    public function getIndexDefinition()
+    public function getIndexDefinition(): array
     {
         return [];
     }
@@ -64,9 +64,9 @@ class Type extends GenericType implements FieldValueFormMapperInterface, Indexab
      * implementation of this interface), this method is used to define default
      * field for matching. Default field is typically used by Field criterion.
      *
-     * @return string
+     * @return string|null
      */
-    public function getDefaultMatchField()
+    public function getDefaultMatchField(): ?string
     {
         return null;
     }
@@ -78,9 +78,9 @@ class Type extends GenericType implements FieldValueFormMapperInterface, Indexab
      * implementation of this interface), this method is used to define default
      * field for sorting. Default field is typically used by Field sort clause.
      *
-     * @return string
+     * @return string|null
      */
-    public function getDefaultSortField()
+    public function getDefaultSortField(): ?string
     {
         return null;
     }

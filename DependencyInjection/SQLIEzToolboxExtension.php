@@ -80,5 +80,4 @@ class SQLIEzToolboxExtension extends Extension implements PrependExtensionInterf
 
         $container->prependExtensionConfig('ezpublish', $config);
     }
-
 }

@@ -48,10 +48,10 @@ class FetchExtension extends AbstractExtension
     {
         return
             [
-                new TwigFunction('render_children', [$this, 'renderChildren'], ['is_safe' => ['all']]),
-                new TwigFunction('fetch_children', [$this->fetchHelper, 'fetchChildren']),
-                new TwigFunction('fetch_ancestor', [$this->fetchHelper, 'fetchAncestor']),
-                new TwigFunction('fetch_ancestors', [$this->fetchHelper, 'fetchAncestors']),
+                new TwigFunction('render_children', $this->renderChildren(...), ['is_safe' => ['all']]),
+                new TwigFunction('fetch_children', $this->fetchHelper->fetchChildren(...)),
+                new TwigFunction('fetch_ancestor', $this->fetchHelper->fetchAncestor(...)),
+                new TwigFunction('fetch_ancestors', $this->fetchHelper->fetchAncestors(...)),
                 new TwigFunction('fetch_content', [$this->repository->getContentService(), 'loadContent']),
                 new TwigFunction('fetch_location', [$this->repository->getLocationService(), 'loadLocation']),
             ];

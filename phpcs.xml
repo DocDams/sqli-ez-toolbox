@@ -14,24 +14,7 @@
             <property name="lineLimit" value="155" />
         </properties>
     </rule>
-    <file>Annotations/</file>
-    <file>Attributes/</file>
-    <file>Classes/</file>
-    <file>Command/</file>
-    <file>Controller/</file>
-    <file>Entity/</file>
-    <file>Exceptions/</file>
-    <file>FieldType/</file>
-    <file>Form/</file>
-    <file>Menu/</file>
-    <file>FieldType/</file>
-    <file>Form/</file>
-    <file>QueryType/</file>
-    <file>Repository/</file>
-    <file>Resources/</file>
-    <file>Serializer/</file>
-    <file>Services/</file>
-    <file>tests/</file>
-    <file>Validator/</file>
+    <file>.</file>
+    <exclude-pattern>vendor/</exclude-pattern>
 
 </ruleset>

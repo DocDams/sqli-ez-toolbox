@@ -45,7 +45,7 @@ interface ParameterHandlerInterface
     public function showData(OutputInterface $output = null);
 
     /**
-     * @param array|null $params
+     * @param mixed|null $params
      * @return bool
      */
     public function isEnabled($params = null): bool;

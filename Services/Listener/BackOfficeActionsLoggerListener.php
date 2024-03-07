@@ -53,8 +53,6 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
     private $logger;
     /** @var Request */
     private $request;
-    /** @var TagsService */
-    private $tagsService;
     /** @var bool */
     private $adminLoggerEnabled;
 
@@ -63,14 +61,12 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
         Repository $repository,
         $logDir,
         RequestStack $requestStack,
-        //TagsService $tagsService,
         $adminLoggerEnabled,
         SiteAccess $siteAccess
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->repository = $repository;
         $this->request = $requestStack->getCurrentRequest();
-        //$this->tagsService = $tagsService;
         $this->adminLoggerEnabled = (bool)$adminLoggerEnabled;
 
         // Handler and formatter

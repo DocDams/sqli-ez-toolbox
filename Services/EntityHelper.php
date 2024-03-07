@@ -16,11 +16,11 @@ class EntityHelper
     private const ATTRIBUTE = "attribute";
 
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private SQLIAttributesManager $attributesManager,
-        private SQLIAnnotationManager $annotationManager,
-        private FilterEntityHelper $filterEntityHelper,
-        private ContainerInterface $container,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly SQLIAttributesManager $attributesManager,
+        private readonly SQLIAnnotationManager $annotationManager,
+        private readonly FilterEntityHelper $filterEntityHelper,
+        private readonly ContainerInterface $container,
     ) {
     }
 
@@ -69,7 +69,7 @@ class EntityHelper
     }
 
     /**
-     * Get a class annotated with SQLIClassAnnotation interface from her FQCN
+     * Get a class annotated with EntityAnnotationInterface interface from her FQCN
      *
      * @param string $fqcn
      * @return array
@@ -83,7 +83,7 @@ class EntityHelper
     }
 
     /**
-     * Get all classes annotated with SQLIClassAnnotation interface
+     * Get all classes annotated with EntityAnnotationInterface interface
      *
      * @return array
      * @throws ReflectionException
@@ -159,7 +159,7 @@ class EntityHelper
             $value = $filter->getValue();
 
             // Add % around value if operand is LIKE or NOT LIKE
-            if (stripos($filter->getOperand(), 'LIKE') !== false) {
+            if (stripos((string) $filter->getOperand(), 'LIKE') !== false) {
                 $value = "%" . $value . "%";
             }
 

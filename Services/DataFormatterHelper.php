@@ -24,7 +24,7 @@ class DataFormatterHelper
     {
         switch ($format) {
             case "float":
-                return preg_replace('#^([0-9\s]+),(\d+)$#', '$1.$2', $data);
+                return preg_replace('#^([0-9\s]+),(\d+)$#', '$1.$2', (string) $data);
             case "amount":
                 $number = $this->format($data, "float");
 
@@ -49,7 +49,7 @@ class DataFormatterHelper
             case "url":
                 $url = $data;
                 // Check if protocol is in $data
-                if (!preg_match('#^http(?:s)?://#', $data)) {
+                if (!preg_match('#^http(?:s)?://#', (string) $data)) {
                     $url = "http://" . $data;
                 }
                 return $url;
@@ -234,9 +234,9 @@ class DataFormatterHelper
         setlocale(LC_ALL, 'en_US.UTF-8');
         $clean = iconv('UTF-8', 'ASCII//TRANSLIT', $string);
         $clean = preg_replace("/[^a-zA-Z0-9\/_|+ -]/", '', $clean);
-        $clean = strtolower($clean);
+        $clean = strtolower((string) $clean);
         $clean = preg_replace("/[\/_|+ -]+/", $delimiter, $clean);
-        $clean = trim($clean, $delimiter);
+        $clean = trim((string) $clean, $delimiter);
         setlocale(LC_ALL, $oldLocale);
 
         return $clean;

@@ -124,6 +124,7 @@ class EzObjectInfoCommand extends Command
 
         // Search other locations
         $query = new LocationQuery();
+        $criterion = array();
         $criterion[] = new Criterion\ContentId($contentId);
         $query->query = new Criterion\LogicalAnd($criterion);
 

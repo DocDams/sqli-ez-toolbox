@@ -106,6 +106,129 @@ class CopyContentFieldAllContentsCommand extends Command
         return (int)$results->totalCount;
     }
 
+    /**
+     * @param array $items
+     * @param OutputInterface $output
+     * @param int $offset
+     * @param string $availableLanguageCode
+     * @return void
+     * @throws InvalidArgumentException
+     * @throws UnauthorizedException
+     */
+    public function publishEachContent(array $items, OutputInterface $output, int $offset, string $availableLanguageCode): void
+    {
+    // Publish each content
+        foreach ($items as $index => $content) {
+            /** @var $content Content */
+            $output->write(sprintf(
+                "[%s/%s][%s] contentID: %s <comment>%s</comment> ",
+                ($offset + $index + 1),
+                $this->totalCount,
+                $availableLanguageCode,
+                $content->id,
+                $content->getName()
+            ));
+
+            // Create draft
+            $contentDraft = $this->contentService->createContentDraft(
+                $content->getVersionInfo()->getContentInfo()
+            );
+            // Prepare update
+            $contentStructure = $this->contentService->newContentUpdateStruct();
+
+            // Get value of old field
+            switch (
+                $contentDraft->getField(
+                    $this->oldContentFieldIdentifier,
+                    $availableLanguageCode
+                )->fieldTypeIdentifier
+            ) {
+                case "ezdate":
+                    /** @var \Ibexa\Core\FieldType\Date\Value $fieldValue */
+                    $fieldValue = $contentDraft->getFieldValue(
+                        $this->oldContentFieldIdentifier,
+                        $availableLanguageCode
+                    );
+                    $valueToCopy = $fieldValue->date;
+                    break;
+                case "ezdatetime":
+                    /** @var Value $fieldValue */
+                    $fieldValue = $contentDraft->getFieldValue(
+                        $this->oldContentFieldIdentifier,
+                        $availableLanguageCode
+                    );
+                    $valueToCopy = $fieldValue->value;
+                    break;
+                default:
+                    $valueToCopy = $contentDraft->getFieldValue(
+                        $this->oldContentFieldIdentifier,
+                        $availableLanguageCode
+                    )->__toString();
+                    break;
+            }
+
+            $update = true;
+            // Format data value according to field type
+            switch (
+                $contentDraft->getField(
+                    $this->newContentFieldIdentifier,
+                    $availableLanguageCode
+                )->fieldTypeIdentifier
+            ) {
+                case "ezrichtext":
+                    $xmlvalueToCopy = "<section xmlns=\"http://ez.no/namespaces/ezpublish5/xhtml5/edit\"><p>";
+                    $xmlvalueToCopy .= $valueToCopy;
+                    $xmlvalueToCopy .= "</p></section>";
+                    $valueToCopy = $this->richtextType->acceptValue($xmlvalueToCopy);
+
+                    $oldValueInNewField = $contentDraft->getFieldValue(
+                        $this->newContentFieldIdentifier,
+                        $availableLanguageCode
+                    )->__toString();
+                    if ($valueToCopy == $oldValueInNewField) {
+                        $update = false;
+                    }
+                    break;
+                case "eztagco":
+                    $contentJson = json_decode($valueToCopy);
+                    if (!is_null($contentJson) && property_exists($contentJson, 'url')) {
+                        $valueToCopy = $contentJson->url;
+                    } else {
+                        continue 2;
+                    }
+                    break;
+            }
+
+            if ($update) {
+                if (!$this->dryrun) {
+                    try {
+                        // Set value on new field
+                        $contentStructure->setField(
+                            $this->newContentFieldIdentifier,
+                            $valueToCopy,
+                            $availableLanguageCode
+                        );
+
+                        // Update draft
+                        $contentDraft = $this->contentService->updateContent(
+                            $contentDraft->getVersionInfo(),
+                            $contentStructure
+                        );
+
+                        // Publish draft
+                        $this->contentService->publishVersion($contentDraft->getVersionInfo());
+
+                        $output->writeln("modified");
+                    } catch (Exception $exception) {
+                        $output->writeln("<error>failed</error>");
+                    }
+                }
+            } else {
+                $output->writeln("");
+            }
+        }
+    }
+
     protected function configure(): void
     {
         $description = "Copy value of a ContentField to a new ContentField ";
@@ -134,11 +257,11 @@ class CopyContentFieldAllContentsCommand extends Command
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return int
+     * @return void
      * @throws InvalidArgumentException
      * @throws UnauthorizedException
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    protected function execute(InputInterface $input, OutputInterface $output): void
     {
         $output->writeln(sprintf(
             "Fetching all objects of contentType '<comment>%s</comment>'",
@@ -175,117 +298,7 @@ class CopyContentFieldAllContentsCommand extends Command
             do {
                 // Fetch small group of contents
                 $items = $this->fetch(self::FETCH_LIMIT, $offset, $availableLanguageCode);
-
-                // Publish each content
-                foreach ($items as $index => $content) {
-                    /** @var $content Content */
-                    $output->write(sprintf(
-                        "[%s/%s][%s] contentID: %s <comment>%s</comment> ",
-                        ($offset + $index + 1),
-                        $this->totalCount,
-                        $availableLanguageCode,
-                        $content->id,
-                        $content->getName()
-                    ));
-
-                    // Create draft
-                    $contentDraft = $this->contentService->createContentDraft(
-                        $content->getVersionInfo()->getContentInfo()
-                    );
-                    // Prepare update
-                    $contentStructure = $this->contentService->newContentUpdateStruct();
-
-                    // Get value of old field
-                    switch (
-                        $contentDraft->getField(
-                            $this->oldContentFieldIdentifier,
-                            $availableLanguageCode
-                        )->fieldTypeIdentifier
-                    ) {
-                        case "ezdate":
-                            /** @var \Ibexa\Core\FieldType\Date\Value $fieldValue */
-                            $fieldValue = $contentDraft->getFieldValue(
-                                $this->oldContentFieldIdentifier,
-                                $availableLanguageCode
-                            );
-                            $valueToCopy = $fieldValue->date;
-                            break;
-                        case "ezdatetime":
-                            /** @var Value $fieldValue */
-                            $fieldValue = $contentDraft->getFieldValue(
-                                $this->oldContentFieldIdentifier,
-                                $availableLanguageCode
-                            );
-                            $valueToCopy = $fieldValue->value;
-                            break;
-                        default:
-                            $valueToCopy = $contentDraft->getFieldValue(
-                                $this->oldContentFieldIdentifier,
-                                $availableLanguageCode
-                            )->__toString();
-                            break;
-                    }
-
-                    $update = true;
-                    // Format data value according to field type
-                    switch (
-                        $contentDraft->getField(
-                            $this->newContentFieldIdentifier,
-                            $availableLanguageCode
-                        )->fieldTypeIdentifier
-                    ) {
-                        case "ezrichtext":
-                            $xmlvalueToCopy = "<section xmlns=\"http://ez.no/namespaces/ezpublish5/xhtml5/edit\"><p>";
-                            $xmlvalueToCopy .= $valueToCopy;
-                            $xmlvalueToCopy .= "</p></section>";
-                            $valueToCopy = $this->richtextType->acceptValue($xmlvalueToCopy);
-
-                            $oldValueInNewField = $contentDraft->getFieldValue(
-                                $this->newContentFieldIdentifier,
-                                $availableLanguageCode
-                            )->__toString();
-                            if ($valueToCopy == $oldValueInNewField) {
-                                $update = false;
-                            }
-                            break;
-                        case "eztagco":
-                            $contentJson = json_decode($valueToCopy);
-                            if (!is_null($contentJson) && property_exists($contentJson, 'url')) {
-                                $valueToCopy = $contentJson->url;
-                            } else {
-                                continue 2;
-                            }
-                            break;
-                    }
-
-                    if ($update) {
-                        if (!$this->dryrun) {
-                            try {
-                                // Set value on new field
-                                $contentStructure->setField(
-                                    $this->newContentFieldIdentifier,
-                                    $valueToCopy,
-                                    $availableLanguageCode
-                                );
-
-                                // Update draft
-                                $contentDraft = $this->contentService->updateContent(
-                                    $contentDraft->getVersionInfo(),
-                                    $contentStructure
-                                );
-
-                                // Publish draft
-                                $this->contentService->publishVersion($contentDraft->getVersionInfo());
-
-                                $output->writeln("modified");
-                            } catch (Exception $exception) {
-                                $output->writeln("<error>failed</error>");
-                            }
-                        }
-                    } else {
-                        $output->writeln("");
-                    }
-                }
+                $this->publishEachContent($items, $output, $offset, $availableLanguageCode);
 
                 $offset += self::FETCH_LIMIT;
             } while ($offset < $this->totalCount);

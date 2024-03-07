@@ -45,7 +45,6 @@ abstract class ParameterHandlerAbstractObjectState implements ParameterHandlerIn
      */
     public function listParameters(): array
     {
-        /** @var ParameterHandlerInterface $parameterHandler */
         $groupState = $this->stateHandler->loadGroupByIdentifier($this::PARAMETER_NAME);
         $objectStates = $this->stateHandler->loadObjectStates($groupState->id);
 
@@ -66,7 +65,6 @@ abstract class ParameterHandlerAbstractObjectState implements ParameterHandlerIn
      */
     public function showParameter($paramName, $paramValue, OutputInterface $output = null): void
     {
-        /** @var ParameterHandlerInterface $parameterHandler */
         $groupState = $this->stateHandler->loadGroupByIdentifier($paramName);
         $objectState = $this->stateHandler->loadByIdentifier($paramValue, $groupState->id);
 
@@ -81,7 +79,7 @@ abstract class ParameterHandlerAbstractObjectState implements ParameterHandlerIn
             $items = $this->fetch($fetchParams, $offset);
 
             // Publish each content
-            foreach ($items as $index => $content) {
+            foreach ($items as $content) {
                 /** @var $content ContentInfo */
                 $output->writeln("  - [{$content->id}] " . $content->name);
             }
@@ -151,18 +149,17 @@ abstract class ParameterHandlerAbstractObjectState implements ParameterHandlerIn
         $errors = [];
 
         try {
-            /** @var ParameterHandlerInterface $parameterHandler */
             $groupState = $this->stateHandler->loadGroupByIdentifier($paramName);
             $objectState = $this->stateHandler->loadByIdentifier($paramValue, $groupState->id);
 
             $groupState = $this->objectStateService->loadObjectStateGroup($groupState->id);
             $objectState = $this->objectStateService->loadObjectState($objectState->id);
 
-            $contentIds = explode(",", $contentIds);
+            $contentIds = explode(",", (string) $contentIds);
 
             foreach ($contentIds as $index => $contentId) {
                 // Get content
-                $content = $this->repository->getContentService()->loadContent($contentId);
+                $content = $this->repository->getContentService()->loadContent(intval($contentId));
 
                 // Change object state if a Content found else log an error
                 if ($content instanceof Content) {
@@ -173,7 +170,7 @@ abstract class ParameterHandlerAbstractObjectState implements ParameterHandlerIn
                         $output->writeln(sprintf(
                             "[%d/%d] Set %s=%s for contentID %d : %s",
                             str_pad(
-                                $index + 1,
+                                strval($index + 1),
                                 strlen((string)count($contentIds)),
                                 " ",
                                 STR_PAD_LEFT
@@ -201,7 +198,7 @@ abstract class ParameterHandlerAbstractObjectState implements ParameterHandlerIn
      * @param OutputInterface|null $output
      * @throws ParameterHandlerDataUnexpectedException
      */
-    public function getData(OutputInterface $output = null)
+    public function getData(OutputInterface $output = null): mixed
     {
         throw new ParameterHandlerDataUnexpectedException("Data not implemented for object state parameter");
     }
@@ -211,7 +208,7 @@ abstract class ParameterHandlerAbstractObjectState implements ParameterHandlerIn
      * @param OutputInterface|null $output
      * @throws ParameterHandlerDataUnexpectedException
      */
-    public function setData($data, OutputInterface $output = null)
+    public function setData($data, OutputInterface $output = null): mixed
     {
         throw new ParameterHandlerDataUnexpectedException("Data not implemented for object state parameter");
     }
@@ -220,7 +217,7 @@ abstract class ParameterHandlerAbstractObjectState implements ParameterHandlerIn
      * @param OutputInterface|null $output
      * @throws ParameterHandlerDataUnexpectedException
      */
-    public function showData(OutputInterface $output = null)
+    public function showData(OutputInterface $output = null): mixed
     {
         throw new ParameterHandlerDataUnexpectedException("Data not implemented for object state parameter");
     }

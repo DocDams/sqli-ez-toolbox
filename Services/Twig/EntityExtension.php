@@ -25,18 +25,12 @@ class EntityExtension extends AbstractExtension
         return [
             new TwigFunction(
                 'sqli_admin_attribute',
-                [
-                    $this,
-                    'attributeValue'
-                ],
+                $this->attributeValue(...),
                 array('is_safe' => ['all'])
             ),
             new TwigFunction(
                 'bundle_exists',
-                [
-                    $this,
-                    'bundleExists'
-                ]
+                $this->bundleExists(...)
             ),
         ];
     }

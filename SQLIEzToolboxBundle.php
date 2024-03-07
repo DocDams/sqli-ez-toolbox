@@ -14,13 +14,14 @@ class SQLIEzToolboxBundle extends Bundle
      *
      * It is only ever called once when the cache is empty.
      *
-     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container A ContainerBuilder instance
+     * @param ContainerBuilder $container A ContainerBuilder instance
      */
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         parent::build($container);
 
         $eZExtension = $container->getExtension('ibexa');
+        /** @phpstan-ignore-next-line */
         $eZExtension->addPolicyProvider(new SQLIEzToolboxPolicyProvider());
         $container->addCompilerPass(new ParameterHandlerTagCompilerPass());
     }

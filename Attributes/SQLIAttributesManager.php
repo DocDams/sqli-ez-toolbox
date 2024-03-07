@@ -18,16 +18,16 @@ class SQLIAttributesManager
      * Classname of annotation
      * @var string
      */
-    private string $attributeClassName;
+    private readonly string $attributeClassName;
 
     /** @var array */
-    private array $directories;
+    private readonly array $directories;
 
     /**
      * Project root directory
      * @var string
      */
-    private string $projectDir;
+    private readonly string $projectDir;
 
     public function __construct(string $attributeClassName, array $directories, string $projectDir)
     {
@@ -71,7 +71,7 @@ class SQLIAttributesManager
         // Iterate over each directory specified in the configuration
         foreach ($this->directories as $entitiesMapping) {
             $directory = $entitiesMapping['directory'];
-            $namespace = $entitiesMapping['namespace'] ?? str_replace('/', '\\', $directory);
+            $namespace = $entitiesMapping['namespace'] ?? str_replace('/', '\\', (string) $directory);
 
             // Construct the full path to the directory
             $path = $this->projectDir . '/src/' . $directory;
@@ -129,8 +129,8 @@ class SQLIAttributesManager
                 }
             }
 
-            if (!$classAttribute instanceof \SQLI\EzToolboxBundle\Attributes\Attribute\SQLIToolBoxEntity && $classDoctrineAttribute === null) {
-                // No SQLIClassAnnotation or isn't an entity, ignore her
+            if (!$classAttribute instanceof SQLIToolBoxEntity && $classDoctrineAttribute === null) {
+                // No EntityAnnotationInterface or isn't an entity, ignore her
                 continue;
             }
 

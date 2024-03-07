@@ -2,13 +2,13 @@
 
 namespace SQLI\EzToolboxBundle\Services\Twig;
 
-use eZ\Publish\Core\MVC\Symfony\Security\Authorization\Attribute;
 use Ibexa\Contracts\Core\Repository\Repository;
 use Ibexa\Contracts\Core\Repository\Values\Content\Content;
 use Ibexa\Contracts\Core\Repository\Values\Content\Field;
 use Ibexa\Contracts\Core\Repository\Values\User\UserReference;
 use Ibexa\Core\Base\Exceptions\InvalidArgumentType;
 use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
+use Ibexa\Core\MVC\Symfony\Security\Authorization\Attribute;
 use Ibexa\Core\MVC\Symfony\Templating\Twig\Extension\ContentExtension;
 use SQLI\EzToolboxBundle\Services\DataFormatterHelper;
 use SQLI\EzToolboxBundle\Services\FieldHelper;
@@ -52,13 +52,13 @@ class TwigFilterExtension extends AbstractExtension
     {
         return
             [
-                new TwigFunction('format_data', [$this->dataFormatterHelper, 'format']),
-                new TwigFunction('empty_field', [$this, 'isEmptyField']),
-                new TwigFunction('is_anonymous_user', [$this, 'isAnonymousUser']),
-                new TwigFunction('content_name', [$this, 'getContentName']),
-                new TwigFunction('ez_parameter', [$this, 'getParameter']),
-                new TwigFunction('has_access', [$this, 'hasAccess']),
-                new TwigFunction('ez_selection_value', [$this->fieldHelper, 'ezselectionSelectedOptionValue']),
+                new TwigFunction('format_data', $this->dataFormatterHelper->format(...)),
+                new TwigFunction('empty_field', $this->isEmptyField(...)),
+                new TwigFunction('is_anonymous_user', $this->isAnonymousUser(...)),
+                new TwigFunction('content_name', $this->getContentName(...)),
+                new TwigFunction('ez_parameter', $this->getParameter(...)),
+                new TwigFunction('has_access', $this->hasAccess(...)),
+                new TwigFunction('ez_selection_value', $this->fieldHelper->ezselectionSelectedOptionValue(...)),
             ];
     }
 
@@ -66,10 +66,7 @@ class TwigFilterExtension extends AbstractExtension
     {
         return
             [
-                new TwigFilter('format_data', [
-                    $this->dataFormatterHelper,
-                    'format'
-                ]),
+                new TwigFilter('format_data', $this->dataFormatterHelper->format(...)),
             ];
     }
 
@@ -78,7 +75,7 @@ class TwigFilterExtension extends AbstractExtension
      *
      * @param $parameterName
      * @param $namespace
-     * @return |null
+     * @return mixed|null
      */
     public function getParameter($parameterName, $namespace)
     {
