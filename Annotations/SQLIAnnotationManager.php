@@ -16,26 +16,22 @@ use Symfony\Component\Finder\SplFileInfo;
 class SQLIAnnotationManager
 {
     /**
-     * Classname of annotation
-     * @var string
+     * @param string $annotation
+     * @param mixed[] $directories
+     * @param string $projectDir
      */
-    private $annotation;
-    /** @var array */
-    private $directories;
-    /** @var Reader */
-    private $annotationReader;
-    /**
-     * Project root directory
-     * @var string
-     */
-    private $projectDir;
-
-    public function __construct($annotation, $directories, $projectDir, Reader $annotationReader)
-    {
-        $this->annotation = $annotation;
-        $this->directories = $directories;
-        $this->projectDir = $projectDir;
-        $this->annotationReader = $annotationReader;
+    public function __construct(
+        /**
+         * Classname of annotation
+         */
+        private $annotation,
+        private $directories,
+        /**
+         * Project root directory
+         */
+        private $projectDir,
+        private readonly Reader $annotationReader
+    ) {
     }
 
     /**
@@ -86,9 +82,6 @@ class SQLIAnnotationManager
     }
 
     /**
-     * @param Finder $finder
-     * @param mixed $namespace
-     * @param array $annotatedClasses
      * @return array
      * @throws ReflectionException
      */
@@ -120,10 +113,10 @@ class SQLIAnnotationManager
             $compoundPrimaryKey = [];
 
             $reflectionProperties = $class->getProperties();
-            list($properties, $compoundPrimaryKey) = $this->getAnnotatedProperties($reflectionProperties, $properties, $compoundPrimaryKey);
+            [$properties, $compoundPrimaryKey] = $this->getAnnotatedProperties($reflectionProperties, $properties, $compoundPrimaryKey);
 
             /** @var SQLIEntity $classAnnotation */
-            $annotationClassname = substr(strrchr(get_class($classAnnotation), '\\'), 1);
+            $annotationClassname = substr(strrchr($classAnnotation::class, '\\'), 1);
 
             $annotatedClasses[$annotationClassname][$classNamespace] =
                 [
@@ -137,9 +130,6 @@ class SQLIAnnotationManager
     }
 
     /**
-     * @param array $reflectionProperties
-     * @param array $properties
-     * @param array $compoundPrimaryKey
      * @return array
      */
     public function getAnnotatedProperties(array $reflectionProperties, array $properties, array $compoundPrimaryKey): array

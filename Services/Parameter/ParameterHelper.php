@@ -4,11 +4,7 @@ namespace SQLI\EzToolboxBundle\Services\Parameter;
 
 class ParameterHelper
 {
-    /** @var ParameterHandlerRepository */
-    private $parameterHandlerRepository;
-
-    public function __construct(ParameterHandlerRepository $parameterHandlerRepository)
+    public function __construct(private readonly ParameterHandlerRepository $parameterHandlerRepository)
     {
-        $this->parameterHandlerRepository = $parameterHandlerRepository;
     }
 }

@@ -26,11 +26,10 @@ interface ParameterHandlerInterface
     public function showParameter($paramName, $paramValue, OutputInterface $output = null);
 
     /**
-     * @param mixed $data
      * @param OutputInterface|null $output
      * @return mixed
      */
-    public function setData($data, OutputInterface $output = null);
+    public function setData(mixed $data, OutputInterface $output = null);
 
     /**
      * @param OutputInterface|null $output

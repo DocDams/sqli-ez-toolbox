@@ -20,12 +20,9 @@ class CryptographyHelper
 {
     private const CIPHER = 'AES-256-CBC';
     public const GUID_LENGTH = 60;
-    /** @var ParameterBagInterface */
-    private $parameterBag;
 
-    public function __construct(ParameterBagInterface $parameterBag)
+    public function __construct(private readonly ParameterBagInterface $parameterBag)
     {
-        $this->parameterBag = $parameterBag;
     }
 
     /**
@@ -38,7 +35,7 @@ class CryptographyHelper
      *
      * @throws EncryptFailedException
      */
-    public function encrypt($data, bool $urlencode = true, bool $encryptWithSession = true): string
+    public function encrypt(mixed $data, bool $urlencode = true, bool $encryptWithSession = true): string
     {
         try {
             $dataToEncrypt = [
@@ -103,7 +100,7 @@ class CryptographyHelper
     {
         try {
             return bin2hex(random_bytes((int)$length / 2));
-        } catch (Exception $exception) {
+        } catch (Exception) {
             return bin2hex(openssl_random_pseudo_bytes(self::GUID_LENGTH / 2));
         }
     }

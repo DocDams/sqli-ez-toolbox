@@ -6,12 +6,8 @@ use ReflectionException;
 
 class TabEntityHelper
 {
-    /** @var EntityHelper */
-    private $entityHelper;
-
-    public function __construct(EntityHelper $entityHelper)
+    public function __construct(private readonly EntityHelper $entityHelper)
     {
-        $this->entityHelper = $entityHelper;
     }
 
     /**

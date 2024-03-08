@@ -13,9 +13,6 @@ class ParameterHandlerRepository
     {
     }
 
-    /**
-     * @param ParameterHandlerInterface $handler
-     */
     public function addHandler(ParameterHandlerInterface $handler): void
     {
         /** @phpstan-ignore-next-line */

@@ -5,17 +5,9 @@ namespace Annotations\Annotation;
 use SQLI\EzToolboxBundle\Annotations\Annotation\EntityProperty;
 use PHPUnit\Framework\TestCase;
 
-
 class EntityPropertyTest extends TestCase
 {
-
-    public function test__construct()
-    {
-        $entity = new EntityProperty();
-        $this->assertInstanceOf(EntityProperty::CLASS, $entity);
-
-    }
-    public function testDefaultValues()
+    public function testDefaultValues(): void
     {
 
         $entity = new EntityProperty();
@@ -24,19 +16,18 @@ class EntityPropertyTest extends TestCase
         $this->assertNull($entity->getChoices());
         $this->assertEquals('', $entity->getDescription());
         $this->assertEquals('', $entity->getExtraLink());
-
     }
 
-    public function testSetVisible() {
+    public function testSetVisible(): void
+    {
 
         $entityAttribute = new EntityProperty();
         $entityAttribute->visible = true;
         $this->assertTrue($entityAttribute->isVisible());
         $entityAttribute->visible = false;
         $this->assertFalse($entityAttribute->isVisible());
-
     }
-    public function testSetReadonly()
+    public function testSetReadonly(): void
     {
 
         $entity = new EntityProperty();
@@ -51,7 +42,8 @@ class EntityPropertyTest extends TestCase
         // Assert that the value of readonly has been updated
         $this->assertFalse($entity->isReadonly());
     }
-    public function testSetChoices() {
+    public function testSetChoices(): void
+    {
 
         $entityAttribute = new EntityProperty();
         $entityAttribute->choices = ['test'];
@@ -59,16 +51,15 @@ class EntityPropertyTest extends TestCase
         $this->assertEquals(1, count($entityAttribute->getChoices()));
     }
 
-    public function testSetDescription()
+    public function testSetDescription(): void
     {
         $entity = new EntityProperty();
         $description = "This is a new description";
         $entity->description = $description;
         $this->assertEquals($description, $entity->getDescription());
-
     }
 
-    public function testSetExtraLink()
+    public function testSetExtraLink(): void
     {
 
         $entity = new EntityProperty();
@@ -80,19 +71,19 @@ class EntityPropertyTest extends TestCase
         $entity->extra_link = $link;
         $this->assertEmpty($link, $entity->getDescription());
     }
-    public function testIsVisible()
+    public function testIsVisible(): void
     {
         $entity = new EntityProperty();
         $this->assertTrue($entity->isVisible());
     }
 
-    public function testIsReadonly()
+    public function testIsReadonly(): void
     {
         $entity = new EntityProperty();
         $this->assertIsBool($entity->isReadonly());
     }
 
-    public function testIsDescritpion()
+    public function testIsDescritpion(): void
     {
         $entity = new EntityProperty();
         $this->assertIsString($entity->getDescription());

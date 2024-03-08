@@ -8,8 +8,8 @@ parameters:
         - DependencyInjection/Configuration.php
         - Command/ChildrenMoveCommand.php
     ignoreErrors:
-            - '#is unused.$#i'
-            - '#is never read, only written.$#i'
-            - '#^Call to an undefined method Doctrine\\ORM\\EntityRepository#i'
-            - '#^Return type \(void\) of method SQLI\\EzToolboxBundle\\Command#'
+            - '#is unused.$#i' # method or property could be used later or outside package coverage
+            - '#is never read, only written.$#i' # method or property could be used later or outside package coverage
+            - '#^Call to an undefined method Doctrine\\ORM\\EntityRepository#i' # doctrine related imports
+            - '#^Return type \(void\) of method SQLI\\EzToolboxBundle\\Command#' # doctrine related imports
     treatPhpDocTypesAsCertain: false

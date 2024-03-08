@@ -37,7 +37,6 @@ class EntityHelper
     /**
      * Get an entity with her information and elements
      *
-     * @param string $fqcn
      * @param bool $fetchElements
      * @param bool|array $sort Array( 'column_name' => '', 'order' => 'ASC|DESC' )
      * @return array
@@ -71,7 +70,6 @@ class EntityHelper
     /**
      * Get a class annotated with EntityAnnotationInterface interface from her FQCN
      *
-     * @param string $fqcn
      * @return array
      * @throws ReflectionException
      */
@@ -181,7 +179,6 @@ class EntityHelper
      * $findCriteria = ['columnName' => 'value']
      *
      * @param string $entityClass FQCN
-     * @param array $findCriteria
      */
     public function remove(string $entityClass, array $findCriteria): void
     {
@@ -195,8 +192,6 @@ class EntityHelper
     /**
      * Find one element
      *
-     * @param string $entityClass
-     * @param array $findCriteria
      * @return object|null
      */
     public function findOneBy(string $entityClass, array $findCriteria)
@@ -206,7 +201,6 @@ class EntityHelper
 
     /**
      * @param $object
-     * @param string $property_name
      * @return false|string
      */
     public function attributeValue($object, string $property_name)

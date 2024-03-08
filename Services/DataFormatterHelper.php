@@ -12,15 +12,12 @@ use SQLI\EzToolboxBundle\Exceptions\DataFormatterException;
 class DataFormatterHelper
 {
     /**
-     * @param mixed $data
-     * @param string $format
      * @param null $pattern
      * @return string
      * @SuppressWarnings(PHPMD)
      */
-
     //phpcs:@ignore
-    public function format($data, string $format, $pattern = null): string
+    public function format(mixed $data, string $format, $pattern = null): string
     {
         switch ($format) {
             case "float":
@@ -67,7 +64,7 @@ class DataFormatterHelper
      * @param mixed $defaultReturn Value to return if cannot create a DateTime
      * @return DateTime|false
      */
-    public function toDateTime($date, $defaultReturn = false)
+    public function toDateTime($date, mixed $defaultReturn = false)
     {
         if (!$date instanceof DateTime) {
             $date = (string)$date;
@@ -84,7 +81,7 @@ class DataFormatterHelper
                 $date != "" ?: $date = "now";
                 try {
                     $dateTime = new DateTime($date, new \DateTimeZone('UTC'));
-                } catch (\Exception $exception) {
+                } catch (\Exception) {
                     $dateTime = $defaultReturn;
                 }
             }
@@ -211,8 +208,6 @@ class DataFormatterHelper
     /**
      * Format filesize (in bytes) into human readable filesize
      *
-     * @param int $bytes
-     * @param int $decimals
      * @return string
      */
     private function humanFilesize(int $bytes, int $decimals = 2): string
@@ -224,8 +219,6 @@ class DataFormatterHelper
     }
 
     /**
-     * @param string $string
-     * @param string $delimiter
      * @return string
      */
     public function slugify(string $string, string $delimiter = '-'): string

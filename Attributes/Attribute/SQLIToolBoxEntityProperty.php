@@ -5,38 +5,20 @@ namespace SQLI\EzToolboxBundle\Attributes\Attribute;
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 final class SQLIToolBoxEntityProperty implements SQLIToolBoxClassProperty
 {
-    /** @var bool */
-    public $visible ;
-
-    /** @var bool */
-    public $readonly ;
-
-    /** @var string */
-    public $description;
-
-    /** @var array */
-    public $choices ;
-
     /**
-     * @var string
-     * @Enum({"content", "location", "tag"})
-     */
-    public $extra_link ;
-
-    /**
-     * @param bool $visible
-     * @param bool $readonly
-     * @param string $description
      * @param array|null $choices
      * @param string|null $extra_link
      */
-    public function __construct(bool $visible = true, bool $readonly = false, string $description = "", ?array $choices = [], ?string $extra_link = '')
-    {
-        $this->visible = $visible;
-        $this->readonly = $readonly;
-        $this->description = $description;
-        $this->choices = $choices;
-        $this->extra_link = $extra_link;
+    public function __construct(
+        public bool $visible = true,
+        public bool $readonly = false,
+        public string $description = "",
+        public ?array $choices = [],
+        /**
+         * @Enum({"content", "location", "tag"})
+         */
+        public ?string $extra_link = ''
+    ) {
     }
 
     /**

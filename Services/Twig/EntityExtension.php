@@ -11,13 +11,10 @@ class EntityExtension extends AbstractExtension
 {
     /** @var ParameterBagInterface */
     protected $parameterBag;
-    /** @var EntityHelper */
-    private $entityHelper;
 
-    public function __construct(ParameterBagInterface $parameterBag, EntityHelper $entityHelper)
+    public function __construct(ParameterBagInterface $parameterBag, private readonly EntityHelper $entityHelper)
     {
         $this->parameterBag = $parameterBag;
-        $this->entityHelper = $entityHelper;
     }
 
     public function getFunctions()

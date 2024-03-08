@@ -14,8 +14,8 @@ inspect:
 
 ## —— Fix Code quality to standard 🎵 ——————————————————————————————————————————————————————————
 fix:
-	make phpcbf
 	make rector
+	make phpcbf
 
 phpcs:
 	vendor/bin/phpcs --standard=phpcs.xml

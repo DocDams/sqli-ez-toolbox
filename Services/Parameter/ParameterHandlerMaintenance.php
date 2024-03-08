@@ -42,7 +42,7 @@ class ParameterHandlerMaintenance extends ParameterHandlerAbstractObjectState im
                 // If at least one content is in maintenance, return true
                 return ($this->count($params) != 0);
             }
-        } catch (Exception $exception) {
+        } catch (Exception) {
             return false;
         }
 

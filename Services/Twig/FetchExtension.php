@@ -19,25 +19,15 @@ use Twig\TwigFunction;
 
 class FetchExtension extends AbstractExtension
 {
-    /** @var FetchHelper */
-    private $fetchHelper;
-    /** @var ViewManagerInterface */
-    private $viewManager;
-    /** @var Repository */
-    private $repository;
     /** @var LoggerInterface */
     private $logger;
 
     public function __construct(
-        FetchHelper $fetchHelper,
-        ViewManagerInterface $viewManager,
-        Repository $repository,
+        private readonly FetchHelper $fetchHelper,
+        private readonly ViewManagerInterface $viewManager,
+        private readonly Repository $repository,
         $logDir
     ) {
-        $this->fetchHelper = $fetchHelper;
-        $this->viewManager = $viewManager;
-        $this->repository = $repository;
-
         $handler = new StreamHandler("$logDir/sqli-eztoolbox_" . date("Y-m-d") . '.log');
         $handler->setFormatter(new SqliSimpleLogFormatter());
         $this->logger = new Logger('SQLILogException');
@@ -79,11 +69,8 @@ class FetchExtension extends AbstractExtension
         $children = $this->fetchHelper->fetchChildren($parentLocation, $filterContentClass);
 
         $render = "";
-
-        end($children);
-        $lastKey = key($children);
-        reset($children);
-        $firstKey = key($children);
+        $lastKey = array_key_last($children);
+        $firstKey = array_key_first($children);
 
         foreach ($children as $index => $child) {
             $isfirst = $index === $firstKey;

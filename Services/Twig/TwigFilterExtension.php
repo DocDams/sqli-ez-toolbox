@@ -19,32 +19,17 @@ use Twig\TwigFunction;
 
 class TwigFilterExtension extends AbstractExtension
 {
-    /** @var Repository */
-    private $repository;
-    /** @var DataFormatterHelper */
-    private $dataFormatterHelper;
-    /** @var ConfigResolverInterface */
-    private $configResolver;
-    /** @var FieldHelper */
-    private $fieldHelper;
-    /** @var ContentExtension */
-    private $contentExtension;
     /** @var AuthorizationCheckerInterface */
     protected $authorizationChecker;
 
     public function __construct(
-        Repository $repository,
-        DataFormatterHelper $dataFormatterHelper,
-        ConfigResolverInterface $configResolver,
-        FieldHelper $fieldHelper,
-        ContentExtension $contentExtension,
+        private readonly Repository $repository,
+        private readonly DataFormatterHelper $dataFormatterHelper,
+        private readonly ConfigResolverInterface $configResolver,
+        private readonly FieldHelper $fieldHelper,
+        private readonly ContentExtension $contentExtension,
         AuthorizationCheckerInterface $authorizationChecker
     ) {
-        $this->repository = $repository;
-        $this->dataFormatterHelper = $dataFormatterHelper;
-        $this->configResolver = $configResolver;
-        $this->fieldHelper = $fieldHelper;
-        $this->contentExtension = $contentExtension;
         $this->authorizationChecker = $authorizationChecker;
     }
 
@@ -81,7 +66,7 @@ class TwigFilterExtension extends AbstractExtension
     {
         try {
             return $this->configResolver->getParameter($parameterName, $namespace);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return null;
         }
     }
@@ -90,11 +75,9 @@ class TwigFilterExtension extends AbstractExtension
      * Checks if a given field is considered empty.
      * This method accepts field as Objects or by identifiers.
      *
-     * @param Content $content
      * @param Field|string $fieldDefIdentifier Field or Field Identifier to get the value from.
      * @param string $forcedLanguage Locale we want the content name translation in (e.g. "fre-FR").
      *                                     Null by default (takes current locale).
-     *
      * @return bool
      */
     public function isEmptyField(Content $content, $fieldDefIdentifier, $forcedLanguage = null)
@@ -114,10 +97,9 @@ class TwigFilterExtension extends AbstractExtension
         if (!$content instanceof Content) {
             // Load Content
             $content = $this->repository->sudo(
-                function (Repository $repository) use ($content) {
+                fn(Repository $repository) =>
                     /* @var $repository \Ibexa\Core\Repository\Repository */
-                    return $repository->getContentService()->loadContent((int) $content);
-                }
+                    $repository->getContentService()->loadContent((int) $content)
             );
         }
 
@@ -139,13 +121,10 @@ class TwigFilterExtension extends AbstractExtension
         $anonymousUserId = $this->configResolver->getParameter("anonymous_user_id", "ezsettings");
         // Current user ID
         $currentUserReference = $this->repository->getPermissionResolver()->getCurrentUserReference();
-        if ($currentUserReference instanceof UserReference) {
+
             $currentUserId = $currentUserReference->getUserId();
 
             return $currentUserId === $anonymousUserId;
-        }
-
-        return false;
     }
 
     public function hasAccess(string $module, string $function): bool

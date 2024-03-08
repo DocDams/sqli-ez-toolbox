@@ -14,12 +14,9 @@ abstract class ParameterHandlerAbstractEntity implements ParameterHandlerInterfa
     public const PARAMETER_NAME = "";
     public const PARAMETER_ENABLED = "enabled";
     public const PARAMETER_DISABLED = "disabled";
-    /** @var EntityManager */
-    private $entityManager;
 
-    public function __construct(EntityManager $entityManager)
+    public function __construct(private readonly EntityManager $entityManager)
     {
-        $this->entityManager = $entityManager;
     }
 
     public function listParameters(): array
