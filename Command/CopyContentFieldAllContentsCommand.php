@@ -115,7 +115,7 @@ class CopyContentFieldAllContentsCommand extends Command
      * @throws InvalidArgumentException
      * @throws UnauthorizedException
      */
-    public function publishEachContent(array $items, OutputInterface $output, int $offset, string $availableLanguageCode): void
+    protected function publishEachContent(array $items, OutputInterface $output, int $offset, string $availableLanguageCode): void
     {
     // Publish each content
         foreach ($items as $index => $content) {
