@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\Reference;
 class ParameterHandlerTagCompilerPass implements CompilerPassInterface
 {
     /**
-     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+     * @inherited
      */
     public function process(ContainerBuilder $container): void
     {
