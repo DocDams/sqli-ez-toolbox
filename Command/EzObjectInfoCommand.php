@@ -82,6 +82,8 @@ class EzObjectInfoCommand extends Command
         } elseif ($contentId = $input->getOption('content')) {
             $this->displayContentInfo($output, $contentId);
         }
+
+        return Command::SUCCESS;
     }
 
     /**
