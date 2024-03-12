@@ -119,7 +119,7 @@ class PublishAllContentsCommand extends Command
         if (!$helper->ask($input, $output, $question)) {
             $output->writeln('');
 
-            exit;
+            return Command::FAILURE;
         }
 
         $output->writeln("");
