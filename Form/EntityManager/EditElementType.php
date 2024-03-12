@@ -82,7 +82,7 @@ class EditElementType extends AbstractType
      * @param int|string $propertyName
      * @return void
      */
-    public function addElementToFormBuilder(mixed $propertyInfos, $context, FormBuilderInterface $builder, int|string $propertyName): void
+    protected function addElementToFormBuilder(mixed $propertyInfos, $context, FormBuilderInterface $builder, int|string $propertyName): void
     {
 
         if ($propertyInfos['visible']) {
