@@ -75,7 +75,7 @@ class EzObjectInfoCommand extends Command
      * @throws NotFoundException
      * @throws UnauthorizedException|InvalidArgumentException
      */
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if ($locationId = $input->getOption('location')) {
             $this->displayLocationInfo($output, $locationId);
