@@ -57,7 +57,7 @@ class EditElementType extends AbstractType
      * @param int|string $propertyName
      * @return void
      */
-    public function serializeObjectOrArray($type, FormBuilderInterface $builder, int|string $propertyName): void
+    protected function serializeObjectOrArray($type, FormBuilderInterface $builder, int|string $propertyName): void
     {
         if ($type === "object" || $type === "array") {
             $builder->get($propertyName)->addViewTransformer(new CallbackTransformer(
