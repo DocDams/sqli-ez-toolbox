@@ -150,6 +150,8 @@ class PublishAllContentsCommand extends Command
 
         $output->writeln("");
         $output->writeln("<info>Job finished !</info>");
+
+        return Command::SUCCESS;
     }
 
     /**
