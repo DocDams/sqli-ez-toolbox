@@ -261,7 +261,7 @@ class CopyContentFieldAllContentsCommand extends Command
      * @throws InvalidArgumentException
      * @throws UnauthorizedException
      */
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln(sprintf(
             "Fetching all objects of contentType '<comment>%s</comment>'",
