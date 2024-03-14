@@ -9,12 +9,8 @@ use Twig\TwigFunction;
 
 class EntityExtension extends AbstractExtension
 {
-    /** @var ParameterBagInterface */
-    protected $parameterBag;
-
-    public function __construct(ParameterBagInterface $parameterBag, private readonly EntityHelper $entityHelper)
+    public function __construct(private readonly ParameterBagInterface $parameterBag, private readonly EntityHelper $entityHelper)
     {
-        $this->parameterBag = $parameterBag;
     }
 
     public function getFunctions()

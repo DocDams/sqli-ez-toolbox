@@ -23,7 +23,7 @@ class ParameterHandlerTagCompilerPass implements CompilerPassInterface
         // Search tagged services
         $taggedServices = $container->findTaggedServiceIds('sqli.parameter_handler');
 
-        foreach ($taggedServices as $id => $taggedService) {
+        foreach (array_keys($taggedServices) as $id) {
             $definition->addMethodCall('addHandler', [new Reference($id)]);
         }
     }

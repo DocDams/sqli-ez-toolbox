@@ -257,7 +257,7 @@ class CopyContentFieldAllContentsCommand extends Command
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return void
+     * @return int
      * @throws InvalidArgumentException
      * @throws UnauthorizedException
      */

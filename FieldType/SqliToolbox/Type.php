@@ -8,6 +8,7 @@ use SQLI\EzToolboxBundle\Form\Type\SqliToolboxType;
 use Ibexa\Contracts\Core\FieldType\Generic\Type as GenericType;
 use Ibexa\Contracts\Core\FieldType\Indexable;
 use Ibexa\Contracts\Core\Persistence\Content\Field;
+use Ibexa\Contracts\Core\Search\Field as SearchField ;
 use Ibexa\Contracts\Core\Persistence\Content\Type\FieldDefinition;
 use Ibexa\Contracts\ContentForms\Data\Content\FieldData;
 use Ibexa\Contracts\ContentForms\FieldType\FieldValueFormMapperInterface;
@@ -40,7 +41,7 @@ class Type extends GenericType implements FieldValueFormMapperInterface, Indexab
      * @param Field $field
      * @param FieldDefinition $fieldDefinition
      *
-     * @return array
+     * @return SearchField[]
      */
     public function getIndexData(Field $field, FieldDefinition $fieldDefinition): array
     {
