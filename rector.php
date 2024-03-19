@@ -19,9 +19,15 @@ return RectorConfig::configure()
         AddVoidReturnTypeWhereNoReturnRector::class,
     ])
     ->withSets(
-        [SetList::CODE_QUALITY,
+        [
+            SetList::PHP_71,
+            SetList::PHP_72,
+            SetList::PHP_73,
+            SetList::PHP_74, // types properties
+            SetList::PHP_80, // class attributes
+            SetList::PHP_81, // named arguments
 
             ]
     )
-    ->withAttributesSets(symfony: true,doctrine: true) // remove it later
+    ->withAttributesSets(symfony: true, doctrine: true) // remove it later
     ;

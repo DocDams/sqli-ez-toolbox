@@ -42,7 +42,7 @@ class ParameterHandlerMaintenance extends ParameterHandlerAbstractObjectState im
                 // If at least one content is in maintenance, return true
                 return ($this->count($params) != 0);
             }
-        } catch (Exception $exception) {
+        } catch (Exception) {
             return false;
         }
 
@@ -70,7 +70,7 @@ class ParameterHandlerMaintenance extends ParameterHandlerAbstractObjectState im
         if (
             $parameter = $this->entityManager->getRepository(Parameter::class)->findOneByName(self::PARAMETER_NAME)
         ) {
-            /** @var Parameter */
+            /** @var Parameter $paramValue */
             $parameter->setValue($paramValue);
 
             $this->entityManager->persist($parameter);

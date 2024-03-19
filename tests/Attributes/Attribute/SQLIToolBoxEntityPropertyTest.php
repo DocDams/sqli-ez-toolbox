@@ -5,17 +5,9 @@ namespace SQLI\EzToolboxBundle\tests\Services\Attributes\Attribute;
 use PHPUnit\Framework\TestCase;
 use SQLI\EzToolboxBundle\Attributes\Attribute\SQLIToolBoxEntityProperty;
 
-
 class SQLIToolBoxEntityPropertyTest extends TestCase
 {
-
-    public function test__construct()
-    {
-        $entity = new SQLIToolBoxEntityProperty(visible: true, readonly: true, description: "testDescription", choices: [], extra_link: "testExtra");
-        $this->assertInstanceOf(SQLIToolBoxEntityProperty::CLASS,$entity);
-
-    }
-    public function testDefaultValues()
+    public function testDefaultValues(): void
     {
         $entity = new SQLIToolBoxEntityProperty();
         $this->assertFalse($entity->isReadonly());
@@ -23,18 +15,17 @@ class SQLIToolBoxEntityPropertyTest extends TestCase
         $this->assertNull($entity->getChoices());
         $this->assertEquals('', $entity->getDescription());
         $this->assertEquals('', $entity->getExtraLink());
-
     }
 
-    public function testSetVisible() {
+    public function testSetVisible(): void
+    {
         $entityAttribute = new SQLIToolBoxEntityProperty();
         $entityAttribute->visible = true;
         $this->assertTrue($entityAttribute->isVisible());
         $entityAttribute->visible = false;
         $this->assertFalse($entityAttribute->isVisible());
-
     }
-    public function testSetReadonly()
+    public function testSetReadonly(): void
     {
         $entity = new SQLIToolBoxEntityProperty();
         $entity->readonly = true;
@@ -42,24 +33,24 @@ class SQLIToolBoxEntityPropertyTest extends TestCase
         $entity->readonly = false;
         $this->assertFalse($entity->isReadonly());
     }
-    public function testSetChoices() {
+    public function testSetChoices(): void
+    {
         $entityAttribute = new SQLIToolBoxEntityProperty();
         $entityAttribute->choices = ['test'];
         $this->assertIsArray($entityAttribute->getChoices());
         $this->assertEquals(1, count($entityAttribute->getChoices()));
     }
 
-    public function testSetDescription()
+    public function testSetDescription(): void
     {
         $entity = new SQLIToolBoxEntityProperty();
         $description = "This is a new description";
         $entity->description = $description;
 
         $this->assertEquals($description, $entity->getDescription());
-
     }
 
-    public function testSetExtraLink()
+    public function testSetExtraLink(): void
     {
         $entity = new SQLIToolBoxEntityProperty();
         $link = "http://example.com";
@@ -69,45 +60,44 @@ class SQLIToolBoxEntityPropertyTest extends TestCase
         $entity->extra_link = $link;
         $this->assertEmpty($link, $entity->getDescription());
     }
-    public function testIsVisible()
+    public function testIsVisible(): void
     {
         $entity = new SQLIToolBoxEntityProperty();
         $this->assertTrue($entity->isVisible());
     }
 
-    public function testIsReadonly()
+    public function testIsReadonly(): void
     {
         $entity = new SQLIToolBoxEntityProperty();
         $this->assertIsBool($entity->isReadonly());
     }
-    public function testIsChoices()
+    public function testIsChoices(): void
     {
         $entity = new SQLIToolBoxEntityProperty(choices: ['array']);
         $this->assertIsArray($entity->getChoices());
     }
-    public function testIsDescritpion()
+    public function testIsDescritpion(): void
     {
         $entity = new SQLIToolBoxEntityProperty();
         $this->assertIsString($entity->getDescription());
     }
-    public function testIsExtraLink()
+    public function testIsExtraLink(): void
     {
         $entity = new SQLIToolBoxEntityProperty();
         $this->assertIsString($entity->getExtraLink());
     }
-    public function testGetDescription()
+    public function testGetDescription(): void
     {
         $entity = new SQLIToolBoxEntityProperty(description:  'expected_description');
         $this->assertEquals('expected_description', $entity->getDescription());
     }
 
-    public function testGetChoices()
+    public function testGetChoices(): void
     {
         $entity = new SQLIToolBoxEntityProperty(choices: ["array"]);
         $this->assertEquals(1, count($entity->getChoices()));
-
     }
-    public function testNullExtraLink()
+    public function testNullExtraLink(): void
     {
         $entity = new SQLIToolBoxEntityProperty();
         $this->assertNotNull($entity->getExtraLink());

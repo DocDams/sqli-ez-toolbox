@@ -21,18 +21,14 @@ class TagsHelper
 {
     /** @var TagsService */
     private $tagsService;
-    /** @var Repository */
-    private $repository;
 
     /**
      * TagsHelper constructor.
      * @param TagsService|null $tagsService
-     * @param Repository $repository
      */
-    public function __construct(?TagsService $tagsService, Repository $repository)
+    public function __construct(?TagsService $tagsService, private readonly Repository $repository)
     {
         $this->tagsService = $tagsService;
-        $this->repository = $repository;
     }
 
     /**
@@ -200,7 +196,7 @@ class TagsHelper
                 // Update tag
                 return $this->tagsService->updateTag($tagToUpdate, $tagUpdateStructure);
             }
-        } catch (NotFoundException $exception) {
+        } catch (NotFoundException) {
             // Do nothing, try to create
         }
 

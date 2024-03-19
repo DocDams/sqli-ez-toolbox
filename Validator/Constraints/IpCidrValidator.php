@@ -53,9 +53,9 @@ class IpCidrValidator extends ConstraintValidator
         /* now split it up into it's classes */
         list($a, $b, $c, $d) = explode('.', $base);
 
-        /* now do some bit shfiting/switching to convert to ints */
-        $i = ($a << 24) + ($b << 16) + ($c << 8) + $d;
-        $mask = $bits == 0 ? 0 : (~0 << (32 - $bits));
+        /* now do some bit shifting/switching to convert to int's */
+        $i = (intval($a) << 24) + (intval($b) << 16) + (intval($c) << 8) + intval($d);
+        $mask = $bits == 0 ? 0 : (~0 << (32 - intval($bits)));
 
         /* here's our lowest int */
         $low = $i & $mask;
@@ -67,7 +67,7 @@ class IpCidrValidator extends ConstraintValidator
         list($a, $b, $c, $d) = explode('.', $iptocheck);
 
         /* now convert the ip we're checking against to an int */
-        $check = ($a << 24) + ($b << 16) + ($c << 8) + $d;
+        $check = (intval($a) << 24) + (intval($b) << 16) + (intval($c) << 8) + intval($d);
 
         /* if the ip is within the range, including
       highest/lowest values, then it's witin the CIDR range */

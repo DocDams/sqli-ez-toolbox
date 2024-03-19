@@ -9,15 +9,8 @@ use Twig\TwigFunction;
 
 class EntityExtension extends AbstractExtension
 {
-    /** @var ParameterBagInterface */
-    protected $parameterBag;
-    /** @var EntityHelper */
-    private $entityHelper;
-
-    public function __construct(ParameterBagInterface $parameterBag, EntityHelper $entityHelper)
+    public function __construct(private readonly ParameterBagInterface $parameterBag, private readonly EntityHelper $entityHelper)
     {
-        $this->parameterBag = $parameterBag;
-        $this->entityHelper = $entityHelper;
     }
 
     public function getFunctions()
@@ -25,18 +18,12 @@ class EntityExtension extends AbstractExtension
         return [
             new TwigFunction(
                 'sqli_admin_attribute',
-                [
-                    $this,
-                    'attributeValue'
-                ],
+                $this->attributeValue(...),
                 array('is_safe' => ['all'])
             ),
             new TwigFunction(
                 'bundle_exists',
-                [
-                    $this,
-                    'bundleExists'
-                ]
+                $this->bundleExists(...)
             ),
         ];
     }

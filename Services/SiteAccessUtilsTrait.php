@@ -13,8 +13,6 @@ trait SiteAccessUtilsTrait
     /**
      * autowiring
      *
-     *
-     * @param SiteAccessService $siteAccessService
      */
     #[\Symfony\Contracts\Service\Attribute\Required]
     public function setSiteAccessSettings(SiteAccessService $siteAccessService): void

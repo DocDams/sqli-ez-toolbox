@@ -14,27 +14,17 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class SQLIAttributesManager
 {
-    /**
-     * Classname of annotation
-     * @var string
-     */
-    private string $attributeClassName;
-
-    /** @var array */
-    private array $directories;
-
-    /**
-     * Project root directory
-     * @var string
-     */
-    private string $projectDir;
-
-    public function __construct(string $attributeClassName, array $directories, string $projectDir)
-    {
-        // Store the attribute class name, directories, and project directory
-        $this->attributeClassName = $attributeClassName;
-        $this->directories = $directories;
-        $this->projectDir = $projectDir;
+    public function __construct(
+        /**
+         * Classname of annotation
+         */
+        private readonly string $attributeClassName,
+        private readonly array $directories,
+        /**
+         * Project root directory
+         */
+        private readonly string $projectDir
+    ) {
     }
 
 
@@ -71,7 +61,7 @@ class SQLIAttributesManager
         // Iterate over each directory specified in the configuration
         foreach ($this->directories as $entitiesMapping) {
             $directory = $entitiesMapping['directory'];
-            $namespace = $entitiesMapping['namespace'] ?? str_replace('/', '\\', $directory);
+            $namespace = $entitiesMapping['namespace'] ?? str_replace('/', '\\', (string) $directory);
 
             // Construct the full path to the directory
             $path = $this->projectDir . '/src/' . $directory;
@@ -85,9 +75,6 @@ class SQLIAttributesManager
     }
 
     /**
-     * @param Finder $finder
-     * @param mixed $namespace
-     * @param array $annotatedClasses
      * @return array
      * @throws ReflectionException
      */
@@ -129,8 +116,8 @@ class SQLIAttributesManager
                 }
             }
 
-            if (!$classAttribute instanceof \SQLI\EzToolboxBundle\Attributes\Attribute\SQLIToolBoxEntity && $classDoctrineAttribute === null) {
-                // No SQLIClassAnnotation or isn't an entity, ignore her
+            if (!$classAttribute instanceof SQLIToolBoxEntity && $classDoctrineAttribute === null) {
+                // No EntityAnnotationInterface or isn't an entity, ignore her
                 continue;
             }
 
@@ -141,22 +128,15 @@ class SQLIAttributesManager
             $reflectionProperties = $class->getProperties();
 
             // phpcs:ignore
-            list($annotatedClasses) = $this->getAttributedProperties($reflectionProperties, $properties, $compoundPrimaryKey, $className, $classAttribute, $annotatedClasses, $classNamespace);
+            [$annotatedClasses] = $this->getAttributedProperties($reflectionProperties, $properties, $compoundPrimaryKey, $className, $classAttribute, $annotatedClasses, $classNamespace);
         }
         return $annotatedClasses;
     }
 
     /**
-     * @param array $reflectionProperties
-     * @param array $properties
-     * @param array $compoundPrimaryKey
-     * @param string $className
      * @param SQLIToolBoxEntity|null $classAttribute
-     * @param array $annotatedClasses
-     * @param string $classNamespace
      * @return array
      */
-
     // phpcs:ignore
     public function getAttributedProperties(array $reflectionProperties, array $properties, array $compoundPrimaryKey, string $className, ?SQLIToolBoxEntity $classAttribute, array $annotatedClasses, string $classNamespace): array
     {

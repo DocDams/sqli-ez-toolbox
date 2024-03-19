@@ -12,19 +12,16 @@ use SQLI\EzToolboxBundle\Exceptions\DataFormatterException;
 class DataFormatterHelper
 {
     /**
-     * @param mixed $data
-     * @param string $format
      * @param null $pattern
      * @return string
      * @SuppressWarnings(PHPMD)
      */
-
     //phpcs:@ignore
-    public function format($data, string $format, $pattern = null): string
+    public function format(mixed $data, string $format, $pattern = null): string
     {
         switch ($format) {
             case "float":
-                return preg_replace('#^([0-9\s]+),(\d+)$#', '$1.$2', $data);
+                return preg_replace('#^([0-9\s]+),(\d+)$#', '$1.$2', (string) $data);
             case "amount":
                 $number = $this->format($data, "float");
 
@@ -49,7 +46,7 @@ class DataFormatterHelper
             case "url":
                 $url = $data;
                 // Check if protocol is in $data
-                if (!preg_match('#^http(?:s)?://#', $data)) {
+                if (!preg_match('#^http(?:s)?://#', (string) $data)) {
                     $url = "http://" . $data;
                 }
                 return $url;
@@ -67,7 +64,7 @@ class DataFormatterHelper
      * @param mixed $defaultReturn Value to return if cannot create a DateTime
      * @return DateTime|false
      */
-    public function toDateTime($date, $defaultReturn = false)
+    public function toDateTime($date, mixed $defaultReturn = false)
     {
         if (!$date instanceof DateTime) {
             $date = (string)$date;
@@ -84,7 +81,7 @@ class DataFormatterHelper
                 $date != "" ?: $date = "now";
                 try {
                     $dateTime = new DateTime($date, new \DateTimeZone('UTC'));
-                } catch (\Exception $exception) {
+                } catch (\Exception) {
                     $dateTime = $defaultReturn;
                 }
             }
@@ -211,8 +208,6 @@ class DataFormatterHelper
     /**
      * Format filesize (in bytes) into human readable filesize
      *
-     * @param int $bytes
-     * @param int $decimals
      * @return string
      */
     private function humanFilesize(int $bytes, int $decimals = 2): string
@@ -224,8 +219,6 @@ class DataFormatterHelper
     }
 
     /**
-     * @param string $string
-     * @param string $delimiter
      * @return string
      */
     public function slugify(string $string, string $delimiter = '-'): string
@@ -234,9 +227,9 @@ class DataFormatterHelper
         setlocale(LC_ALL, 'en_US.UTF-8');
         $clean = iconv('UTF-8', 'ASCII//TRANSLIT', $string);
         $clean = preg_replace("/[^a-zA-Z0-9\/_|+ -]/", '', $clean);
-        $clean = strtolower($clean);
+        $clean = strtolower((string) $clean);
         $clean = preg_replace("/[\/_|+ -]+/", $delimiter, $clean);
-        $clean = trim($clean, $delimiter);
+        $clean = trim((string) $clean, $delimiter);
         setlocale(LC_ALL, $oldLocale);
 
         return $clean;

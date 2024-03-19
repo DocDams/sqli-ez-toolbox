@@ -5,50 +5,19 @@ namespace SQLI\EzToolboxBundle\Attributes\Attribute;
 #[\Attribute(\Attribute::TARGET_CLASS)]
 final class SQLIToolBoxEntity implements SQLIToolBoxClassAttribute
 {
-    /** @var bool */
-    public $create ;
-
-    /** @var bool */
-    public $update ;
-
-    /** @var bool */
-    public $delete;
-
-    /** @var string */
-    public $description;
-
     /** @var int */
     public $max_per_page;
 
-    /** @var bool */
-    public $csv_exportable ;
-
-    /** @var string */
-    public $tabname;
-
     public function __construct(
-        bool $create = false,
-        bool $update = false,
-        bool $delete = false,
-        string $description = "",
+        public bool $create = false,
+        public bool $update = false,
+        public bool $delete = false,
+        public string $description = "",
         int $max_per_page = 10,
-        bool $csv_exportable = false,
-        string $tabname = "default"
+        public bool $csv_exportable = false,
+        public string $tabname = "default"
     ) {
-              $this->create = $create;
-
-              $this->update = $update;
-
-              $this->delete = $delete;
-
-              $this->description = $description;
-
-              $this->max_per_page = max(10, $max_per_page); // Ensure max_per_page is non-negative
-
-
-              $this->csv_exportable = $csv_exportable;
-
-              $this->tabname = $tabname;
+              $this->max_per_page = max(10, $max_per_page);
     }
 
     /**

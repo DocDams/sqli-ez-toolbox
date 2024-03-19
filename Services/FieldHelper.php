@@ -11,19 +11,11 @@ use Ibexa\Core\Helper\TranslationHelper;
 
 class FieldHelper
 {
-    /** @var EzFieldHelper */
-    private $fieldHelper;
-    /** @var TranslationHelper */
-    private $translationHelper;
-
-    public function __construct(EzFieldHelper $fieldHelper, TranslationHelper $translationHelper)
+    public function __construct(private readonly EzFieldHelper $fieldHelper, private readonly TranslationHelper $translationHelper)
     {
-        $this->fieldHelper = $fieldHelper;
-        $this->translationHelper = $translationHelper;
     }
 
     /**
-     * @param Content $content
      * @param Field|string $fieldDefIdentifier Field or Field Identifier to get the value from.
      * @param string $forcedLanguage Locale we want the content name translation in (e.g. "fre-FR").
      *                                     Null by default (takes current locale).
@@ -54,8 +46,6 @@ class FieldHelper
     /**
      * Return value of the selected option for an attribute 'ezselection'
      *
-     * @param Content $content
-     * @param string $fieldDefIdentifier
      * @param null $forcedLanguage
      * @return string|null
      */

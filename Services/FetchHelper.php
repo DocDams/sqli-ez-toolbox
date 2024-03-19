@@ -22,35 +22,17 @@ use Ibexa\Core\Helper\TranslationHelper;
 class FetchHelper
 {
     public const LIMIT = 25;
-    /** @var ConfigResolverInterface */
-    private $configResolver;
-    /** @var SearchService */
-    private $searchService;
-    /** @var LocationService */
-    private $locationService;
-    /** @var FieldHelper */
-    private $fieldhelper;
-    /** @var TranslationHelper */
-    private $translationhelper;
-    /** @var ContentService */
-    private $contentservice;
     /** @var DataFormatterHelper */
     private $dataFormatterHelper;
 
     public function __construct(
-        ConfigResolverInterface $configResolver,
-        SearchService $searchService,
-        LocationService $locationService,
-        FieldHelper $fieldhelper,
-        TranslationHelper $translationhelper,
-        ContentService $contentservice,
+        private readonly ConfigResolverInterface $configResolver,
+        private readonly SearchService $searchService,
+        private readonly LocationService $locationService,
+        private readonly FieldHelper $fieldhelper,
+        private readonly TranslationHelper $translationhelper,
+        private readonly ContentService $contentservice
     ) {
-        $this->configResolver = $configResolver;
-        $this->searchService = $searchService;
-        $this->locationService = $locationService;
-        $this->fieldhelper = $fieldhelper;
-        $this->translationhelper = $translationhelper;
-        $this->contentservice = $contentservice;
     }
 
     /**
@@ -96,7 +78,6 @@ class FetchHelper
     }
 
     /**
-     * @param array $params
      * @param int $limit
      * @param int $offset
      * @param SortClause[]|null $sortClauses If null, results will be sorted by priority
@@ -137,11 +118,9 @@ class FetchHelper
     }
 
     /**
-     * @param Location $parentLocation
      * @param null $contentClass
      * @param int $limit
      * @param int $offset
-     * @param array $params
      * @return array
      * @throws InvalidArgumentException
      */
@@ -209,7 +188,7 @@ class FetchHelper
         if (!$location instanceof Location) {
             try {
                 $location = $this->locationService->loadLocation($location);
-            } catch (Exception $exception) {
+            } catch (Exception) {
                 return null;
             }
         }
@@ -245,7 +224,6 @@ class FetchHelper
     }
 
     /**
-     * @param array $params
      * @return Location|null
      * @throws InvalidArgumentException
      */
@@ -261,7 +239,6 @@ class FetchHelper
      * Fetch all contents which contains specified content into specified RelationList field
      *
      * @param Content|null $content
-     * @param string $fieldIdentifier
      * @param null $contentClass
      * @return array
      * @throws InvalidArgumentException
@@ -280,9 +257,6 @@ class FetchHelper
     }
 
     /**
-     * @param array $params
-     * @param int $limit
-     * @param int $offset
      * @return array
      * @throws InvalidArgumentException
      */
@@ -316,8 +290,6 @@ class FetchHelper
     /**
      * Search a content in specified Location or the first of it's ancestors which have fieldIdentifier filled
      *
-     * @param Location $location
-     * @param string $fieldIdentifier
      * @return Location
      * @throws NotFoundException
      * @throws UnauthorizedException
@@ -377,7 +349,6 @@ class FetchHelper
     }
 
     /**
-     * @param array $params
      * @return Content|null
      * @throws InvalidArgumentException
      */

@@ -9,34 +9,29 @@ use Doctrine\ORM\Mapping\Id;
 use ReflectionClass;
 use ReflectionException;
 use SQLI\EzToolboxBundle\Annotations\Annotation\Entity as SQLIEntity;
-use SQLI\EzToolboxBundle\Annotations\Annotation\EntityProperty as SQLIEntityProperty;
-use SQLI\EzToolboxBundle\Annotations\Annotation\SQLIClassAnnotation;
+use SQLI\EzToolboxBundle\Annotations\Annotation\EntityProperty;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
 class SQLIAnnotationManager
 {
     /**
-     * Classname of annotation
-     * @var string
+     * @param string $annotation
+     * @param mixed[] $directories
+     * @param string $projectDir
      */
-    private $annotation;
-    /** @var array */
-    private $directories;
-    /** @var Reader */
-    private $annotationReader;
-    /**
-     * Project root directory
-     * @var string
-     */
-    private $projectDir;
-
-    public function __construct($annotation, $directories, $projectDir, Reader $annotationReader)
-    {
-        $this->annotation = $annotation;
-        $this->directories = $directories;
-        $this->projectDir = $projectDir;
-        $this->annotationReader = $annotationReader;
+    public function __construct(
+        /**
+         * Classname of annotation
+         */
+        private $annotation,
+        private $directories,
+        /**
+         * Project root directory
+         */
+        private $projectDir,
+        private readonly Reader $annotationReader
+    ) {
     }
 
     /**
@@ -59,7 +54,7 @@ class SQLIAnnotationManager
     }
 
     /**
-     * Return all PHP classes annotated with an SQLIClassAnnotation
+     * Return all PHP classes annotated with an EntityAnnotationInterface
      * For each class, all properties will be defined
      *
      * @return array
@@ -74,7 +69,7 @@ class SQLIAnnotationManager
             $directory = $entitiesMapping['directory'];
             $namespace = $entitiesMapping['namespace'];
             if (is_null($namespace)) {
-                $namespace = str_replace('/', '\\', $directory);
+                $namespace = str_replace('/', '\\', (string) $directory);
             }
 
             $path = $this->projectDir . '/src/' . $directory;
@@ -87,9 +82,6 @@ class SQLIAnnotationManager
     }
 
     /**
-     * @param Finder $finder
-     * @param mixed $namespace
-     * @param array $annotatedClasses
      * @return array
      * @throws ReflectionException
      */
@@ -102,7 +94,7 @@ class SQLIAnnotationManager
             // Create reflection class from generated namespace to read annotation
             $class = new ReflectionClass($classNamespace);
 
-            // Search if $class use an SQLIClassAnnotation
+            // Search if $class use an EntityAnnotationInterface
             $classAnnotation = $this
                 ->annotationReader
                 ->getClassAnnotation($class, SQLIEntity::class);
@@ -112,7 +104,7 @@ class SQLIAnnotationManager
                 ->getClassAnnotation($class, Entity::class);
 
             if (!$classAnnotation || !$classDoctrineAnnotation) {
-                // No SQLIClassAnnotation or isn't an entity, ignore her
+                // No EntityAnnotationInterface or isn't an entity, ignore her
                 continue;
             }
 
@@ -121,10 +113,10 @@ class SQLIAnnotationManager
             $compoundPrimaryKey = [];
 
             $reflectionProperties = $class->getProperties();
-            list($properties, $compoundPrimaryKey) = $this->getAnnotatedProperties($reflectionProperties, $properties, $compoundPrimaryKey);
+            [$properties, $compoundPrimaryKey] = $this->getAnnotatedProperties($reflectionProperties, $properties, $compoundPrimaryKey);
 
-            /** @var SQLIClassAnnotation $classAnnotation */
-            $annotationClassname = substr(strrchr(get_class($classAnnotation), '\\'), 1);
+            /** @var SQLIEntity $classAnnotation */
+            $annotationClassname = substr(strrchr($classAnnotation::class, '\\'), 1);
 
             $annotatedClasses[$annotationClassname][$classNamespace] =
                 [
@@ -138,9 +130,6 @@ class SQLIAnnotationManager
     }
 
     /**
-     * @param array $reflectionProperties
-     * @param array $properties
-     * @param array $compoundPrimaryKey
      * @return array
      */
     public function getAnnotatedProperties(array $reflectionProperties, array $properties, array $compoundPrimaryKey): array
@@ -154,7 +143,7 @@ class SQLIAnnotationManager
                 $accessibility = "protected"; // protected
             }
 
-            // Try to get an SQLIPropertyAnnotation
+            // Try to get an SQLIPropertyAnnotationInterface
             $visible = true;
             $readonly = false;
             $required = true;
@@ -165,9 +154,9 @@ class SQLIAnnotationManager
 
             $propertyAnnotation = $this
                 ->annotationReader
-                ->getPropertyAnnotation($reflectionProperty, SQLIEntityProperty::class);
+                ->getPropertyAnnotation($reflectionProperty, EntityProperty::class);
 
-            if ($propertyAnnotation instanceof SQLIEntityProperty) {
+            if ($propertyAnnotation instanceof EntityProperty) {
                 // Check if a visibility information defined on entity's property thanks to 'visible' annotation
                 $visible = $propertyAnnotation->isVisible();
                 // Check if property must be only in readonly

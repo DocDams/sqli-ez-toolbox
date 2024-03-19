@@ -1,6 +1,9 @@
 ## —— Unit Tests 🎵 ——————————————————————————————————————————————————————————
-unit-test:
+test:
 	vendor/bin/phpunit --configuration phpunit.xml
+
+test-suite:
+	vendor/bin/phpunit --configuration phpunit.xml --testsuite $(suite)
 
 ## —— Code quality 🎵 ——————————————————————————————————————————————————————————
 inspect:
@@ -11,8 +14,8 @@ inspect:
 
 ## —— Fix Code quality to standard 🎵 ——————————————————————————————————————————————————————————
 fix:
-	make phpcbf
 	make rector
+	make phpcbf
 
 phpcs:
 	vendor/bin/phpcs --standard=phpcs.xml
@@ -21,10 +24,10 @@ phpstan:
 	vendor/bin/phpstan analyse -c phpstan.neon
 
 phpmd:
-	vendor/bin/phpmd Annotations/ Attributes/ Services/ tests/ text phpmd.xml
+	vendor/bin/phpmd ./ text phpmd.xml
 
 phpcbf:  ## Launch PHP Code Beautiful Fixer to automatically fix code style errors
-	vendor/bin/phpcbf --standard=PSR12 --encoding=UTF8 --extensions=php Annotations/ Attributes/ Classes/ Command/ Controller/ Entity/ Exceptions/ FieldType/ Form/ Menu/ QueryType/ Repository/ Resources/ Serializer/ Services/ tests/ Validator/
+	vendor/bin/phpcbf --standard=PSR12 --encoding=UTF8 --extensions=php --ignore=vendor/ .
 
 rector-dry:
 	vendor/bin/rector process --dry-run

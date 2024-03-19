@@ -9,6 +9,9 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class ParameterHandlerTagCompilerPass implements CompilerPassInterface
 {
+    /**
+     * @inherited
+     */
     public function process(ContainerBuilder $container): void
     {
         if (!$container->has(ParameterHandlerRepository::class)) {
@@ -19,7 +22,8 @@ class ParameterHandlerTagCompilerPass implements CompilerPassInterface
 
         // Search tagged services
         $taggedServices = $container->findTaggedServiceIds('sqli.parameter_handler');
-        foreach ($taggedServices as $id => $taggedService) {
+
+        foreach (array_keys($taggedServices) as $id) {
             $definition->addMethodCall('addHandler', [new Reference($id)]);
         }
     }

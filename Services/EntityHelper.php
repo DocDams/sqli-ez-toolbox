@@ -16,11 +16,11 @@ class EntityHelper
     private const ATTRIBUTE = "attribute";
 
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private SQLIAttributesManager $attributesManager,
-        private SQLIAnnotationManager $annotationManager,
-        private FilterEntityHelper $filterEntityHelper,
-        private ContainerInterface $container,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly SQLIAttributesManager $attributesManager,
+        private readonly SQLIAnnotationManager $annotationManager,
+        private readonly FilterEntityHelper $filterEntityHelper,
+        private readonly ContainerInterface $container,
     ) {
     }
 
@@ -37,7 +37,6 @@ class EntityHelper
     /**
      * Get an entity with her information and elements
      *
-     * @param string $fqcn
      * @param bool $fetchElements
      * @param bool|array $sort Array( 'column_name' => '', 'order' => 'ASC|DESC' )
      * @return array
@@ -69,9 +68,8 @@ class EntityHelper
     }
 
     /**
-     * Get a class annotated with SQLIClassAnnotation interface from her FQCN
+     * Get a class annotated with EntityAnnotationInterface interface from her FQCN
      *
-     * @param string $fqcn
      * @return array
      * @throws ReflectionException
      */
@@ -83,7 +81,7 @@ class EntityHelper
     }
 
     /**
-     * Get all classes annotated with SQLIClassAnnotation interface
+     * Get all classes annotated with EntityAnnotationInterface interface
      *
      * @return array
      * @throws ReflectionException
@@ -159,7 +157,7 @@ class EntityHelper
             $value = $filter->getValue();
 
             // Add % around value if operand is LIKE or NOT LIKE
-            if (stripos($filter->getOperand(), 'LIKE') !== false) {
+            if (stripos((string) $filter->getOperand(), 'LIKE') !== false) {
                 $value = "%" . $value . "%";
             }
 
@@ -181,7 +179,6 @@ class EntityHelper
      * $findCriteria = ['columnName' => 'value']
      *
      * @param string $entityClass FQCN
-     * @param array $findCriteria
      */
     public function remove(string $entityClass, array $findCriteria): void
     {
@@ -195,8 +192,6 @@ class EntityHelper
     /**
      * Find one element
      *
-     * @param string $entityClass
-     * @param array $findCriteria
      * @return object|null
      */
     public function findOneBy(string $entityClass, array $findCriteria)
@@ -206,7 +201,6 @@ class EntityHelper
 
     /**
      * @param $object
-     * @param string $property_name
      * @return false|string
      */
     public function attributeValue($object, string $property_name)

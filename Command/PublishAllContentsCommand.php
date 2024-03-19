@@ -98,7 +98,7 @@ class PublishAllContentsCommand extends Command
      * @throws UnauthorizedException
      * @throws InvalidArgumentException
      */
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln(sprintf(
             "Fetching all objects of contentType '<comment>%s</comment>'",
@@ -119,7 +119,7 @@ class PublishAllContentsCommand extends Command
         if (!$helper->ask($input, $output, $question)) {
             $output->writeln('');
 
-            exit;
+            return Command::FAILURE;
         }
 
         $output->writeln("");
@@ -132,7 +132,7 @@ class PublishAllContentsCommand extends Command
 
             // Publish each content
             foreach ($items as $index => $content) {
-                /** @var $content Content */
+                /** @var Content $content  */
                 $contentDraft = $this->contentService->createContentDraft($content->getVersionInfo()->getContentInfo());
                 $this->contentService->publishVersion($contentDraft->getVersionInfo());
 
@@ -150,6 +150,8 @@ class PublishAllContentsCommand extends Command
 
         $output->writeln("");
         $output->writeln("<info>Job finished !</info>");
+
+        return Command::SUCCESS;
     }
 
     /**

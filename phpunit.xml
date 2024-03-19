@@ -10,13 +10,13 @@
         beStrictAboutTestsThatDoNotTestAnything="false"
 >
     <testsuites>
-        <testsuite name="SQLI\EzToolboxBundle\Services">
+        <testsuite name="services">
             <directory>tests/Services</directory>
         </testsuite>
-        <testsuite name="SQLI\EzToolboxBundle\Annotations">
+        <testsuite name="annotations">
             <directory>tests/Annotations/Annotation</directory>
         </testsuite>
-        <testsuite name="SQLI\EzToolboxBundle\Attributes">
+        <testsuite name="attributes">
             <directory>tests/Attributes/Attribute</directory>
         </testsuite>
     </testsuites>

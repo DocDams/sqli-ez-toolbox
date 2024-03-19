@@ -45,32 +45,22 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
 {
     use SiteAccessUtilsTrait;
 
-    /** @var TokenStorageInterface */
-    private $tokenStorage;
-    /** @var Repository */
-    private $repository;
     /** @var Logger */
     private $logger;
     /** @var Request */
     private $request;
-    /** @var TagsService */
-    private $tagsService;
     /** @var bool */
     private $adminLoggerEnabled;
 
     public function __construct(
-        TokenStorageInterface $tokenStorage,
-        Repository $repository,
+        private TokenStorageInterface $tokenStorage,
+        private Repository $repository,
         $logDir,
         RequestStack $requestStack,
-        //TagsService $tagsService,
         $adminLoggerEnabled,
         SiteAccess $siteAccess
     ) {
-        $this->tokenStorage = $tokenStorage;
-        $this->repository = $repository;
         $this->request = $requestStack->getCurrentRequest();
-        //$this->tagsService = $tagsService;
         $this->adminLoggerEnabled = (bool)$adminLoggerEnabled;
 
         // Handler and formatter
@@ -128,9 +118,6 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
         ];
     }
 
-    /**
-     * @param PublishVersionEvent $event
-     */
     public function logIfPublishVersionEvent(PublishVersionEvent $event): void
     {
         // Log only for admin siteaccesses
@@ -145,7 +132,7 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
         try {
             $content = $this->repository->getContentService()->loadContent($contentId, [], $versionId);
             $this->logger->notice("  - content name : " . $content->getName());
-        } catch (Exception $exception) {
+        } catch (Exception) {
             $this->logger->error("  - content : not found");
         }
         $this->logger->notice("  - content id : " . $contentId);
@@ -170,9 +157,6 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
         );
     }
 
-    /**
-     * @param CopyContentEvent $event
-     */
     public function logIfCopyContentEvent(CopyContentEvent $event): void
     {
         // Log only for admin siteaccesses
@@ -187,7 +171,7 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
         $this->logUserInformations();
         try {
             $this->logger->notice("  - content name : " . $event->getContent()->getName());
-        } catch (Exception $exception) {
+        } catch (Exception) {
             $this->logger->error("  - content : not found");
         }
         $this->logger->notice("  - original content id : " . $srcContentId);
@@ -199,14 +183,11 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
             $this->logger->notice(
                 "  - destination parent content name : " . $dstParentLocation->getContent()->getName()
             );
-        } catch (Exception $exception) {
+        } catch (Exception) {
             $this->logger->error("  - destination parent location : not found");
         }
     }
 
-    /**
-     * @param DeleteContentEvent $event
-     */
     public function logIfDeleteContentEvent(DeleteContentEvent $event): void
     {
         // Log only for admin siteaccesses
@@ -221,64 +202,47 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
         $this->logger->notice("  - location ids : " . implode(',', $event->getLocations()));
     }
 
-    /**
-     * @param CreateTagEvent $event
-     * @throws NotFoundException
-     * @throws UnauthorizedException
-     */
     /*public function logIfCreateTagEvent(CreateTagEvent $event)
-    {
-        // Log only for admin siteaccesses
-        if (!$this->adminLoggerEnabled || !$this->isAdminSiteAccess()) {
-            return;
-        }
+        {
+            // Log only for admin siteaccesses
+            if (!$this->adminLoggerEnabled || !$this->isAdminSiteAccess()) {
+                return;
+            }
 
-        $parentTagName = "no parent";
-        if ($event->getTag()->hasParent()) {
-            $parentTagName = $this->tagsService->loadTag($event->getTag()->parentTagId)->getKeyword();
-        }
-        $this->logger->notice("Tag creation :");
-        $this->logUserInformations();
-        $this->logger->notice("  - tag id : " . $event->getTag()->id);
-        $this->logger->notice("  - tag name : " . $event->getTag()->getKeyword());
-        $this->logger->notice("  - tag parent id : " . $event->getTag()->parentTagId);
-        $this->logger->notice("  - tag parent name : " . $parentTagName);
-    }*/
-
-    /**
-     * @param UpdateTagEvent $event
-     */
+            $parentTagName = "no parent";
+            if ($event->getTag()->hasParent()) {
+                $parentTagName = $this->tagsService->loadTag($event->getTag()->parentTagId)->getKeyword();
+            }
+            $this->logger->notice("Tag creation :");
+            $this->logUserInformations();
+            $this->logger->notice("  - tag id : " . $event->getTag()->id);
+            $this->logger->notice("  - tag name : " . $event->getTag()->getKeyword());
+            $this->logger->notice("  - tag parent id : " . $event->getTag()->parentTagId);
+            $this->logger->notice("  - tag parent name : " . $parentTagName);
+        }*/
     /*public function logIfUpdateTagEvent(UpdateTagEvent $event)
-    {
-        // Log only for admin siteaccesses
-        if (!$this->adminLoggerEnabled || !$this->isAdminSiteAccess()) {
-            return;
-        }
+        {
+            // Log only for admin siteaccesses
+            if (!$this->adminLoggerEnabled || !$this->isAdminSiteAccess()) {
+                return;
+            }
 
-        $this->logger->notice("Tag update :");
-        $this->logUserInformations();
-        $this->logger->notice("  - tag id : " . $event->getTag()->id);
-        $this->logger->notice("  - new tag name : " . $event->getTag()->getKeyword());
-    }*/
-
-    /**
-     * @param DeleteTagEvent $event
-     */
+            $this->logger->notice("Tag update :");
+            $this->logUserInformations();
+            $this->logger->notice("  - tag id : " . $event->getTag()->id);
+            $this->logger->notice("  - new tag name : " . $event->getTag()->getKeyword());
+        }*/
     /*public function logIfDeleteTagEvent(DeleteTagEvent $event)
-    {
-        // Log only for admin siteaccesses
-        if (!$this->adminLoggerEnabled || !$this->isAdminSiteAccess()) {
-            return;
-        }
+        {
+            // Log only for admin siteaccesses
+            if (!$this->adminLoggerEnabled || !$this->isAdminSiteAccess()) {
+                return;
+            }
 
-        $this->logger->notice("Tag delete :");
-        $this->logUserInformations();
-        $this->logger->notice("  - tag id : " . $event->getTag()->id);
-    }*/
-
-    /**
-     * @param MoveSubtreeEvent $event
-     */
+            $this->logger->notice("Tag delete :");
+            $this->logUserInformations();
+            $this->logger->notice("  - tag id : " . $event->getTag()->id);
+        }*/
     public function logIfMoveSubtreeEvent(MoveSubtreeEvent $event): void
     {
         // Log only for admin siteaccesses
@@ -297,9 +261,6 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
         );
     }
 
-    /**
-     * @param CopySubtreeEvent $event
-     */
     public function logIfCopySubtreeEvent(CopySubtreeEvent $event): void
     {
         // Log only for admin siteaccesses
@@ -324,9 +285,6 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
         $this->logger->notice("  - copy's location id : " . $event->getLocation()->id);
     }
 
-    /**
-     * @param CreateLocationEvent $event
-     */
     public function logIfCreateLocationEvent(CreateLocationEvent $event): void
     {
         // Log only for admin siteaccesses
@@ -350,14 +308,11 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
             $this->logger->notice(
                 "  - new parent content name : " . $newParentLocation->getContent()->getName()
             );
-        } catch (Exception $exception) {
+        } catch (Exception) {
             $this->logger->error("  - new parent content : not found");
         }
     }
 
-    /**
-     * @param DeleteLocationEvent $event
-     */
     public function logIfDeleteLocationEvent(DeleteLocationEvent $event): void
     {
         // Log only for admin siteaccesses
@@ -373,9 +328,6 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
         $this->logger->notice("  - content name : " . $event->getLocation()->getContentInfo()->name);
     }
 
-    /**
-     * @param Event $event
-     */
     public function logIfVisibilityLocationEvent(Event $event): void
     {
         // Log only for admin siteaccesses
@@ -406,9 +358,6 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
         }
     }
 
-    /**
-     * @param Event $event
-     */
     public function logIfVisibilityContentEvent(Event $event): void
     {
         // Log only for admin siteaccesses
@@ -437,9 +386,6 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
         }
     }
 
-    /**
-     * @param Event $event
-     */
     public function logIfUserEvent(Event $event): void
     {
         // Log only for admin siteaccesses
@@ -462,9 +408,6 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
         }
     }
 
-    /**
-     * @param TrashEvent $event
-     */
     public function logIfTrashEvent(TrashEvent $event): void
     {
         // Log only for admin siteaccesses
@@ -483,14 +426,11 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
                 $event->getLocation()->parentLocationId
             );
             $this->logger->notice("  - parent content name : " . $location->getContent()->getName());
-        } catch (Exception $exception) {
+        } catch (Exception) {
             $this->logger->error("  - parent content : not found");
         }
     }
 
-    /**
-     * @param AssignSectionToSubtreeEvent $event
-     */
     public function logIfAssignSectionEvent(AssignSectionToSubtreeEvent $event): void
     {
         // Log only for admin siteaccesses
@@ -506,9 +446,6 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
         $this->logger->notice("  - section name : " . $event->getSection()->name);
     }
 
-    /**
-     * @param SetContentStateEvent $event
-     */
     public function logIfSetContentStateEvent(SetContentStateEvent $event): void
     {
         // Log only for admin siteaccesses

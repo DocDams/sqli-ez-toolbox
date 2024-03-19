@@ -9,19 +9,12 @@ class FilterEntityHelper
 {
     public const SESSION_VARNAME = "sqli_admin_filter_fqcn";
 
-    /** @var SessionInterface */
-    private $session;
-
-    public function __construct(SessionInterface $session)
+    public function __construct(private readonly SessionInterface $session)
     {
-        $this->session = $session;
     }
 
     /**
      * Save Filter object in session for specified FQCN
-     *
-     * @param string $fqcn
-     * @param Filter $filter
      */
     public function setFilter(string $fqcn, Filter $filter): void
     {
@@ -34,7 +27,6 @@ class FilterEntityHelper
     /**
      * Get Filter object from session for specified FQCN
      *
-     * @param string $fqcn
      * @return Filter|null
      */
     public function getFilter(string $fqcn): ?Filter
@@ -45,9 +37,6 @@ class FilterEntityHelper
         return $filters[$fqcn] ?? null;
     }
 
-    /**
-     * @param string $fqcn
-     */
     public function resetFilter(string $fqcn): void
     {
         $filters = $this->session->get(self::SESSION_VARNAME, []);
