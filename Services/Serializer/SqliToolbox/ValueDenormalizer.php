@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SQLI\EzToolboxBundle\Serializer\SqliToolbox;
+namespace SQLI\EzToolboxBundle\Services\Serializer\SqliToolbox;
 
 use SQLI\EzToolboxBundle\FieldType\SqliToolbox\Value;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
