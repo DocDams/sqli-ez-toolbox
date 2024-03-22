@@ -1,0 +1,15 @@
+{% block selection_from_identity_field %}
+    {{ fieldSettings.className|replace({
+        '%classe name %': field.value.className,
+    }) }}
+
+
+    {{ fieldSettings.valueAttribute|replace({
+        '%value Attribute %': field.value.valueAttribute,
+    }) }}
+
+    {{ fieldSettings.labelAttribute|replace({
+        '%label Attribute
+         %': field.value.labelAttribute,
+    }) }}
+{% endblock %}
