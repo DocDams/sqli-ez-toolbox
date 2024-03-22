@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Annotations\Annotation;
 
 use Doctrine\Common\Annotations\Annotation;
@@ -12,20 +14,19 @@ use Doctrine\Common\Annotations\Annotation;
  */
 final class Entity implements SQLIClassAnnotation
 {
-    /** @var bool */
-    public $create = false;
-    /** @var bool */
-    public $update = false;
-    /** @var bool */
-    public $delete = false;
-    /** @var string */
-    public $description = "";
-    /** @var int */
-    public $max_per_page = 10;
-    /** @var bool */
-    public $csv_exportable = false;
-    /** @var string */
-    public $tabname = "default";
+    public bool $create = false;
+
+    public bool $update = false;
+
+    public bool $delete = false;
+
+    public string $description = "";
+
+    public int $max_per_page = 10;
+
+    public bool $csv_exportable = false;
+
+    public string $tabname = "default";
 
 
     /**

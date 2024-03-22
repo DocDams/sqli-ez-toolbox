@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Command;
 
 use Ibexa\Contracts\Core\Repository\ContentService;
@@ -18,12 +20,11 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class RemoveCommand extends Command
 {
-    /** @var Repository */
-    protected $repository;
-    /** @var ContentService */
-    protected $contentService;
-    /** @var LocationService */
-    protected $locationService;
+    protected Repository $repository;
+
+    protected ContentService $contentService;
+
+    protected LocationService $locationService;
 
     public function __construct(Repository $repository)
     {
@@ -133,7 +134,7 @@ class RemoveCommand extends Command
         InputInterface $input,
         OutputInterface $output,
         string $contentTypeIdentifier
-    ) {
+    ): void {
         $query = new Query();
         $query->query = new Query\Criterion\ContentTypeIdentifier($contentTypeIdentifier);
         $searchResults = $this->repository->getSearchService()->findContent($query);

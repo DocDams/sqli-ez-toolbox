@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Command;
 
 use Ibexa\Contracts\Core\Repository\ContentService;
@@ -19,14 +21,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class EzObjectInfoCommand extends Command
 {
-    /** @var Repository */
-    protected $repository;
-    /** @var ContentService */
-    protected $contentService;
-    /** @var LocationService */
-    protected $locationService;
-    /** @var SearchService */
-    protected $searchService;
+    protected Repository $repository;
+
+    protected ContentService $contentService;
+
+    protected LocationService $locationService;
+
+    protected SearchService $searchService;
 
     public function __construct(Repository $repository)
     {
@@ -42,7 +43,7 @@ class EzObjectInfoCommand extends Command
      * @param OutputInterface $output
      * @throws NotFoundException
      */
-    public function initialize(InputInterface $input, OutputInterface $output)
+    public function initialize(InputInterface $input, OutputInterface $output): void
     {
         $output->setDecorated(true);
 
@@ -51,7 +52,7 @@ class EzObjectInfoCommand extends Command
         $this->repository->getPermissionResolver()->setCurrentUserReference($administratorUser);
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription('Display informations of specified content or location')
@@ -72,8 +73,10 @@ class EzObjectInfoCommand extends Command
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
+     * @return int
+     * @throws InvalidArgumentException
      * @throws NotFoundException
-     * @throws UnauthorizedException|InvalidArgumentException
+     * @throws UnauthorizedException
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {

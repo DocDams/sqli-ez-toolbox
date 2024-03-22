@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Entity\Doctrine;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -20,13 +22,13 @@ class Parameter
      * @ORM\GeneratedValue(strategy="AUTO")
      * @SQLIAdmin\EntityProperty(readonly=true)
      */
-    private $id;
+    private int $id;
     /**
      * @var string
      * @ORM\Column(name="name", type="string", length=255)
      * @SQLIAdmin\EntityProperty(description="Nom du paramètre")
      */
-    private $name;
+    private string $name;
     /**
      * @var string
      * @ORM\Column(name="value", type="string", length=255)
@@ -34,7 +36,7 @@ class Parameter
      *     choices={"Activé": "enabled", "Désactivé": "disabled"},
      *     description="Paramètre activé ou non ?")
      */
-    private $value;
+    private string $value;
     /**
      * @var mixed
      *
@@ -44,20 +46,15 @@ class Parameter
      *     description="Données complémentaires sérialisées.
      * S'assurer de la validité avant sauvegarde avec https://fr.functions-online.com/unserialize.html")
      */
-    private $params;
+    private mixed $params;
 
-    /**
-     * @return int
-     */
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     * @return Parameter
-     */
+
     public function setId(int $id): Parameter
     {
         $this->id = $id;
@@ -65,18 +62,13 @@ class Parameter
         return $this;
     }
 
-    /**
-     * @return string
-     */
+
     public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     * @return Parameter
-     */
+
     public function setName(string $name): Parameter
     {
         $this->name = $name;
@@ -84,18 +76,13 @@ class Parameter
         return $this;
     }
 
-    /**
-     * @return string
-     */
+
     public function getValue(): ?string
     {
         return $this->value;
     }
 
-    /**
-     * @param string $value
-     * @return Parameter
-     */
+
     public function setValue(string $value): Parameter
     {
         $this->value = $value;
@@ -103,19 +90,14 @@ class Parameter
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getParams()
+
+    public function getParams(): mixed
     {
         return $this->params;
     }
 
-    /**
-     * @param mixed $params
-     * @return Parameter
-     */
-    public function setParams($params): Parameter
+
+    public function setParams(mixed $params): Parameter
     {
         $this->params = $params;
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Command;
 
 use Ibexa\Contracts\Core\Repository\ContentService;
@@ -21,16 +23,16 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 class PublishAllContentsCommand extends Command
 {
     public const FETCH_LIMIT = 25;
-    /** @var string */
-    protected $contentClassIdentifier;
-    /** @var Repository */
-    protected $repository;
-    /** @var SearchService */
-    protected $searchService;
-    /** @var ContentService */
-    protected $contentService;
-    /** @var int */
-    protected $totalCount;
+
+    protected string $contentClassIdentifier;
+
+    protected Repository $repository;
+
+    protected SearchService $searchService;
+
+    protected ContentService $contentService;
+
+    protected int $totalCount;
 
     public function __construct(Repository $repository)
     {
@@ -94,9 +96,10 @@ class PublishAllContentsCommand extends Command
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
+     * @return int
      * @throws BadStateException
-     * @throws UnauthorizedException
      * @throws InvalidArgumentException
+     * @throws UnauthorizedException
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -162,7 +165,7 @@ class PublishAllContentsCommand extends Command
      * @return array
      * @throws InvalidArgumentException
      */
-    private function fetch($limit, $offset = 0): array
+    private function fetch($limit, int $offset = 0): array
     {
         $this->searchService = $this->repository->getSearchService();
 

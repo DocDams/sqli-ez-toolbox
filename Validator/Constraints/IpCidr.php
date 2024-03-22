@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
@@ -14,7 +16,7 @@ class IpCidr extends Constraint
         self::INVALID_IP => 'INVALID_IP',
         self::NOT_IN_MASK => 'NOT_IN_MASK',
     ];
-    public $message = "{{ value }} not validated with CIDR mask {{ cidr }}";
+    public string $message = "{{ value }} not validated with CIDR mask {{ cidr }}";
     public $cidr;
 
     /**

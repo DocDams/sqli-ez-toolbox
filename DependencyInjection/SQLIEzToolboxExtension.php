@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
@@ -18,8 +20,9 @@ class SQLIEzToolboxExtension extends Extension implements PrependExtensionInterf
 {
     /**
      * {@inheritdoc}
+     * @throws \Exception
      */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
@@ -70,7 +73,7 @@ class SQLIEzToolboxExtension extends Extension implements PrependExtensionInterf
     }
 
     /**
-     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
+     * @param ContainerBuilder $container
      */
     private function prependFieldType(ContainerBuilder $container): void
     {

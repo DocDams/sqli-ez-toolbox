@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Services\Parameter;
 
 use Symfony\Component\Console\Output\OutputInterface;
@@ -15,7 +17,7 @@ interface ParameterHandlerInterface
      * @param OutputInterface|null $output
      * @return array|true Array of error messages or true if no error
      */
-    public function setParameter($paramName, $paramValue, $contentIds, OutputInterface $output = null);
+    public function setParameter($paramName, $paramValue, $contentIds, OutputInterface $output = null): bool|array;
 
     /**
      * @param $paramName
@@ -23,25 +25,25 @@ interface ParameterHandlerInterface
      * @param OutputInterface|null $output
      * @return mixed
      */
-    public function showParameter($paramName, $paramValue, OutputInterface $output = null);
+    public function showParameter($paramName, $paramValue, OutputInterface $output = null): mixed;
 
     /**
      * @param OutputInterface|null $output
      * @return mixed
      */
-    public function setData(mixed $data, OutputInterface $output = null);
+    public function setData(mixed $data, OutputInterface $output = null): mixed;
 
     /**
      * @param OutputInterface|null $output
      * @return mixed
      */
-    public function getData(OutputInterface $output = null);
+    public function getData(OutputInterface $output = null): mixed;
 
     /**
      * @param OutputInterface|null $output
      * @return mixed
      */
-    public function showData(OutputInterface $output = null);
+    public function showData(OutputInterface $output = null): mixed;
 
     /**
      * @param mixed|null $params

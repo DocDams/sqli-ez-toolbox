@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\DependencyInjection\Compiler;
 
 use SQLI\EzToolboxBundle\Services\Parameter\ParameterHandlerRepository;

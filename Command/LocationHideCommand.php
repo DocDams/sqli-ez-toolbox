@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Command;
 
 use Ibexa\Contracts\Core\Repository\Exceptions\NotFoundException;
@@ -13,10 +15,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class LocationHideCommand extends Command
 {
-    /** @var Repository */
-    protected $repository;
-    /** @var LocationService */
-    protected $locationService;
+    protected Repository $repository;
+
+    protected LocationService $locationService;
 
     public function __construct(Repository $repository)
     {

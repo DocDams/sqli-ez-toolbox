@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\tests\Annotations\Annotation;
 
 use PHPUnit\Framework\TestCase;

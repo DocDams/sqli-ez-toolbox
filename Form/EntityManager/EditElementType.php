@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Form\EntityManager;
 
 use Symfony\Component\Form\AbstractType;
@@ -14,15 +16,14 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class EditElementType extends AbstractType
 {
-    /** @var TranslatorInterface */
-    private $translator;
+    private TranslatorInterface $translator;
 
     public function __construct(TranslatorInterface $translator)
     {
         $this->translator = $translator;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $element = $options['entity'];
         foreach ($element['class']['properties'] as $propertyName => $propertyInfos) {
@@ -45,7 +46,7 @@ class EditElementType extends AbstractType
         }
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setRequired('entity');
         $resolver->setDefault('context', 'edit');

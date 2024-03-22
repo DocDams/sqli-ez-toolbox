@@ -1,14 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Services\Core\FieldType;
 
+use Ibexa\Core\Base\Exceptions\InvalidArgumentException;
 use Ibexa\Core\FieldType\Image\ImageStorage as BaseImageStorage;
 use Ibexa\Contracts\Core\Persistence\Content\Field;
 use Ibexa\Contracts\Core\Persistence\Content\VersionInfo;
 
 class ImageStorage extends BaseImageStorage
 {
-    public function storeFieldData(VersionInfo $versionInfo, Field $field, array $context)
+    /**
+     * @throws InvalidArgumentException
+     */
+    public function storeFieldData(VersionInfo $versionInfo, Field $field, array $context): bool
     {
         // Original filename, convert characters when it's possible (or remove them)
         $fileName = $field->value->externalData['fileName'];

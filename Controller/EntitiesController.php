@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,14 +27,13 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class EntitiesController extends AbstractController
 {
-    /** @var FlashBagNotificationHandler */
-    protected $flashBagNotificationHandler;
-    /** @var EntityManagerInterface */
-    protected $entityManager;
-    /** @var EntityHelper */
-    protected $entityHelper;
-    /** @var TranslatorInterface */
-    protected $translator;
+    protected FlashBagNotificationHandler $flashBagNotificationHandler;
+
+    protected EntityManagerInterface $entityManager;
+
+    protected EntityHelper $entityHelper;
+
+    protected TranslatorInterface $translator;
 
     public function __construct(
         FlashBagNotificationHandler $flashBagNotificationHandler,
@@ -212,7 +213,7 @@ class EntitiesController extends AbstractController
      * @param string $compound_id Json format
      * @param Request $request
      * @param EntityHelper $entityHelper
-     * @return RedirectResponse|Response
+     * @return Response
      * @throws ReflectionException
      */
     public function editElement(
@@ -297,8 +298,9 @@ class EntitiesController extends AbstractController
      * Show edit form and save modifications
      *
      * @param string $fqcn FQCN
+     * @param string $compound_id
      * @param Request $request
-     * @return RedirectResponse|Response
+     * @return Response
      * @throws ReflectionException
      */
     public function viewElement(string $fqcn, string $compound_id, Request $request): Response

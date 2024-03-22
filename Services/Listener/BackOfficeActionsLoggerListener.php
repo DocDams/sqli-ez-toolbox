@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Services\Listener;
 
 use Exception;
@@ -20,11 +22,10 @@ use Ibexa\Contracts\Core\Repository\Events\Trash\TrashEvent;
 use Ibexa\Contracts\Core\Repository\Events\User\CreateUserEvent;
 use Ibexa\Contracts\Core\Repository\Events\User\DeleteUserEvent;
 use Ibexa\Contracts\Core\Repository\Events\User\UpdateUserEvent;
-use Ibexa\Contracts\Core\Repository\Exceptions\NotFoundException;
-use Ibexa\Contracts\Core\Repository\Exceptions\UnauthorizedException;
 use Ibexa\Contracts\Core\Repository\Repository;
 use Ibexa\Contracts\Core\Repository\Values\Content\ContentInfo;
 use Ibexa\Contracts\Core\Repository\Values\Content\Location;
+use Ibexa\Core\Base\Exceptions\NotFoundException;
 use Ibexa\Core\MVC\Symfony\Security\UserInterface;
 use Ibexa\Core\MVC\Symfony\SiteAccess;
 use Monolog\Handler\StreamHandler;
@@ -45,12 +46,11 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
 {
     use SiteAccessUtilsTrait;
 
-    /** @var Logger */
-    private $logger;
-    /** @var Request */
-    private $request;
-    /** @var bool */
-    private $adminLoggerEnabled;
+    private Logger $logger;
+
+    private Request $request;
+
+    private bool $adminLoggerEnabled;
 
     public function __construct(
         private TokenStorageInterface $tokenStorage,
@@ -118,6 +118,9 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * @throws \Ibexa\Core\Base\Exceptions\NotFoundException
+     */
     public function logIfPublishVersionEvent(PublishVersionEvent $event): void
     {
         // Log only for admin siteaccesses
@@ -157,6 +160,9 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
         );
     }
 
+    /**
+     * @throws NotFoundException
+     */
     public function logIfCopyContentEvent(CopyContentEvent $event): void
     {
         // Log only for admin siteaccesses
@@ -188,6 +194,9 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
         }
     }
 
+    /**
+     * @throws NotFoundException
+     */
     public function logIfDeleteContentEvent(DeleteContentEvent $event): void
     {
         // Log only for admin siteaccesses
@@ -243,6 +252,9 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
             $this->logUserInformations();
             $this->logger->notice("  - tag id : " . $event->getTag()->id);
         }*/
+    /**
+     * @throws NotFoundException
+     */
     public function logIfMoveSubtreeEvent(MoveSubtreeEvent $event): void
     {
         // Log only for admin siteaccesses
@@ -261,6 +273,9 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
         );
     }
 
+    /**
+     * @throws NotFoundException
+     */
     public function logIfCopySubtreeEvent(CopySubtreeEvent $event): void
     {
         // Log only for admin siteaccesses
@@ -285,6 +300,9 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
         $this->logger->notice("  - copy's location id : " . $event->getLocation()->id);
     }
 
+    /**
+     * @throws NotFoundException
+     */
     public function logIfCreateLocationEvent(CreateLocationEvent $event): void
     {
         // Log only for admin siteaccesses
@@ -313,6 +331,9 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
         }
     }
 
+    /**
+     * @throws NotFoundException
+     */
     public function logIfDeleteLocationEvent(DeleteLocationEvent $event): void
     {
         // Log only for admin siteaccesses
@@ -328,6 +349,9 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
         $this->logger->notice("  - content name : " . $event->getLocation()->getContentInfo()->name);
     }
 
+    /**
+     * @throws NotFoundException
+     */
     public function logIfVisibilityLocationEvent(Event $event): void
     {
         // Log only for admin siteaccesses
@@ -358,6 +382,9 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
         }
     }
 
+    /**
+     * @throws NotFoundException
+     */
     public function logIfVisibilityContentEvent(Event $event): void
     {
         // Log only for admin siteaccesses
@@ -386,6 +413,9 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
         }
     }
 
+    /**
+     * @throws NotFoundException
+     */
     public function logIfUserEvent(Event $event): void
     {
         // Log only for admin siteaccesses
@@ -408,6 +438,9 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
         }
     }
 
+    /**
+     * @throws NotFoundException
+     */
     public function logIfTrashEvent(TrashEvent $event): void
     {
         // Log only for admin siteaccesses
@@ -431,6 +464,9 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
         }
     }
 
+    /**
+     * @throws \Ibexa\Core\Base\Exceptions\NotFoundException
+     */
     public function logIfAssignSectionEvent(AssignSectionToSubtreeEvent $event): void
     {
         // Log only for admin siteaccesses
@@ -446,6 +482,9 @@ class BackOfficeActionsLoggerListener implements EventSubscriberInterface
         $this->logger->notice("  - section name : " . $event->getSection()->name);
     }
 
+    /**
+     * @throws \Ibexa\Core\Base\Exceptions\NotFoundException
+     */
     public function logIfSetContentStateEvent(SetContentStateEvent $event): void
     {
         // Log only for admin siteaccesses

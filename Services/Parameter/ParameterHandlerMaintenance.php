@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Services\Parameter;
 
 use Doctrine\ORM\OptimisticLockException;
@@ -59,7 +61,7 @@ class ParameterHandlerMaintenance extends ParameterHandlerAbstractObjectState im
      * @throws OptimisticLockException
      * @throws ParameterHandlerContentExpectedException
      */
-    public function setParameter($paramName, $paramValue, $contentIds, OutputInterface $output = null)
+    public function setParameter($paramName, $paramValue, $contentIds, OutputInterface $output = null): bool|array
     {
         if (is_null($contentIds)) {
             // Search in data

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Services\Formatter;
 
 use Monolog\Formatter\LineFormatter;

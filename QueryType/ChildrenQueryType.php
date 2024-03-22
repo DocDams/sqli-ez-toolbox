@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\QueryType;
 
+use Ibexa\Contracts\Core\Repository\Exceptions\InvalidCriterionArgumentException;
 use Ibexa\Contracts\Core\Repository\Values\Content\LocationQuery;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query;
 use Ibexa\Core\QueryType\QueryType;
@@ -18,6 +21,7 @@ class ChildrenQueryType implements QueryType
 
     /**
      * {@inheritdoc}
+     * @throws InvalidCriterionArgumentException
      */
     public function getQuery(array $parameters = []): LocationQuery
     {

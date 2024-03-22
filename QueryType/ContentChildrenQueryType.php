@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\QueryType;
 
+use Ibexa\Contracts\Core\Repository\Exceptions\InvalidCriterionArgumentException;
 use Ibexa\Contracts\Core\Repository\Values\Content\LocationQuery;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query;
 use Ibexa\Core\QueryType\OptionsResolverBasedQueryType;
@@ -13,15 +16,16 @@ class ContentChildrenQueryType extends OptionsResolverBasedQueryType implements 
     /**
      * {@inheritdoc}
      */
-    public static function getName()
+    public static function getName(): string
     {
         return 'FetchContentChildren';
     }
 
     /**
      * {@inheritdoc}
+     * @throws InvalidCriterionArgumentException
      */
-    protected function doGetQuery(array $parameters)
+    protected function doGetQuery(array $parameters): LocationQuery|Query
     {
         $criteria =
             [
@@ -48,7 +52,7 @@ class ContentChildrenQueryType extends OptionsResolverBasedQueryType implements 
     /**
      * {@inheritdoc}
      */
-    protected function configureOptions(OptionsResolver $optionsResolver)
+    protected function configureOptions(OptionsResolver $optionsResolver): void
     {
         $optionsResolver->setDefined(['parent_location_id', 'content_types', 'limit']);
         $optionsResolver->setAllowedTypes('parent_location_id', 'int');

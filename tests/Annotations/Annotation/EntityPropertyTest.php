@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Annotations\Annotation;
 
 use SQLI\EzToolboxBundle\Annotations\Annotation\EntityProperty;

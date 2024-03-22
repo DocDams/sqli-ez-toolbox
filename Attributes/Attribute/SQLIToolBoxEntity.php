@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Attributes\Attribute;
 
 #[\Attribute(\Attribute::TARGET_CLASS)]
 final class SQLIToolBoxEntity implements SQLIToolBoxClassAttribute
 {
     /** @var int */
-    public $max_per_page;
+    public int $max_per_page;
 
     public function __construct(
         public bool $create = false,

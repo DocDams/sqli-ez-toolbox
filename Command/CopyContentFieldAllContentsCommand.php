@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Command;
 
 use Exception;
@@ -25,24 +27,24 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 class CopyContentFieldAllContentsCommand extends Command
 {
     public const FETCH_LIMIT = 25;
-    /** @var Repository */
-    protected $repository;
-    /** @var SearchService */
-    protected $searchService;
-    /** @var ContentService */
-    protected $contentService;
-    /** @var Type */
-    protected $richtextType;
-    /** @var string */
-    private $oldContentFieldIdentifier;
-    /** @var string */
-    private $newContentFieldIdentifier;
-    /** @var string */
-    private $contentClassIdentifier;
-    /** @var bool */
-    private $dryrun;
-    /** @var int */
-    private $totalCount;
+
+    protected Repository $repository;
+
+    protected SearchService $searchService;
+
+    protected ContentService $contentService;
+
+    protected Type $richtextType;
+
+    private string $oldContentFieldIdentifier;
+
+    private string $newContentFieldIdentifier;
+
+    private string $contentClassIdentifier;
+
+    private bool $dryrun;
+
+    private int $totalCount;
 
     public function __construct(
         Repository $repository,
@@ -88,7 +90,7 @@ class CopyContentFieldAllContentsCommand extends Command
      * @return int
      * @throws InvalidArgumentException
      */
-    private function fetchCount($languageCode = "fre-FR"): int
+    private function fetchCount(string $languageCode = "fre-FR"): int
     {
         $this->searchService = $this->repository->getSearchService();
 
@@ -323,7 +325,7 @@ class CopyContentFieldAllContentsCommand extends Command
      * @return array
      * @throws InvalidArgumentException
      */
-    private function fetch(int $limit, int $offset = 0, $languageCode = "fre-FR"): array
+    private function fetch(int $limit, int $offset = 0, string $languageCode = "fre-FR"): array
     {
         $this->searchService = $this->repository->getSearchService();
 

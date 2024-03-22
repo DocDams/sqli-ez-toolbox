@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Command;
 
 use Psr\Cache\CacheItemPoolInterface;
@@ -10,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CleanRedisCacheCommand extends Command
 {
     /** @var CacheItemPoolInterface */
-    private $cachePool;
+    private CacheItemPoolInterface $cachePool;
 
     public function __construct(CacheItemPoolInterface $cachePool)
     {

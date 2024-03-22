@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Services\Twig;
 
 use Ibexa\Contracts\Core\Repository\Repository;
 use Ibexa\Contracts\Core\Repository\Values\Content\Content;
 use Ibexa\Contracts\Core\Repository\Values\Content\Field;
-use Ibexa\Contracts\Core\Repository\Values\User\UserReference;
 use Ibexa\Core\Base\Exceptions\InvalidArgumentType;
 use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
 use Ibexa\Core\MVC\Symfony\Security\Authorization\Attribute;
@@ -19,21 +20,17 @@ use Twig\TwigFunction;
 
 class TwigFilterExtension extends AbstractExtension
 {
-    /** @var AuthorizationCheckerInterface */
-    protected $authorizationChecker;
-
     public function __construct(
         private readonly Repository $repository,
         private readonly DataFormatterHelper $dataFormatterHelper,
         private readonly ConfigResolverInterface $configResolver,
         private readonly FieldHelper $fieldHelper,
         private readonly ContentExtension $contentExtension,
-        AuthorizationCheckerInterface $authorizationChecker
+        protected AuthorizationCheckerInterface $authorizationChecker
     ) {
-        $this->authorizationChecker = $authorizationChecker;
     }
 
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return
             [
@@ -47,7 +44,7 @@ class TwigFilterExtension extends AbstractExtension
             ];
     }
 
-    public function getFilters()
+    public function getFilters(): array
     {
         return
             [
@@ -62,7 +59,7 @@ class TwigFilterExtension extends AbstractExtension
      * @param $namespace
      * @return mixed|null
      */
-    public function getParameter($parameterName, $namespace)
+    public function getParameter($parameterName, $namespace): mixed
     {
         try {
             return $this->configResolver->getParameter($parameterName, $namespace);
@@ -75,12 +72,12 @@ class TwigFilterExtension extends AbstractExtension
      * Checks if a given field is considered empty.
      * This method accepts field as Objects or by identifiers.
      *
-     * @param Field|string $fieldDefIdentifier Field or Field Identifier to get the value from.
-     * @param string $forcedLanguage Locale we want the content name translation in (e.g. "fre-FR").
+     * @param string|Field $fieldDefIdentifier Field or Field Identifier to get the value from.
+     * @param string|null $forcedLanguage Locale we want the content name translation in (e.g. "fre-FR").
      *                                     Null by default (takes current locale).
      * @return bool
      */
-    public function isEmptyField(Content $content, $fieldDefIdentifier, $forcedLanguage = null)
+    public function isEmptyField(Content $content, string|Field $fieldDefIdentifier, string $forcedLanguage = null): bool
     {
         return $this->fieldHelper->isEmptyField($content, $fieldDefIdentifier, $forcedLanguage);
     }
@@ -88,11 +85,11 @@ class TwigFilterExtension extends AbstractExtension
     /**
      * Get content name even if current user cannot access to this content
      *
-     * @param $content Content|int Content or it's ID
+     * @param $content int|Content Content or it's ID
      * @return string
      * @throws InvalidArgumentType
      */
-    public function getContentName($content)
+    public function getContentName(Content|int $content): string
     {
         if (!$content instanceof Content) {
             // Load Content
@@ -115,7 +112,7 @@ class TwigFilterExtension extends AbstractExtension
      *
      * @return bool
      */
-    public function isAnonymousUser()
+    public function isAnonymousUser(): bool
     {
         // Siteaccess anonymous user ID
         $anonymousUserId = $this->configResolver->getParameter("anonymous_user_id", "ezsettings");
@@ -134,7 +131,7 @@ class TwigFilterExtension extends AbstractExtension
         );
     }
 
-    public function getName()
+    public function getName(): string
     {
         return 'sqli_twig_extension';
     }

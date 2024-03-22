@@ -16,7 +16,7 @@ final class ValueDenormalizer implements DenormalizerInterface
         }
     }
 
-    public function supportsDenormalization($data, string $type, string $format = null)
+    public function supportsDenormalization($data, string $type, string $format = null): bool
     {
         return $type === Value::class;
     }

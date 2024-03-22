@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Services;
 
 use SQLI\EzToolboxBundle\Exceptions\Cryptography\DecryptFailedException;
@@ -70,7 +72,7 @@ class CryptographyHelper
      * @throws DecryptFailedException
      * @throws DecryptSessionExpiredException
      */
-    public function decrypt(string $encryptedData, bool $urldecode = true, bool $checkSessionExpiration = true)
+    public function decrypt(string $encryptedData, bool $urldecode = true, bool $checkSessionExpiration = true): bool|string
     {
         try {
             if ($urldecode) {

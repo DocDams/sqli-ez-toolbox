@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Services;
 
 use DateTime;
@@ -14,6 +16,7 @@ class DataFormatterHelper
     /**
      * @param null $pattern
      * @return string
+     * @throws \Exception
      * @SuppressWarnings(PHPMD)
      */
     //phpcs:@ignore
@@ -64,7 +67,7 @@ class DataFormatterHelper
      * @param mixed $defaultReturn Value to return if cannot create a DateTime
      * @return DateTime|false
      */
-    public function toDateTime($date, mixed $defaultReturn = false)
+    public function toDateTime(DateTime|string $date, mixed $defaultReturn = false): DateTime|bool
     {
         if (!$date instanceof DateTime) {
             $date = (string)$date;
@@ -99,7 +102,7 @@ class DataFormatterHelper
      * @return string
      * @throws \Exception
      */
-    private function formatFrenchDate($date, ?string $pattern = null): string
+    private function formatFrenchDate(DateTime|string $date, ?string $pattern = null): string
     {
         $monthEn = [
             "January",

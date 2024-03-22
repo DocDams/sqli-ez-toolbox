@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Menu;
 
 use Ibexa\AdminUi\Menu\Event\ConfigureMenuEvent;
@@ -13,10 +15,10 @@ class MenuListener implements EventSubscriberInterface
 {
     public const SQLI_ADMIN_MENU_ROOT = "sqli_admin__menu_root";
     public const SQLI_ADMIN_MENU_ENTITIES_TAB_PREFIX = "sqli_admin__menu_entities_tab__";
-    /** @var AuthorizationCheckerInterface */
-    private $authorizationChecker;
-    /** @var TabEntityHelper */
-    private $tabEntityHelper;
+
+    private AuthorizationCheckerInterface $authorizationChecker;
+
+    private TabEntityHelper $tabEntityHelper;
 
     public function __construct(
         AuthorizationCheckerInterface $authorizationChecker,

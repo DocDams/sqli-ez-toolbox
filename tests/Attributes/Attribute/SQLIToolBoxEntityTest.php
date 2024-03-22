@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Tests\Attributes\Attribute;
 
 use SQLI\EzToolboxBundle\Attributes\Attribute\SQLIToolBoxEntity;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Command;
 
 use Ibexa\Contracts\Core\Repository\Exceptions\InvalidArgumentException;
@@ -19,18 +21,18 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class ChildrenMoveCommand extends Command
 {
-    /** @var Repository */
-    protected $repository;
-    /** @var LocationService */
-    protected $locationService;
-    /** @var QueryFactoryInterface */
-    protected $queryFactory;
+    protected Repository $repository;
+
+    protected LocationService $locationService;
+
+    protected QueryFactoryInterface $queryFactory;
+
     /** @var SearchService */
     protected $searchService;
-    /** @var int */
-    private $currentParentLocationID;
-    /** @var int */
-    private $newParentLocationID;
+
+    private int $currentParentLocationID;
+
+    private int $newParentLocationID;
 
     public function __construct(
         QueryFactoryInterface $queryFactory,

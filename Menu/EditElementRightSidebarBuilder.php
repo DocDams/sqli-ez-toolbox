@@ -6,6 +6,8 @@
  * @see https://symfony.com/doc/current/bundles/KnpMenuBundle/menu_builder_service.html
  */
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Menu;
 
 use Ibexa\Contracts\AdminUi\Menu\AbstractBuilder;
@@ -22,8 +24,7 @@ class EditElementRightSidebarBuilder extends AbstractBuilder
     public const ITEM__SAVE = 'edit_element__sidebar_right__save';
     public const ITEM__CANCEL = 'edit_element__sidebar_right__cancel';
 
-    /** @var TranslatorInterface */
-    protected $translator;
+    protected TranslatorInterface $translator;
 
     public function __construct(
         MenuItemFactory $factory,

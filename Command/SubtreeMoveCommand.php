@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Command;
 
 use Ibexa\Contracts\Core\Repository\Exceptions\InvalidArgumentException;
@@ -16,16 +18,14 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class SubtreeMoveCommand extends Command
 {
-    /** @var Repository */
-    protected $repository;
-    /** @var LocationService */
-    protected $locationService;
-    /** @var SearchService */
-    protected $searchService;
-    /** @var int */
-    private $currentLocationID;
-    /** @var int */
-    private $newParentLocationID;
+    protected Repository $repository;
+
+    protected LocationService $locationService;
+    protected SearchService $searchService;
+
+    private int $currentLocationID;
+
+    private int $newParentLocationID;
 
     public function __construct(Repository $repository)
     {

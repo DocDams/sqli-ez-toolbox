@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Services\Parameter;
 
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,24 +21,15 @@ use Symfony\Component\Console\Output\OutputInterface;
 abstract class ParameterHandlerAbstractObjectState implements ParameterHandlerInterface
 {
     public const PARAMETER_NAME = "";
-    /** @var Repository */
-    protected $repository;
-    /** @var ObjectStateHandler */
-    protected $stateHandler;
-    /** @var ObjectStateService */
-    protected $objectStateService;
-    /** @var EntityManagerInterface */
-    protected $entityManager;
+
+    protected ObjectStateService $objectStateService;
 
     public function __construct(
-        Repository $repository,
-        ObjectStateHandler $objectStateHandler,
-        EntityManagerInterface $entityManager
+        protected Repository $repository,
+        protected ObjectStateHandler $stateHandler,
+        protected EntityManagerInterface $entityManager
     ) {
-        $this->repository = $repository;
-        $this->stateHandler = $objectStateHandler;
-        $this->objectStateService = $repository->getObjectStateService();
-        $this->entityManager = $entityManager;
+        $this->objectStateService = $this->repository->getObjectStateService();
     }
 
     /**
@@ -63,7 +56,7 @@ abstract class ParameterHandlerAbstractObjectState implements ParameterHandlerIn
      * @throws NotFoundException
      * @throws InvalidArgumentException
      */
-    public function showParameter($paramName, $paramValue, OutputInterface $output = null): void
+    public function showParameter($paramName, $paramValue, OutputInterface $output = null): mixed
     {
         $groupState = $this->stateHandler->loadGroupByIdentifier($paramName);
         $objectState = $this->stateHandler->loadByIdentifier($paramValue, $groupState->id);
@@ -86,14 +79,14 @@ abstract class ParameterHandlerAbstractObjectState implements ParameterHandlerIn
 
             $offset += 50;
         } while ($offset < $total);
+        return null;
     }
 
     /**
-     * @param array $params
      * @return int
      * @throws InvalidArgumentException
      */
-    protected function count($params = []): int
+    protected function count(array $params = []): int
     {
         // Prepare count
         $query = new Query();
@@ -107,13 +100,10 @@ abstract class ParameterHandlerAbstractObjectState implements ParameterHandlerIn
     }
 
     /**
-     * @param array $params
-     * @param int $offset
-     * @param int $limit
      * @return array
      * @throws InvalidArgumentException
      */
-    protected function fetch($params = [], $offset = 0, $limit = 25): array
+    protected function fetch(array $params = [], int $offset = 0, int $limit = 25): array
     {
         // Prepare fetch with offset and limit
         $query = new Query();
@@ -140,7 +130,7 @@ abstract class ParameterHandlerAbstractObjectState implements ParameterHandlerIn
      * @return array|true
      * @throws ParameterHandlerContentExpectedException
      */
-    public function setParameter($paramName, $paramValue, $contentIds, OutputInterface $output = null)
+    public function setParameter($paramName, $paramValue, $contentIds, OutputInterface $output = null): bool|array
     {
         if (is_null($contentIds)) {
             throw new ParameterHandlerContentExpectedException("No content specified to applied parameter");
@@ -162,29 +152,24 @@ abstract class ParameterHandlerAbstractObjectState implements ParameterHandlerIn
                 $content = $this->repository->getContentService()->loadContent(intval($contentId));
 
                 // Change object state if a Content found else log an error
-                if ($content instanceof Content) {
-                    // Change content's Object State
-                    $this->objectStateService->setContentState($content->contentInfo, $groupState, $objectState);
+                // Change content's Object State
+                $this->objectStateService->setContentState($content->contentInfo, $groupState, $objectState);
 
-                    if (!is_null($output)) {
-                        $output->writeln(sprintf(
-                            "[%d/%d] Set %s=%s for contentID %d : %s",
-                            str_pad(
-                                strval($index + 1),
-                                strlen((string)count($contentIds)),
-                                " ",
-                                STR_PAD_LEFT
-                            ),
-                            count($contentIds),
-                            $paramName,
-                            $paramValue,
-                            $contentId,
-                            $content->getName()
-                        ));
-                    }
-                } else {
-                    $output->writeln("No content found with contentID : $contentId");
-                    $errors[] = "No content found with contentID : $contentId";
+                if (!is_null($output)) {
+                    $output->writeln(sprintf(
+                        "[%d/%d] Set %s=%s for contentID %d : %s",
+                        str_pad(
+                            strval($index + 1),
+                            strlen((string)count($contentIds)),
+                            " ",
+                            STR_PAD_LEFT
+                        ),
+                        count($contentIds),
+                        $paramName,
+                        $paramValue,
+                        $contentId,
+                        $content->getName()
+                    ));
                 }
             }
         } catch (\Exception $exception) {

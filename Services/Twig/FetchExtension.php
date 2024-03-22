@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Services\Twig;
 
 use Ibexa\Contracts\Core\Repository\Exceptions\InvalidArgumentException;
@@ -19,8 +21,7 @@ use Twig\TwigFunction;
 
 class FetchExtension extends AbstractExtension
 {
-    /** @var LoggerInterface */
-    private $logger;
+    private readonly LoggerInterface|Logger $logger;
 
     public function __construct(
         private readonly FetchHelper $fetchHelper,
@@ -34,7 +35,7 @@ class FetchExtension extends AbstractExtension
         $this->logger->pushHandler($handler);
     }
 
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return
             [
@@ -53,17 +54,15 @@ class FetchExtension extends AbstractExtension
      * Some $parameters can be passed to template
      *
      * @param $parentLocation
-     * @param $viewType
      * @param $filterContentClass
-     * @param $parameters
      * @return string
      * @throws InvalidArgumentException
      */
     public function renderChildren(
         $parentLocation,
-        $viewType = ViewManagerInterface::VIEW_TYPE_LINE,
+        string $viewType = ViewManagerInterface::VIEW_TYPE_LINE,
         $filterContentClass = null,
-        $parameters = array()
+        array $parameters = array()
     ): string {
         // Fetch children of $location
         $children = $this->fetchHelper->fetchChildren($parentLocation, $filterContentClass);

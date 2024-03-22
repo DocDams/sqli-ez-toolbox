@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Services;
 
 use Exception;
@@ -22,10 +24,9 @@ use Ibexa\Core\Helper\TranslationHelper;
 class FetchHelper
 {
     public const LIMIT = 25;
-    /** @var DataFormatterHelper */
-    private $dataFormatterHelper;
 
     public function __construct(
+        private readonly DataFormatterHelper $dataFormatterHelper,
         private readonly ConfigResolverInterface $configResolver,
         private readonly SearchService $searchService,
         private readonly LocationService $locationService,

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Annotations;
 
 use Doctrine\Common\Annotations\Reader;
@@ -17,7 +19,6 @@ class SQLIAnnotationManager
 {
     /**
      * @param string $annotation
-     * @param mixed[] $directories
      * @param string $projectDir
      */
     public function __construct(
@@ -25,7 +26,7 @@ class SQLIAnnotationManager
          * Classname of annotation
          */
         private $annotation,
-        private $directories,
+        private readonly array $directories,
         /**
          * Project root directory
          */
@@ -174,7 +175,7 @@ class SQLIAnnotationManager
                 ->getPropertyAnnotation($reflectionProperty, Column::class);
             if ($nullablePropertyAnnotation) {
                 $columnType = $nullablePropertyAnnotation->type;
-                $required = $columnType == "boolean" ? false : !(bool)$nullablePropertyAnnotation->nullable;
+                $required = !($columnType == "boolean") && !$nullablePropertyAnnotation->nullable;
             }
 
             $properties[$reflectionProperty->getName()] = [

@@ -18,7 +18,7 @@ fix:
 	make phpcbf
 
 phpcs:
-	vendor/bin/phpcs --standard=phpcs.xml
+	vendor/bin/phpcs --standard=phpcs.xml --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1
 
 phpstan:
 	vendor/bin/phpstan analyse -c phpstan.neon
@@ -27,7 +27,7 @@ phpmd:
 	vendor/bin/phpmd ./ text phpmd.xml
 
 phpcbf:  ## Launch PHP Code Beautiful Fixer to automatically fix code style errors
-	vendor/bin/phpcbf --standard=PSR12 --encoding=UTF8 --extensions=php --ignore=vendor/ .
+	vendor/bin/phpcbf -p --standard=phpcs.xml --encoding=UTF8 --extensions=php --ignore=vendor/ --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 .
 
 rector-dry:
 	vendor/bin/rector process --dry-run

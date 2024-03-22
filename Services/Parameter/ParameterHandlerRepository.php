@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Services\Parameter;
 
 use SQLI\EzToolboxBundle\Exceptions\ParameterHandlerUnknownParameterNameException;
@@ -30,8 +32,9 @@ class ParameterHandlerRepository
     /**
      * @param $handlerName
      * @return ParameterHandlerInterface
+     * @throws ParameterHandlerUnknownParameterNameException
      */
-    public function getHandler($handlerName)
+    public function getHandler($handlerName): ParameterHandlerInterface
     {
         if (array_key_exists($handlerName, $this->handlers)) {
             return $this->handlers[$handlerName];

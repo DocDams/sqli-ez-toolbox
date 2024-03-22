@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\tests\Services\Attributes\Attribute;
 
 use PHPUnit\Framework\TestCase;
@@ -12,7 +14,7 @@ class SQLIToolBoxEntityPropertyTest extends TestCase
         $entity = new SQLIToolBoxEntityProperty();
         $this->assertFalse($entity->isReadonly());
         $this->assertTrue($entity->isVisible());
-        $this->assertNull($entity->getChoices());
+        $this->assertIsArray($entity->getChoices());
         $this->assertEquals('', $entity->getDescription());
         $this->assertEquals('', $entity->getExtraLink());
     }

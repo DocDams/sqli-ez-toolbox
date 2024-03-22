@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Services\Twig;
 
 use SQLI\EzToolboxBundle\Services\EntityHelper;
@@ -13,7 +15,7 @@ class EntityExtension extends AbstractExtension
     {
     }
 
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction(
@@ -35,7 +37,7 @@ class EntityExtension extends AbstractExtension
      * @param $property_name
      * @return false|string
      */
-    public function attributeValue($object, $property_name)
+    public function attributeValue($object, $property_name): bool|string
     {
         try {
             return $this->entityHelper->attributeValue($object, $property_name);

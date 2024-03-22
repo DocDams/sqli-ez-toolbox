@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Command;
 
 use DateTime;
@@ -21,12 +23,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 class PurgeDraftsCommand extends Command
 {
     public const FETCH_LIMIT = 25;
-    /** @var ContentService */
-    protected $contentService;
-    /** @var SearchService */
-    protected $searchService;
-    /** @var Repository */
-    protected $repository;
+
+    protected ContentService $contentService;
+
+    protected SearchService $searchService;
+
+    protected Repository $repository;
 
     public function __construct(Repository $repository)
     {

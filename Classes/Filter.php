@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Classes;
 
 class Filter
@@ -15,9 +17,9 @@ class Filter
         "NOT LIKE" => "NLIKE",
     ];
 
-    protected $columnName;
-    protected $operand;
-    protected $value;
+    protected mixed $columnName;
+    protected mixed $operand;
+    protected mixed $value;
 
     public static function create($columnName, $operand, $value): ?self
     {
@@ -37,7 +39,7 @@ class Filter
     /**
      * @return mixed
      */
-    public function getColumnName()
+    public function getColumnName(): mixed
     {
         return $this->columnName;
     }
@@ -45,7 +47,7 @@ class Filter
     /**
      * @param mixed $columnName
      */
-    public function setColumnName($columnName): void
+    public function setColumnName(mixed $columnName): void
     {
         $this->columnName = $columnName;
     }
@@ -53,7 +55,7 @@ class Filter
     /**
      * @return mixed
      */
-    public function getOperand()
+    public function getOperand(): mixed
     {
         return $this->operand;
     }
@@ -61,7 +63,7 @@ class Filter
     /**
      * @param mixed $operand
      */
-    public function setOperand($operand): void
+    public function setOperand(mixed $operand): void
     {
         $this->operand = $operand;
     }
@@ -69,7 +71,7 @@ class Filter
     /**
      * @return mixed
      */
-    public function getValue()
+    public function getValue(): mixed
     {
         return $this->value;
     }
@@ -77,12 +79,12 @@ class Filter
     /**
      * @param mixed $value
      */
-    public function setValue($value): void
+    public function setValue(mixed $value): void
     {
         $this->value = $value;
     }
 
-    private function getOperandsValues()
+    private function getOperandsValues(): array
     {
         return array_values(self::OPERANDS_MAPPING);
     }

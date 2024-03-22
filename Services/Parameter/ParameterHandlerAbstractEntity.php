@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Services\Parameter;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Exception\NotSupported;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use SQLI\EzToolboxBundle\Entity\Doctrine\Parameter;
@@ -59,9 +62,10 @@ abstract class ParameterHandlerAbstractEntity implements ParameterHandlerInterfa
      * @param $paramName
      * @param $paramValue
      * @param OutputInterface|null $output
-     * @return void
+     * @return mixed
+     * @throws NotSupported
      */
-    public function showParameter($paramName, $paramValue, OutputInterface $output = null): void
+    public function showParameter($paramName, $paramValue, OutputInterface $output = null): mixed
     {
         if (
             $parameter = $this->entityManager
@@ -70,6 +74,7 @@ abstract class ParameterHandlerAbstractEntity implements ParameterHandlerInterfa
         ) {
             $output->writeln("  Status : " . $parameter->getValue());
         }
+        return null;
     }
 
     /**
@@ -124,9 +129,10 @@ abstract class ParameterHandlerAbstractEntity implements ParameterHandlerInterfa
 
     /**
      * @param OutputInterface|null $output
-     * @return string|true
+     * @return string|bool
+     * @throws NotSupported
      */
-    public function showData(OutputInterface $output = null)
+    public function showData(OutputInterface $output = null): string|bool
     {
         $paramValue = $this->getData($output);
 
@@ -136,8 +142,9 @@ abstract class ParameterHandlerAbstractEntity implements ParameterHandlerInterfa
     /**
      * @param OutputInterface|null $output
      * @return mixed
+     * @throws NotSupported
      */
-    public function getData(OutputInterface $output = null)
+    public function getData(OutputInterface $output = null): mixed
     {
         if (
             $parameter = $this->entityManager
@@ -146,5 +153,6 @@ abstract class ParameterHandlerAbstractEntity implements ParameterHandlerInterfa
         ) {
             return $parameter->getParams();
         }
+        return null;
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Command;
 
 use Ibexa\Contracts\Core\Repository\ContentService;
@@ -13,12 +15,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class PurgeTrashCommand extends Command
 {
-    /** @var Repository */
-    protected $repository;
-    /** @var ContentService */
-    protected $contentService;
-    /** @var SearchService */
-    protected $searchService;
+    protected Repository $repository;
+
+    protected ContentService $contentService;
+
+    protected SearchService $searchService;
 
     public function __construct(Repository $repository)
     {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Form\EntityManager;
 
 use SQLI\EzToolboxBundle\Classes\Filter;
@@ -13,15 +15,14 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class FilterType extends AbstractType
 {
-    /** @var TranslatorInterface */
-    private $translator;
+    private TranslatorInterface $translator;
 
     public function __construct(TranslatorInterface $translator)
     {
         $this->translator = $translator;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $classInformations = $options['class_informations'];
 
@@ -84,7 +85,7 @@ class FilterType extends AbstractType
         );
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setRequired('class_informations');
     }

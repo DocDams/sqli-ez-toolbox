@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Annotations\Annotation;
 
 use Doctrine\Common\Annotations\Annotation;
@@ -13,18 +15,17 @@ use Doctrine\Common\Annotations\Annotation;
 final class EntityProperty implements SQLIPropertyAnnotation
 {
     /** @var bool */
-    public $visible = true;
+    public bool $visible = true;
     /** @var bool */
-    public $readonly = false;
+    public bool $readonly = false;
     /** @var string */
-    public $description = "";
-    /** @var array */
-    public $choices = null;
+    public string $description = "";
+    public ?array $choices = null;
     /**
-     * @var string
+     * @var ?string
      * @Enum({"content", "location", "tag"})
      */
-    public $extra_link = null;
+    public ?string $extra_link = null;
 
 
     /**
@@ -54,15 +55,15 @@ final class EntityProperty implements SQLIPropertyAnnotation
     /**
      * @return array|null
      */
-    public function getChoices()
+    public function getChoices(): ?array
     {
         return $this->choices;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getExtraLink()
+    public function getExtraLink(): ?string
     {
         return $this->extra_link;
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Services;
 
 use Ibexa\Contracts\Core\Repository\Values\Content\Content;
@@ -16,8 +18,9 @@ class FieldHelper
     }
 
     /**
-     * @param Field|string $fieldDefIdentifier Field or Field Identifier to get the value from.
-     * @param string $forcedLanguage Locale we want the content name translation in (e.g. "fre-FR").
+     * @param Content $content
+     * @param string|Field $fieldDefIdentifier Field or Field Identifier to get the value from.
+     * @param null $forcedLanguage Locale we want the content name translation in (e.g. "fre-FR").
      *                                     Null by default (takes current locale).
      *
      * @return bool
@@ -25,9 +28,8 @@ class FieldHelper
      *
      * Checks if a given field is considered empty.
      * This method accepts field as Objects or by identifiers.
-     *
      */
-    public function isEmptyField(Content $content, $fieldDefIdentifier, $forcedLanguage = null): bool
+    public function isEmptyField(Content $content, string|Field $fieldDefIdentifier, $forcedLanguage = null): bool
     {
         if ($fieldDefIdentifier instanceof Field) {
             $fieldDefIdentifier = $fieldDefIdentifier->fieldDefIdentifier;
@@ -46,6 +48,8 @@ class FieldHelper
     /**
      * Return value of the selected option for an attribute 'ezselection'
      *
+     * @param Content $content
+     * @param string $fieldDefIdentifier
      * @param null $forcedLanguage
      * @return string|null
      */

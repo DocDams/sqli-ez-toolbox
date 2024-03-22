@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SQLI\EzToolboxBundle\Services;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
 use ReflectionException;
 use SQLI\EzToolboxBundle\Annotations\SQLIAnnotationManager;
 use SQLI\EzToolboxBundle\Attributes\SQLIAttributesManager;
@@ -37,12 +38,11 @@ class EntityHelper
     /**
      * Get an entity with her information and elements
      *
-     * @param bool $fetchElements
      * @param bool|array $sort Array( 'column_name' => '', 'order' => 'ASC|DESC' )
      * @return array
      * @throws ReflectionException
      */
-    public function getEntity(string $fqcn, $fetchElements = true, $sort = false): array
+    public function getEntity(string $fqcn, bool $fetchElements = true, bool|array $sort = false): array
     {
         $annotatedClass = [];
         $annotatedClass['fqcn'] = $fqcn;
@@ -129,7 +129,7 @@ class EntityHelper
      * @param bool|array $sort Array( 'column_name' => '', 'order' => 'ASC|DESC' )
      * @return array
      */
-    public function findAll(string $entityClass, $filteredColums = null, $filter = null, $sort = false): array
+    public function findAll(string $entityClass, array $filteredColums = null, Filter $filter = null, bool|array $sort = false): array
     {
         $repository = $this->entityManager->getRepository($entityClass);
         $queryBuilder = $repository->createQueryBuilder('entity');
@@ -194,7 +194,7 @@ class EntityHelper
      *
      * @return object|null
      */
-    public function findOneBy(string $entityClass, array $findCriteria)
+    public function findOneBy(string $entityClass, array $findCriteria): ?object
     {
         return $this->entityManager->getRepository($entityClass)->findOneBy($findCriteria);
     }
@@ -203,7 +203,7 @@ class EntityHelper
      * @param $object
      * @return false|string
      */
-    public function attributeValue($object, string $property_name)
+    public function attributeValue($object, string $property_name): bool|string
     {
         if ($object[$property_name] instanceof \DateTime) {
             // Datetime doesn't have a __toString method

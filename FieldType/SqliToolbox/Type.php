@@ -21,7 +21,7 @@ class Type extends GenericType implements FieldValueFormMapperInterface, Indexab
         return 'sqlitoolbox';
     }
 
-    public function mapFieldValueForm(FormInterface $fieldForm, FieldData $data)
+    public function mapFieldValueForm(FormInterface $fieldForm, FieldData $data): void
     {
         $definition = $data->fieldDefinition;
         $fieldForm->add(
