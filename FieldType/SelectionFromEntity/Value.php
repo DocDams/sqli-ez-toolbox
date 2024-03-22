@@ -1,7 +1,8 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Services\FieldType\SelectionFromEntity;
+namespace  SQLI\EzToolboxBundle\FieldType\SelectionFromEntity;
+
 
 use Ibexa\Contracts\Core\FieldType\Value as ValueInterface;
 use Symfony\Component\Validator\Constraints as Assert;

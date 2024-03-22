@@ -62,15 +62,16 @@ services:
             - { name: ibexa.field_type, alias: sqlitoolbox }
             - { name: ibexa.field_type.form_mapper.value, fieldType: sqlitoolbox }
             - { name: ibexa.field_type.indexable, alias: sqlitoolbox }
+
+    SQLI\EzToolboxBundle\Services\Serializer\SqliToolbox\ValueNormalizer:
+        tags:
+            - { name: serializer.normalizer }
+
+    SQLI\EzToolboxBundle\Services\Serializer\SqliToolbox\ValueDenormalizer:
+        tags:
+            - { name: serializer.denormalizer }
     SQLI\EzToolboxBundle\FieldType\SelectionFromEntity\Type:
         tags:
             - { name: ibexa.field_type, alias: selection_from_entity }
             - { name: ibexa.admin_ui.field_type.form.mapper.value, fieldType: selection_from_entity }
             - { name: ibexa.admin_ui.field_type.form.mapper.definition, fieldType: selection_from_entity }
-    SQLI\EzToolboxBundle\Serializer\SqliToolbox\ValueNormalizer:
-        tags:
-            - { name: serializer.normalizer }
-
-    SQLI\EzToolboxBundle\Serializer\SqliToolbox\ValueDenormalizer:
-        tags:
-            - { name: serializer.denormalizer }

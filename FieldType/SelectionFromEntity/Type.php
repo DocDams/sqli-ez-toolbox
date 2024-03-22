@@ -1,15 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Services\FieldType\SelectionFromEntity;
+namespace  SQLI\EzToolboxBundle\FieldType\SelectionFromEntity;
 
 
-use App\Form\Type\SelectionFromEntity;
-use App\Form\Type\SelectionFromEntitySettingsType;
+
 use Ibexa\AdminUi\Form\Data\FieldDefinitionData;
 use Ibexa\Contracts\ContentForms\Data\Content\FieldData;
 use Ibexa\Contracts\ContentForms\FieldType\FieldValueFormMapperInterface;
 use Ibexa\Contracts\Core\FieldType\Generic\Type as GenercType;
+use SQLI\EzToolboxBundle\Form\Type\SelectionFromEntity;
+use SQLI\EzToolboxBundle\Form\Type\SelectionFromEntitySettingsType;
 use Symfony\Component\Form\FormInterface;
 use Ibexa\AdminUi\FieldType\FieldDefinitionFormMapperInterface;
 
