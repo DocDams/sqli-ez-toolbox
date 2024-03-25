@@ -7,7 +7,6 @@ use SQLI\EzToolboxBundle\Services\DataFormatterHelper;
 
 class DataFormatterHelperTest extends TestCase
 {
-
     protected DataFormatterHelper $dataFormatterHelper;
 
     public function setUp(): void
@@ -42,7 +41,7 @@ class DataFormatterHelperTest extends TestCase
      */
     public function testFormatFrenchDate(): void
     {
-        $date = \DateTime::createFromFormat('U', 1623094200);
+        $date = \DateTime::createFromFormat('U', '1623094200');
         $formattedData = $this->dataFormatterHelper->format($date, 'french_date');
         $this->assertSame("Lundi 07 Juin à 19:30", $formattedData);
     }
@@ -116,7 +115,7 @@ class DataFormatterHelperTest extends TestCase
     public function testToDateTimeDatetimeNotGiven(): void
     {
         $currentTimestamp = date('now');
-        $datetime = $this->dataFormatterHelper->toDateTime(false);
+        $datetime = $this->dataFormatterHelper->toDateTime('false');
         $this->assertGreaterThanOrEqual($currentTimestamp, $datetime->getTimestamp());
     }
 

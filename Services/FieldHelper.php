@@ -18,7 +18,6 @@ class FieldHelper
     }
 
     /**
-     * @param Content $content
      * @param string|Field $fieldDefIdentifier Field or Field Identifier to get the value from.
      * @param null $forcedLanguage Locale we want the content name translation in (e.g. "fre-FR").
      *                                     Null by default (takes current locale).
@@ -48,8 +47,6 @@ class FieldHelper
     /**
      * Return value of the selected option for an attribute 'ezselection'
      *
-     * @param Content $content
-     * @param string $fieldDefIdentifier
      * @param null $forcedLanguage
      * @return string|null
      */

@@ -22,10 +22,10 @@ final class EntityProperty implements SQLIPropertyAnnotation
     public string $description = "";
     public ?array $choices = null;
     /**
-     * @var ?string
+     * @var string
      * @Enum({"content", "location", "tag"})
      */
-    public ?string $extra_link = null;
+    public string $extra_link = '';
 
 
     /**
@@ -61,9 +61,9 @@ final class EntityProperty implements SQLIPropertyAnnotation
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getExtraLink(): ?string
+    public function getExtraLink(): string
     {
         return $this->extra_link;
     }

@@ -29,7 +29,6 @@ class FilterEntityHelper
     /**
      * Get Filter object from session for specified FQCN
      *
-     * @param string $fqcn
      * @return Filter|null
      */
     public function getFilter(string $fqcn): ?Filter

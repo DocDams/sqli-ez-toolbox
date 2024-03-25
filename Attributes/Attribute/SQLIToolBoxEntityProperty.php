@@ -7,10 +7,6 @@ namespace SQLI\EzToolboxBundle\Attributes\Attribute;
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 final class SQLIToolBoxEntityProperty implements SQLIToolBoxClassProperty
 {
-    /**
-     * @param array|null $choices
-     * @param string|null $extra_link
-     */
     public function __construct(
         public bool $visible = true,
         public bool $readonly = false,
@@ -19,7 +15,7 @@ final class SQLIToolBoxEntityProperty implements SQLIToolBoxClassProperty
         /**
          * @Enum({"content", "location", "tag"})
          */
-        public ?string $extra_link = ''
+        public string $extra_link = ''
     ) {
     }
 
