@@ -12,4 +12,8 @@
         '%label Attribute
          %': field.value.labelAttribute,
     }) }}
+    {{ fieldSettings.labelAttribute|replace({
+        '%label Attribute
+         %': field.value.filter,
+    }) }}
 {% endblock %}
