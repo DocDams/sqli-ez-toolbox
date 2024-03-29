@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace SQLI\EzToolboxBundle\FieldType\SelectionFromEntity;
 
 
-use Ibexa\Contracts\Core\FieldType\Value as ValueInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
-final class FormContentType implements ValueInterface
+final class FormContentType
 {
 
     #[Assert\NotBlank]
@@ -67,8 +66,4 @@ final class FormContentType implements ValueInterface
         $this->labelAttribute = $labelAttribute;
     }
 
-    public function __toString()
-    {
-        return implode(',', $this->selection);
-    }
 }
