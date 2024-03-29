@@ -45,21 +45,21 @@ final class SelectionFromEntitySettingsType extends AbstractType
         $builder->add('className',TextType::class);
         $builder->add('valueAttribute',TextType::class);
         $builder->add('labelAttribute',TextType::class);
-        $builder->add('filter',ChoiceType::class,[
-            'choices' => [
-                'orderBy Asc' => true,
-                'orderBy Desc' => false,
-            ],
-            'expanded' => false,
-            'multiple' => false,
-        ]);
+//        $builder->add('filter',ChoiceType::class,[
+//            'choices' => [
+//                'orderBy Asc' => true,
+//                'orderBy Desc' => false,
+//            ],
+//            'expanded' => false,
+//            'multiple' => false,
+//        ]);
 
 
     }
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults([
-            'data_class' => null,
-        ]);
-    }
+//    public function configureOptions(OptionsResolver $resolver): void
+//    {
+//        $resolver->setDefaults([
+//            'data_class' => null,
+//        ]);
+//    }
 }

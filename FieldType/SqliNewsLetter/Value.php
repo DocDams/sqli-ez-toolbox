@@ -1,10 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
-namespace  SQLI\EzToolboxBundle\FieldType\SelectionFromEntity;
-
+namespace SQLI\EzToolboxBundle\FieldType\SqliNewsLetter;
 
 use Ibexa\Contracts\Core\FieldType\Value as ValueInterface;
+
 class Value implements ValueInterface
 {
     public array $selection;
@@ -29,6 +30,6 @@ class Value implements ValueInterface
 //   }
     public function __toString(): string
     {
-        return '';
+       return 'selection ';
     }
 }
