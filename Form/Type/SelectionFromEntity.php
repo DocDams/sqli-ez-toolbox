@@ -7,6 +7,7 @@ namespace SQLI\EzToolboxBundle\Form\Type;
 use Doctrine\ORM\EntityManagerInterface;
 use Ibexa\Core\FieldType\Value;
 use SQLI\EzToolboxBundle\Entity\Doctrine\GroupMail;
+use SQLI\EzToolboxBundle\FieldType\SelectionFromEntity\ReverseTrans;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
@@ -27,37 +28,36 @@ class SelectionFromEntity extends AbstractType
         $fieldSettings = $options['data'];
         $builder->add(
             'selection',
-           // EntityType::class,
-            ChoiceType::class,
-            [
-             //  'class' => $fieldSettings['className'],
-                'choices'=>$this->entityManager->getRepository($fieldSettings['className'])->findBy([]),
+
+EntityType::class,            [
+                'class' => $fieldSettings['className'],
+               // 'choices'=>$this->entityManager->getRepository($fieldSettings['className'])->findBy([]),
                 'choice_value' => $fieldSettings['valueAttribute'],
-               'choice_label' => $fieldSettings['labelAttribute'],
+                'choice_label' => $fieldSettings['labelAttribute'],
                 'multiple' => true,
             ]
         );
-//        dd();
         $builder->get('selection')
             ->addModelTransformer(new CallbackTransformer(
-                function ($groups) use ($fieldSettings): array {
-                //dd
+                function ($groups): array {
                     $result = [];
 
                     if (null === $groups) {
                         return $result;
                     }
-//
-//                    $ids = array_map(function ($group) {
-//                        return $group['id'];
-//                    }, $groups);
-                    return $this->entityManager->getRepository($fieldSettings['className'])
-                        ->findBy([]);
 
+                    $ids = array_map(function ($group) {
+                        return $group['id'];
+                    }, $groups);
+
+                    return $this->entityManager
+                        ->getRepository()
+                        ->findBy(['id' => $ids])
+                        ;
                 },
-                function ($group): Value {
-                   return $group;
-          ;
+                function ($group) use ($builder): array {
+                    dd($builder);
+                    return $group;
                 }
             ))
         ;
@@ -67,8 +67,8 @@ class SelectionFromEntity extends AbstractType
     {
 
         $resolver->setDefaults([
-//       'data_class' => null,
-         'data_class' => Value::class,
+       'data_class' => null,
+       //  'data_class' => Value::class,
 
         ]);
     }
