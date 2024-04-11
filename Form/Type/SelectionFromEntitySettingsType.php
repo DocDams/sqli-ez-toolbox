@@ -12,27 +12,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class SelectionFromEntitySettingsType extends AbstractType
 {
-//    protected function getSQLIAnnotations(): array
-//    {
-//        $annotatedClasses = [];
-//
-//        // Scan all files into directories defined in configuration
-//        foreach ($this->directories as $entitiesMapping) {
-//            $directory = $entitiesMapping['directory'];
-//            $namespace = $entitiesMapping['namespace'];
-//            if (is_null($namespace)) {
-//                $namespace = str_replace('/', '\\', $directory);
-//            }
-//
-//            $path = $this->projectDir . '/src/' . $directory;
-//            $finder = new Finder();
-//            $finder->depth(0)->files()->in($path);
-//            $annotatedClasses = $this->getAnnotatedClassesArray($finder, $namespace, $annotatedClasses);
-//        }
-//
-//        return $annotatedClasses;
-//    }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 

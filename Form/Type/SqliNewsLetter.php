@@ -27,16 +27,16 @@ class SqliNewsLetter extends AbstractType
             'selection',
             EntityType::class,
             [
-                'class' => GroupMail::class,
+                'class' => "App\Entity\Doctrine\GroupMail",
                 'choice_label' => 'groupName',
                 'multiple' => true,
             ]
         );
+//        dd($builder->getData(),$builder->getDataClass(),$builder->getForm());
 
         $builder->get('selection')
             ->addModelTransformer(new CallbackTransformer(
                 function ($groups): array {
-                    dump($groups);
                     $result = [];
 
                     if (null === $groups) {
@@ -48,12 +48,11 @@ class SqliNewsLetter extends AbstractType
                     }, $groups);
 
                     return $this->entityManager
-                        ->getRepository(GroupMail::class)
+                        ->getRepository("App\Entity\Doctrine\GroupMail")
                         ->findBy(['id' => $ids])
                     ;
                    },
                 function ($group): array {
-
                     return $group;
                 }
             ))
