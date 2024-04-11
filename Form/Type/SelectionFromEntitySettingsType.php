@@ -3,42 +3,88 @@ declare(strict_types=1);
 
 namespace SQLI\EzToolboxBundle\Form\Type;
 ;
+
+use SQLI\EzToolboxBundle\Annotations\SQLIAnnotationManager;
+use SQLI\EzToolboxBundle\Attributes\SQLIAttributesManager;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 final class SelectionFromEntitySettingsType extends AbstractType
-{
+{ private const ANNOTATION = "annotation";
+
+
+    public function __construct(
+        private ContainerInterface $container,
+        private SQLIAttributesManager $attributesManager,
+        private SQLIAnnotationManager $annotationManager
+    ) {
+    }
+
+    /**
+     * Get the annotation mapping type from the configuration file
+     *
+     */
+    public function getMappingType(): string
+    {
+        // Access the parameter from the container
+        return $this->container->getParameter('sqli_ez_toolbox.mapping.type');
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $choices = [];
+        $label= [];
+        $value = [];
 
-       // $entities = $this->getSQLIAnnotations() ;
-//        $builder->add('className',ChoiceType::class,[
-//            'choices' => $entities,
+        $mapping_type = $this->getMappingType();
+        if ($mapping_type == self::ANNOTATION) {
+            $entities = $this->annotationManager->getAnnotatedClasses();
+        } else {
+            $entities = $this->attributesManager->getAttributedClasses();
+        }
+
+        foreach ($entities as $key => $value) {
+            $choices[$key] = $value['classname'];
+        }
+        foreach ($choices as $keys => $value) {
+//            $label[$keys] = $value['properties'];
+        }
+
+        $builder->add('className', ChoiceType::class, [
+            'choices' => $choices,
+            'expanded' => false,
+            'multiple' => false
+        ]);
+    //    $builder->addEventListener(
+//            FormEvents::PRE_SET_DATA,
+//            function (FormEvent $event) {
+//                $formData = $event->getData();
+//                $className = $formData['className'];
+//                dump($className)
+//            }
+        //       $builder->add('valueAttribute',ChoiceType::class, [
+//            'choices' => $label,
 //            'expanded' => false,
 //            'multiple' => false,
 //        ]);
-        $builder->add('className',TextType::class);
         $builder->add('valueAttribute',TextType::class);
         $builder->add('labelAttribute',TextType::class);
-//        $builder->add('filter',ChoiceType::class,[
-//            'choices' => [
-//                'orderBy Asc' => true,
-//                'orderBy Desc' => false,
-//            ],
-//            'expanded' => false,
-//            'multiple' => false,
-//        ]);
+        $builder->add('filter',ChoiceType::class,[
+            'choices' => [
+                'orderBy Asc' => 'Asc',
+                'orderBy Desc' => 'Desc',
+            ],
+            'expanded' => false,
+            'multiple' => false,
+        ]);
+
 
 
     }
-//    public function configureOptions(OptionsResolver $resolver): void
-//    {
-//        $resolver->setDefaults([
-//            'data_class' => null,
-//        ]);
-//    }
+
 }

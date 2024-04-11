@@ -19,15 +19,6 @@ class Value implements ValueInterface
     {
         return $this->selection;
     }
-//  public function convertArray(Object $array) : string {
-//        $resultArray = [];
-//        foreach ($array as $elem) {
-//            $objArray = array($array);
-//            $resultArray[] = implode(',', $objArray);
-//        }
-//
-//        return implode('|', $resultArray);
-//   }
     public function __toString(): string
     {
        return 'selection ';

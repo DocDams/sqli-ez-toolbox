@@ -78,10 +78,10 @@ final class Type extends GenericType implements FieldValueFormMapperInterface, F
             ],
             'valueAttribute' => [
                 'type' => 'string',
+            ],
+            'filter' => [
+                'type' => 'string',
             ]
-//            'orderResult' => [
-//                'type' => 'boolean',
-//            ]
         ];
 
     }

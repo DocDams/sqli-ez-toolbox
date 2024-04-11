@@ -35,13 +35,12 @@ class SelectionFromEntity extends AbstractType
         $className = $fieldSettings['className'];
         $ids = $fieldSettings['labelAttribute'];
         $label = $fieldSettings['valueAttribute'];
+        $filter = $fieldSettings['filter'];
         $builder->add(
             'selection',
             EntityType::class,
-           // ChoiceType::class,
             [
-               'class' => $className,
-                //'choices'=>$this->entityManager->getRepository($className)->findBy([]),
+                'class' => $className,
                 'choice_value' => $label,
                 'choice_label' => $ids,
                 'multiple' => true,
@@ -49,24 +48,25 @@ class SelectionFromEntity extends AbstractType
         ) ->addModelTransformer(new CallbackTransformer(
             function ($groups) use ($fieldSettings): Value {
                 $className = $fieldSettings['className'];
-                $ids = $fieldSettings['labelAttribute'];
-                $label = $fieldSettings['valueAttribute'];
+                $ids = $fieldSettings['valueAttribute'];
+                $label = $fieldSettings['labelAttribute'];
                 $result = [];
+                $filter = $fieldSettings['filter'];
 
                 if (null === $groups) {
                     return $result;
                 }
-                $ids = array_keys($groups,$ids);
-               $result =  $this->entityManager
-                    ->getRepository($className)
-                    ->findBy(['id' => $ids])
-                ;
-                return new Value($this->entityManager
-                    ->getRepository($className)
-                    ->findBy(['id' => $ids]))
-                    ;
+
+                    return new Value($this->entityManager
+                        ->getRepository($className)
+                        ->findBy(
+                            [$ids => $label],
+                            [$ids => $filter]
+                        ))
+                        ;
+
             },
-            function ($group){
+            function ($group): mixed{
 
                 return ($group);
             }
