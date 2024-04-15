@@ -38,6 +38,8 @@ final class SelectionFromEntitySettingsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $choices = [];
+        $choice = [];
+
         $label= [];
         $value = [];
 
@@ -50,28 +52,32 @@ final class SelectionFromEntitySettingsType extends AbstractType
 
         foreach ($entities as $key => $value) {
             $choices[$key] = $value['classname'];
+            dump($choices[$key] ,  $value['classname']);
         }
         foreach ($choices as $keys => $value) {
 //            $label[$keys] = $value['properties'];
         }
+        foreach ($entities as $key => $value) {
+            $choice[$value['classname']] = $value['classname'];
+        }
+//        $builder->add('className', ChoiceType::class, [
+//            'choices' => $choices,
+//            'expanded' => false,
+//            'multiple' => false
+//        ]);
 
-        $builder->add('className', ChoiceType::class, [
-            'choices' => $choices,
-            'expanded' => false,
-            'multiple' => false
-        ]);
-    //    $builder->addEventListener(
-//            FormEvents::PRE_SET_DATA,
-//            function (FormEvent $event) {
-//                $formData = $event->getData();
-//                $className = $formData['className'];
-//                dump($className)
-//            }
-        //       $builder->add('valueAttribute',ChoiceType::class, [
-//            'choices' => $label,
+//        $builder->add('valueAttribute',ChoiceType::class, [
+//            'choices' => $choice,
 //            'expanded' => false,
 //            'multiple' => false,
 //        ]);
+//                   ->addEventListener(
+//                   FormEvents::PRE_SET_DATA,
+//                   function (FormEvent $event) {
+//                       $formData = $event->getData();
+//                       dd($formData);
+//                   });
+        $builder->add('className',TextType::class);
         $builder->add('valueAttribute',TextType::class);
         $builder->add('labelAttribute',TextType::class);
         $builder->add('filter',ChoiceType::class,[

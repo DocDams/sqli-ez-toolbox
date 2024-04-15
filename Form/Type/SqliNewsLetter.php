@@ -32,7 +32,6 @@ class SqliNewsLetter extends AbstractType
                 'multiple' => true,
             ]
         );
-//        dd($builder->getData(),$builder->getDataClass(),$builder->getForm());
 
         $builder->get('selection')
             ->addModelTransformer(new CallbackTransformer(

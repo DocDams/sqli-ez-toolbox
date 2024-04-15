@@ -64,10 +64,8 @@ class SelectionFromEntity extends AbstractType
                             [$ids => $filter]
                         ))
                         ;
-
             },
-            function ($group): mixed{
-
+            function ($group): mixed {
                 return ($group);
             }
         ))
