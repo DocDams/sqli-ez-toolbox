@@ -11,8 +11,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 
 final class SelectionFromEntitySettingsType extends AbstractType
 { private const ANNOTATION = "annotation";
@@ -51,20 +49,15 @@ final class SelectionFromEntitySettingsType extends AbstractType
         }
 
         foreach ($entities as $key => $value) {
-            $choices[$key] = $value['classname'];
-            dump($choices[$key] ,  $value['classname']);
+           // $choices[$key] = $value["classname"]
+            $choices[$key] = str_replace("\\","_",$key);
+            //$choices[str_replace("\\","_",$key)]] = $key;
         }
-        foreach ($choices as $keys => $value) {
-//            $label[$keys] = $value['properties'];
-        }
-        foreach ($entities as $key => $value) {
-            $choice[$value['classname']] = $value['classname'];
-        }
-//        $builder->add('className', ChoiceType::class, [
-//            'choices' => $choices,
-//            'expanded' => false,
-//            'multiple' => false
-//        ]);
+        $builder->add('classdame', ChoiceType::class, [
+            'choices' => $choices,
+            'expanded' => false,
+            'multiple' => false
+        ]);
 
 //        $builder->add('valueAttribute',ChoiceType::class, [
 //            'choices' => $choice,

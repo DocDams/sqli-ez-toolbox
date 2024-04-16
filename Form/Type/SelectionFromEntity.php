@@ -57,11 +57,12 @@ class SelectionFromEntity extends AbstractType
                     return $result;
                 }
 
-                    return new Value($this->entityManager
+                return new Value($this->entityManager
                         ->getRepository($className)
                         ->findBy(
                             [$ids => $label],
-                            [$ids => $filter]
+                            [$ids => $filter],
+                            5
                         ))
                         ;
             },
