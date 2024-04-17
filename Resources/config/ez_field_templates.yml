@@ -4,6 +4,5 @@ ibexa:
       field_templates:
         - { template: '@SQLIEzToolbox/sqli_field_templates.html.twig', priority: 0 }
         - { template: "@SQLIEzToolbox/SelectionFromEntity/FieldType/SelectionFromEntity/view/selection_field.html.twig",priority: 0}
-        - { template: "@SQLIEzToolbox/newsletterMailList/view/content_fields.html.twig", priority: 0  }
       fielddefinition_edit_templates:
         - { template: '@SQLIEzToolbox/SelectionFromEntity/selectionDefinitionField/selection_field_type_definition.html.twig', priority: 0 }
