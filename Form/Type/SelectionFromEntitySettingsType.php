@@ -13,9 +13,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 final class SelectionFromEntitySettingsType extends AbstractType
-{ private const ANNOTATION = "annotation";
-
-
+{
+    private const ANNOTATION = "annotation";
     public function __construct(
         private ContainerInterface $container,
         private SQLIAttributesManager $attributesManager,
@@ -49,11 +48,11 @@ final class SelectionFromEntitySettingsType extends AbstractType
         }
 
         foreach ($entities as $key => $value) {
-           // $choices[$key] = $value["classname"]
-            $choices[$key] = str_replace("\\","_",$key);
+           $choices[$key] = $value["classname"];
+           // $choices[$key] = str_replace("\\","_",$key);
             //$choices[str_replace("\\","_",$key)]] = $key;
         }
-        $builder->add('classdame', ChoiceType::class, [
+        $builder->add('className', ChoiceType::class, [
             'choices' => $choices,
             'expanded' => false,
             'multiple' => false
@@ -70,7 +69,7 @@ final class SelectionFromEntitySettingsType extends AbstractType
 //                       $formData = $event->getData();
 //                       dd($formData);
 //                   });
-        $builder->add('className',TextType::class);
+//        $builder->add('className',TextType::class);
         $builder->add('valueAttribute',TextType::class);
         $builder->add('labelAttribute',TextType::class);
         $builder->add('filter',ChoiceType::class,[

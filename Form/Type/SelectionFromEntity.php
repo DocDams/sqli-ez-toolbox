@@ -5,25 +5,31 @@ namespace SQLI\EzToolboxBundle\Form\Type;
 
 
 use Doctrine\ORM\EntityManagerInterface;
-use SQLI\EzToolboxBundle\Entity\Doctrine\GroupMail;
-use SQLI\EzToolboxBundle\FieldType\SelectionFromEntity\ReverseTrans;
+use SQLI\EzToolboxBundle\Attributes\SQLIAttributesManager;
 use SQLI\EzToolboxBundle\FieldType\SelectionFromEntity\Value;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Choice;
+use SQLI\EzToolboxBundle\Annotations\SQLIAnnotationManager;
 
 class SelectionFromEntity extends AbstractType
 {
     private $serializer;
-
-    public function __construct(private EntityManagerInterface $entityManager)
+    private const ANNOTATION = "annotation";
+    public function __construct(private EntityManagerInterface $entityManager,
+                                private ContainerInterface $container,
+                                private SQLIAttributesManager $attributesManager,
+                                private SQLIAnnotationManager $annotationManager)
     {
     }
-
+    public function getMappingType(): string
+    {
+        // Access the parameter from the container
+        return $this->container->getParameter('sqli_ez_toolbox.mapping.type');
+    }
 
 
     /**
@@ -36,18 +42,30 @@ class SelectionFromEntity extends AbstractType
         $ids = $fieldSettings['labelAttribute'];
         $label = $fieldSettings['valueAttribute'];
         $filter = $fieldSettings['filter'];
+        $mapping_type = $this->getMappingType();
+        if ($mapping_type === self::ANNOTATION) {
+            $entities = $this->annotationManager->getAnnotatedClasses();
+        } else {
+            $entities = $this->attributesManager->getAttributedClasses();
+        }
+        foreach ($entities as $key => $value) {
+            $choices[$key] = $value["classname"];
+        }
+        if(in_array($className,$choices)) {
+            $classPath= array_search($className, $choices);
+        }
         $builder->add(
             'selection',
             EntityType::class,
             [
-                'class' => $className,
+                'class' => $classPath,
                 'choice_value' => $label,
                 'choice_label' => $ids,
                 'multiple' => true,
             ]
         ) ->addModelTransformer(new CallbackTransformer(
-            function ($groups) use ($fieldSettings): Value {
-                $className = $fieldSettings['className'];
+            function ($groups) use ($classPath, $fieldSettings): Value {
+
                 $ids = $fieldSettings['valueAttribute'];
                 $label = $fieldSettings['labelAttribute'];
                 $result = [];
@@ -58,7 +76,7 @@ class SelectionFromEntity extends AbstractType
                 }
 
                 return new Value($this->entityManager
-                        ->getRepository($className)
+                        ->getRepository($classPath)
                         ->findBy(
                             [$ids => $label],
                             [$ids => $filter],
