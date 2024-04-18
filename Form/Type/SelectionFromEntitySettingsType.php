@@ -3,63 +3,87 @@ declare(strict_types=1);
 
 namespace SQLI\EzToolboxBundle\Form\Type;
 ;
+
+use SQLI\EzToolboxBundle\Annotations\SQLIAnnotationManager;
+use SQLI\EzToolboxBundle\Attributes\SQLIAttributesManager;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class SelectionFromEntitySettingsType extends AbstractType
-{
-//    protected function getSQLIAnnotations(): array
-//    {
-//        $annotatedClasses = [];
-//
-//        // Scan all files into directories defined in configuration
-//        foreach ($this->directories as $entitiesMapping) {
-//            $directory = $entitiesMapping['directory'];
-//            $namespace = $entitiesMapping['namespace'];
-//            if (is_null($namespace)) {
-//                $namespace = str_replace('/', '\\', $directory);
-//            }
-//
-//            $path = $this->projectDir . '/src/' . $directory;
-//            $finder = new Finder();
-//            $finder->depth(0)->files()->in($path);
-//            $annotatedClasses = $this->getAnnotatedClassesArray($finder, $namespace, $annotatedClasses);
-//        }
-//
-//        return $annotatedClasses;
-//    }
+{ private const ANNOTATION = "annotation";
+
+
+    public function __construct(
+        private ContainerInterface $container,
+        private SQLIAttributesManager $attributesManager,
+        private SQLIAnnotationManager $annotationManager
+    ) {
+    }
+
+    /**
+     * Get the annotation mapping type from the configuration file
+     *
+     */
+    public function getMappingType(): string
+    {
+        // Access the parameter from the container
+        return $this->container->getParameter('sqli_ez_toolbox.mapping.type');
+    }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $choices = [];
+        $choice = [];
 
-       // $entities = $this->getSQLIAnnotations() ;
-//        $builder->add('className',ChoiceType::class,[
-//            'choices' => $entities,
+        $label= [];
+        $value = [];
+
+        $mapping_type = $this->getMappingType();
+        if ($mapping_type == self::ANNOTATION) {
+            $entities = $this->annotationManager->getAnnotatedClasses();
+        } else {
+            $entities = $this->attributesManager->getAttributedClasses();
+        }
+
+        foreach ($entities as $key => $value) {
+           // $choices[$key] = $value["classname"]
+            $choices[$key] = str_replace("\\","_",$key);
+            //$choices[str_replace("\\","_",$key)]] = $key;
+        }
+        $builder->add('classdame', ChoiceType::class, [
+            'choices' => $choices,
+            'expanded' => false,
+            'multiple' => false
+        ]);
+
+//        $builder->add('valueAttribute',ChoiceType::class, [
+//            'choices' => $choice,
 //            'expanded' => false,
 //            'multiple' => false,
 //        ]);
+//                   ->addEventListener(
+//                   FormEvents::PRE_SET_DATA,
+//                   function (FormEvent $event) {
+//                       $formData = $event->getData();
+//                       dd($formData);
+//                   });
         $builder->add('className',TextType::class);
         $builder->add('valueAttribute',TextType::class);
         $builder->add('labelAttribute',TextType::class);
-//        $builder->add('filter',ChoiceType::class,[
-//            'choices' => [
-//                'orderBy Asc' => true,
-//                'orderBy Desc' => false,
-//            ],
-//            'expanded' => false,
-//            'multiple' => false,
-//        ]);
+        $builder->add('filter',ChoiceType::class,[
+            'choices' => [
+                'orderBy Asc' => 'Asc',
+                'orderBy Desc' => 'Desc',
+            ],
+            'expanded' => false,
+            'multiple' => false,
+        ]);
+
 
 
     }
-//    public function configureOptions(OptionsResolver $resolver): void
-//    {
-//        $resolver->setDefaults([
-//            'data_class' => null,
-//        ]);
-//    }
+
 }

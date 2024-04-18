@@ -1,0 +1,13 @@
+{% extends "@IbexaCore/content_fields.html.twig" %}
+
+{% block sqli_news_letter_field %}
+    {% apply spaceless %}
+        {% if field.value.selection|length() > 0 %}
+        <ul {{ block( 'field_attributes' ) }}>
+            {% for group in field.value.selection %}
+                <li>{{ group.groupName }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    {% endapply %}
+{% endblock %}

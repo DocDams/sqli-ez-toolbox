@@ -1,0 +1,7 @@
+{% block selection_from_identity_field_definition_edit %}
+    <div class="{% if group_class is not empty %}{{ group_class }}{% endif %}">
+        {{- form_label(form.fieldSettings.className) -}}
+        {{- form_errors(form.fieldSettings.className) -}}
+        {{- form_widget(form.fieldSettings.className) -}}
+    </div>
+{% endblock %}
