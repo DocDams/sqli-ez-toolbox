@@ -21,6 +21,6 @@ class Value implements ValueInterface
 
     public function __toString(): string
     {
-        return 'selectionFromEntity';
+        return 'selectionFRomEntity';
     }
 }
