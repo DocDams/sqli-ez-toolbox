@@ -1,20 +1,18 @@
 <?php
-declare(strict_types=1);
 
 namespace SQLI\EzToolboxBundle\Form\Type;
 
 
 use Doctrine\ORM\EntityManagerInterface;
-use Ibexa\Core\FieldType\Value;
 use SQLI\EzToolboxBundle\Entity\Doctrine\GroupMail;
-use SQLI\EzToolboxBundle\FieldType\SelectionFromEntity\ReverseTrans;
+use SQLI\EzToolboxBundle\FieldType\SqliNewsLetter\Value;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-class SelectionFromEntity extends AbstractType
+
+class SqliNewsLetter extends AbstractType
 {
     public function __construct(private EntityManagerInterface $entityManager)
     {
@@ -25,21 +23,20 @@ class SelectionFromEntity extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $fieldSettings = $options['data'];
         $builder->add(
             'selection',
-
-EntityType::class,            [
-                'class' => $fieldSettings['className'],
-               // 'choices'=>$this->entityManager->getRepository($fieldSettings['className'])->findBy([]),
-                'choice_value' => $fieldSettings['valueAttribute'],
-                'choice_label' => $fieldSettings['labelAttribute'],
+            EntityType::class,
+            [
+                'class' => GroupMail::class,
+                'choice_label' => 'groupName',
                 'multiple' => true,
             ]
         );
+
         $builder->get('selection')
             ->addModelTransformer(new CallbackTransformer(
                 function ($groups): array {
+                    dump($groups);
                     $result = [];
 
                     if (null === $groups) {
@@ -51,12 +48,12 @@ EntityType::class,            [
                     }, $groups);
 
                     return $this->entityManager
-                        ->getRepository()
+                        ->getRepository(GroupMail::class)
                         ->findBy(['id' => $ids])
-                        ;
-                },
-                function ($group) use ($builder): array {
-                    dd($builder);
+                    ;
+                   },
+                function ($group): array {
+
                     return $group;
                 }
             ))
@@ -67,10 +64,7 @@ EntityType::class,            [
     {
 
         $resolver->setDefaults([
-       'data_class' => null,
-       //  'data_class' => Value::class,
-
+            'data_class' => Value::class,
         ]);
     }
-
 }
