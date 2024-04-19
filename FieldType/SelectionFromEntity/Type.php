@@ -9,11 +9,10 @@ use Ibexa\Contracts\ContentForms\FieldType\FieldValueFormMapperInterface;
 use Ibexa\Contracts\Core\FieldType\Generic\Type as GenericType;
 use Ibexa\Contracts\Core\Persistence\Content\Field;
 use Ibexa\Contracts\Core\Persistence\Content\Type\FieldDefinition;
-use SQLI\EzToolboxBundle\Annotations\SQLIAnnotationManager;
-use SQLI\EzToolboxBundle\Attributes\SQLIAttributesManager;
+
 use SQLI\EzToolboxBundle\Form\Type\SelectionFromEntity;
 use SQLI\EzToolboxBundle\Form\Type\SelectionFromEntitySettingsType;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+
 use Symfony\Component\Form\FormInterface;
 use Ibexa\AdminUi\FieldType\FieldDefinitionFormMapperInterface;
 use Ibexa\Contracts\Core\FieldType\Indexable;

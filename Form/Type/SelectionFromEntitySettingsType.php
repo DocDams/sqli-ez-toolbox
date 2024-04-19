@@ -35,10 +35,6 @@ final class SelectionFromEntitySettingsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $choices = [];
-        $choice = [];
-
-        $label= [];
-        $value = [];
 
         $mapping_type = $this->getMappingType();
         if ($mapping_type == self::ANNOTATION) {
@@ -49,8 +45,7 @@ final class SelectionFromEntitySettingsType extends AbstractType
 
         foreach ($entities as $key => $value) {
            $choices[$key] = $value["classname"];
-           // $choices[$key] = str_replace("\\","_",$key);
-            //$choices[str_replace("\\","_",$key)]] = $key;
+
         }
         $builder->add('className', ChoiceType::class, [
             'choices' => $choices,

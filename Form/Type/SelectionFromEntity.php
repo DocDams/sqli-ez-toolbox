@@ -39,8 +39,8 @@ class SelectionFromEntity extends AbstractType
     {
         $fieldSettings = $options['data'];
         $className = $fieldSettings['className'];
-        $ids = $fieldSettings['labelAttribute'];
-        $label = $fieldSettings['valueAttribute'];
+        $ids = $fieldSettings['valueAttribute'];
+        $label = $fieldSettings['labelAttribute'];
         $filter = $fieldSettings['filter'];
         $mapping_type = $this->getMappingType();
         if ($mapping_type === self::ANNOTATION) {
@@ -59,8 +59,8 @@ class SelectionFromEntity extends AbstractType
             EntityType::class,
             [
                 'class' => $classPath,
-                'choice_value' => $label,
-                'choice_label' => $ids,
+                'choice_value' => $ids,
+                'choice_label' => $label,
                 'multiple' => true,
             ]
         ) ->addModelTransformer(new CallbackTransformer(
