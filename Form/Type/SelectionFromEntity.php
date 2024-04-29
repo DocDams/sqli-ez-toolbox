@@ -65,7 +65,7 @@ class SelectionFromEntity extends AbstractType
             ]
         ) ->addModelTransformer(new CallbackTransformer(
             function ($groups) use ($classPath, $fieldSettings): Value {
-
+// Transform mon result en value
                 $ids = $fieldSettings['valueAttribute'];
                 $label = $fieldSettings['labelAttribute'];
                 $result = [];
@@ -74,17 +74,22 @@ class SelectionFromEntity extends AbstractType
                 if (null === $groups) {
                     return $result;
                 }
-
+                // requete result dans create content
                 return new Value($this->entityManager
                         ->getRepository($classPath)
                         ->findBy(
-                            [$ids => $label],
+
+                            [$ids => $label], //'id' => 'email'
                             [$ids => $filter],
                             5
                         ))
                         ;
+
             },
             function ($group): mixed {
+                // resultat present lors du publish du content
+                // reverse transform erreur serializer
+                dd($group);
                 return ($group);
             }
         ))
