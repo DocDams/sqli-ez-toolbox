@@ -5,6 +5,7 @@ namespace SQLI\EzToolboxBundle\Services;
 use Exception;
 use Ibexa\Contracts\Core\Repository\ContentService;
 use Ibexa\Contracts\Core\Repository\Exceptions\InvalidArgumentException;
+use Ibexa\Contracts\Core\Repository\Exceptions\InvalidCriterionArgumentException;
 use Ibexa\Contracts\Core\Repository\Exceptions\NotFoundException;
 use Ibexa\Contracts\Core\Repository\Exceptions\UnauthorizedException;
 use Ibexa\Contracts\Core\Repository\LocationService;
@@ -23,29 +24,23 @@ use Ibexa\Core\Helper\TranslationHelper;
 class FetchHelper
 {
     public const LIMIT = 25;
-    /** @var ConfigResolverInterface */
-    private $configResolver;
-    /** @var SearchService */
-    private $searchService;
-    /** @var LocationService */
-    private $locationService;
-    /** @var FieldHelper */
-    private $fieldhelper;
-    /** @var TranslationHelper */
-    private $translationhelper;
-    /** @var ContentService */
-    private $contentservice;
-    /** @var DataFormatterHelper */
-    private $dataFormatterHelper;
+    protected ConfigResolverInterface $configResolver;
+    protected SearchService $searchService;
+    protected LocationService $locationService;
+    protected FieldHelper $fieldhelper;
+    protected TranslationHelper $translationhelper;
+    protected ContentService $contentservice;
 
-    public function __construct(
+    /**
+     * @required
+     */
+    public function setDependencies(
         ConfigResolverInterface $configResolver,
         SearchService $searchService,
         LocationService $locationService,
         FieldHelper $fieldhelper,
         TranslationHelper $translationhelper,
-        ContentService $contentservice,
-        DataFormatterHelper $dataFormatterHelper
+        ContentService $contentservice
     ) {
         $this->configResolver = $configResolver;
         $this->searchService = $searchService;
@@ -53,14 +48,13 @@ class FetchHelper
         $this->fieldhelper = $fieldhelper;
         $this->translationhelper = $translationhelper;
         $this->contentservice = $contentservice;
-        $this->dataFormatterHelper = $dataFormatterHelper;
     }
 
     /**
      * Similar as fetchChildren but returns Content for each child instead of Location
      *
      * @param Location|int $parentLocation
-     * @param string|null $contentClass
+     * @param string|string[]|null $contentClass
      * @return Content[]
      * @throws InvalidArgumentException
      */
@@ -79,13 +73,18 @@ class FetchHelper
 
     /**
      * @param Location|int $parentLocation
-     * @param string|null $contentClass
+     * @param string|string[]|null $contentClass
      * @param int $limit
+     * @param int $offset
      * @return Location[]
      * @throws InvalidArgumentException
      */
-    public function fetchChildren($parentLocation, $contentClass = null, $limit = self::LIMIT): array
-    {
+    public function fetchChildren(
+        $parentLocation,
+        $contentClass = null,
+        int $limit = self::LIMIT,
+        int $offset = 0
+    ): array {
         $params = [];
 
         if (!is_null($contentClass)) {
@@ -95,65 +94,27 @@ class FetchHelper
         $parentLocationId = $parentLocation instanceof Location ? $parentLocation->id : $parentLocation;
         $params[] = new Criterion\ParentLocationId($parentLocationId);
 
-        return $this->fetchLocationList($params, null, $limit);
-    }
-
-    /**
-     * @param array $params
-     * @param int $limit
-     * @param int $offset
-     * @param SortClause[]|null $sortClauses If null, results will be sorted by priority
-     * @return Location[]
-     * @throws InvalidArgumentException
-     */
-    private function fetchLocationList(
-        array $params,
-        $sortClauses = null,
-        $limit = self::LIMIT,
-        $offset = 0
-    ): array {
-        $languages = $this->configResolver->getParameter('languages');
-        $query = new LocationQuery();
-
-        $query->query = new Criterion\LogicalAnd(
-            array_merge(
-                [
-                    new Criterion\Visibility(Criterion\Visibility::VISIBLE),
-                    new Criterion\LanguageCode($languages),
-                ],
-                $params
-            )
-        );
-        $query->performCount = true;
-        $query->limit = $limit;
-        $query->offset = $offset;
-        $query->sortClauses = is_null($sortClauses) ?
-            [ new SortClause\Location\Priority(Query::SORT_ASC) ] : $sortClauses;
-        $results = $this->searchService->findLocations($query);
-        $items = [];
-
-        foreach ($results->searchHits as $item) {
-            $items[] = $item->valueObject;
-        }
-
-        return $items;
+        return $this->fetchLocationList($params, null, $limit, $offset);
     }
 
     /**
      * @param Location $parentLocation
-     * @param null $contentClass
+     * @param string|string[]|null $contentClass
      * @param int $limit
      * @param int $offset
      * @param array $params
+     * @param array $sortClauses
      * @return array
      * @throws InvalidArgumentException
+     * @throws InvalidCriterionArgumentException
      */
     public function fetchSubTree(
         Location $parentLocation,
         $contentClass = null,
-        $limit = self::LIMIT,
-        $offset = 0,
-        array $params = []
+        int $limit = self::LIMIT,
+        int $offset = 0,
+        array $params = [],
+        array $sortClauses = []
     ): array {
         if (!is_null($contentClass)) {
             $params[] = new Criterion\ContentTypeIdentifier($contentClass);
@@ -186,9 +147,15 @@ class FetchHelper
         }
 
         $query->performCount = false;
-        $query->sortClauses = [
-            new SortClause\DateModified(Query::SORT_DESC),
-        ];
+
+        if (empty($sortClauses)) {
+            $query->sortClauses = [
+                new SortClause\DateModified(Query::SORT_DESC),
+            ];
+        } else {
+            $query->sortClauses = $sortClauses;
+        }
+
         $results = $this->searchService->findLocations($query);
 
         $items = [];
@@ -252,29 +219,19 @@ class FetchHelper
     }
 
     /**
-     * @param array $params
-     * @return Location|null
-     * @throws InvalidArgumentException
-     */
-    private function fetchLocation(array $params): ?Location
-    {
-        $results = $this->fetchLocationList($params, null, 1);
-
-        $itemHit = reset($results);
-        return ($itemHit instanceof Location) ? $itemHit : null;
-    }
-
-    /**
      * Fetch all contents which contains specified content into specified RelationList field
      *
      * @param Content|null $content
      * @param string $fieldIdentifier
-     * @param null $contentClass
+     * @param string|string[]|null $contentClass
      * @return array
      * @throws InvalidArgumentException
      */
-    public function fetchRelatedContents(?Content $content, string $fieldIdentifier, $contentClass = null): array
-    {
+    public function fetchRelatedContents(
+        ?Content $content,
+        string $fieldIdentifier,
+        $contentClass = null
+    ): array {
         $params = [];
 
         $contentId = $content instanceof Content ? $content->id : $content;
@@ -290,10 +247,65 @@ class FetchHelper
      * @param array $params
      * @param int $limit
      * @param int $offset
+     * @param SortClause[]|null $sortClauses If null, results will be sorted by priority
+     * @return Location[]
+     * @throws InvalidArgumentException
+     */
+    protected function fetchLocationList(
+        array $params,
+        ?array $sortClauses = null,
+        int $limit = self::LIMIT,
+        int $offset = 0
+    ): array {
+        $languages = $this->configResolver->getParameter('languages');
+        $query = new LocationQuery();
+
+        $query->query = new Criterion\LogicalAnd(
+            array_merge(
+                [
+                    new Criterion\Visibility(Criterion\Visibility::VISIBLE),
+                    new Criterion\LanguageCode($languages),
+                ],
+                $params
+            )
+        );
+        $query->performCount = true;
+        $query->limit = $limit;
+        $query->offset = $offset;
+        $query->sortClauses = is_null($sortClauses) ?
+            [ new SortClause\Location\Priority(Query::SORT_ASC) ] : $sortClauses;
+        $results = $this->searchService->findLocations($query);
+        $items = [];
+
+        foreach ($results->searchHits as $item) {
+            $items[] = $item->valueObject;
+        }
+
+        return $items;
+    }
+
+    /**
+     * @param array $params
+     * @return Content|null
+     * @throws InvalidArgumentException
+     */
+    protected function fetchContent(array $params): ?Content
+    {
+        $results = $this->fetchContentList($params, 1);
+
+        $itemHit = reset($results);
+
+        return ($itemHit instanceof Content) ? $itemHit : null;
+    }
+
+    /**
+     * @param array $params
+     * @param int $limit
+     * @param int $offset
      * @return array
      * @throws InvalidArgumentException
      */
-    private function fetchContentList(array $params, int $limit = self::LIMIT, int $offset = 0): array
+    protected function fetchContentList(array $params, int $limit = self::LIMIT, int $offset = 0): array
     {
         $languages = $this->configResolver->getParameter('languages');
         $query = new Query();
@@ -321,6 +333,19 @@ class FetchHelper
     }
 
     /**
+     * @param array $params
+     * @return Location|null
+     * @throws InvalidArgumentException
+     */
+    protected function fetchLocation(array $params): ?Location
+    {
+        $results = $this->fetchLocationList($params, null, 1);
+
+        $itemHit = reset($results);
+        return ($itemHit instanceof Location) ? $itemHit : null;
+    }
+
+    /**
      * Search a content in specified Location or the first of it's ancestors which have fieldIdentifier filled
      *
      * @param Location $location
@@ -334,7 +359,8 @@ class FetchHelper
         $content = $location->getContent();
 
         // Check if $location has a relation in field
-        if ($content->getContentType()->getFieldDefinition($fieldIdentifier) == null ||
+        if (
+            $content->getContentType()->getFieldDefinition($fieldIdentifier) == null ||
             $this->fieldhelper->isFieldEmpty($content, $fieldIdentifier)
         ) {
             // No relation to a header object then check parent location
@@ -384,19 +410,5 @@ class FetchHelper
     public function getName(): string
     {
         return 'fetch_extension';
-    }
-
-    /**
-     * @param array $params
-     * @return Content|null
-     * @throws InvalidArgumentException
-     */
-    private function fetchContent(array $params): ?Content
-    {
-        $results = $this->fetchContentList($params, 1);
-
-        $itemHit = reset($results);
-
-        return ($itemHit instanceof Content) ? $itemHit : null;
     }
 }

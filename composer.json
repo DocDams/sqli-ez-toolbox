@@ -26,6 +26,7 @@
     "MIT"
   ],
   "require": {
+    "php": "^7.4 || ^8.0",
     "ibexa/oss": "^4.0.2",
     "ext-json": "*",
     "ext-openssl": "*"
