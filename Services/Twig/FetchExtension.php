@@ -2,11 +2,9 @@
 
 namespace SQLI\EzToolboxBundle\Services\Twig;
 
+use Exception;
 use Ibexa\Contracts\Core\Repository\Exceptions\InvalidArgumentException;
-use Ibexa\Contracts\Core\Repository\Exceptions\NotFoundException;
-use Ibexa\Contracts\Core\Repository\Exceptions\UnauthorizedException;
 use Ibexa\Contracts\Core\Repository\Repository;
-use Ibexa\Contracts\Core\Repository\Values\Content\Content;
 use Ibexa\Contracts\Core\Repository\Values\Content\Location;
 use Ibexa\Core\MVC\Symfony\View\ViewManagerInterface;
 use Monolog\Handler\StreamHandler;
@@ -19,29 +17,31 @@ use Twig\TwigFunction;
 
 class FetchExtension extends AbstractExtension
 {
-    /** @var FetchHelper */
-    private $fetchHelper;
-    /** @var ViewManagerInterface */
-    private $viewManager;
-    /** @var Repository */
-    private $repository;
-    /** @var LoggerInterface */
-    private $logger;
+    protected FetchHelper $fetchHelper;
+    protected ViewManagerInterface $viewManager;
+    protected Repository $repository;
+    protected LoggerInterface $logger;
 
     public function __construct(
-        FetchHelper $fetchHelper,
-        ViewManagerInterface $viewManager,
-        Repository $repository,
         $logDir
     ) {
-        $this->fetchHelper = $fetchHelper;
-        $this->viewManager = $viewManager;
-        $this->repository = $repository;
-
         $handler = new StreamHandler("$logDir/sqli-eztoolbox_" . date("Y-m-d") . '.log');
         $handler->setFormatter(new SqliSimpleLogFormatter());
         $this->logger = new Logger('SQLILogException');
         $this->logger->pushHandler($handler);
+    }
+
+    /**
+     * @required
+     */
+    public function setDependencies(
+        FetchHelper $fetchHelper,
+        ViewManagerInterface $viewManager,
+        Repository $repository
+    ) {
+        $this->fetchHelper = $fetchHelper;
+        $this->viewManager = $viewManager;
+        $this->repository = $repository;
     }
 
     public function getFunctions()
@@ -62,63 +62,61 @@ class FetchExtension extends AbstractExtension
      * (eventually filtered with $filterContentClass) of a $location in specified $viewType
      * Some $parameters can be passed to template
      *
-     * @param $parentLocation
-     * @param $viewType
-     * @param $filterContentClass
-     * @param $parameters
+     * @param Location|int $parentLocation
+     * @param string $viewType
+     * @param string|string[]|null $filterContentClass
+     * @param array $parameters
      * @return string
      * @throws InvalidArgumentException
      */
     public function renderChildren(
         $parentLocation,
-        $viewType = ViewManagerInterface::VIEW_TYPE_LINE,
+        string $viewType = ViewManagerInterface::VIEW_TYPE_LINE,
         $filterContentClass = null,
-        $parameters = array()
+        array $parameters = array()
     ): string {
+        $render = '';
+        $limit = $parameters['limit'] ?? FetchHelper::LIMIT;
+        $offset = $parameters['offset'] ?? 0;
         // Fetch children of $location
-        $children = $this->fetchHelper->fetchChildren($parentLocation, $filterContentClass);
-
-        $render = "";
-
+        $children = $this->fetchHelper->fetchChildren(
+            $parentLocation,
+            $filterContentClass,
+            $limit,
+            $offset
+        );
         end($children);
         $lastKey = key($children);
         reset($children);
         $firstKey = key($children);
 
+        // Define specific parameters
+        $currParameters = $parameters;
+        $currParameters['params'] = $parameters;
+        $currParameters['params']['col'] = count($children);
+
         foreach ($children as $index => $child) {
-            $isfirst = $index === $firstKey;
-            $islast = $index === $lastKey;
-            // Define specific parameters
-            $specificParameters =
-                [
-                    'isFirst' => $isfirst,
-                    'isLast' => $islast,
-                    'index' => $index,
-                ];
+            $currParameters['params']['isFirst'] = $index === $firstKey;
+            $currParameters['params']['isLast'] = $index === $lastKey;
+            $currParameters['params']['index'] = $index;
 
             try {
-                $parameters['location'] = $child;
                 $content = $child->getContent();
-                $parameters['content'] = $content;
+                $currParameters['location'] = $child;
+                $currParameters['viewType'] = $viewType;
+                $currParameters['layout'] = false;
                 $contentRender = $this->viewManager->renderContent(
                     $content,
                     $viewType,
-                    array_merge($parameters, $specificParameters)
+                    $currParameters
                 );
                 $render .= $contentRender;
-            } catch (\Exception $exception) {
-                $this->logger->critical("Exception thrown in " . __METHOD__);
-                $this->logger->critical($exception->getMessage());
-                $this->logger->critical($exception->getTraceAsString());
+            } catch (Exception $exception) {
+                $this->logger->error($exception->getMessage(), ['code' => $exception->getCode()]);
                 continue;
             }
         }
 
         return $render;
-    }
-
-    public function getName(): string
-    {
-        return 'sqli_twig_extension_fetch';
     }
 }
