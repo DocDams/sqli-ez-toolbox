@@ -91,24 +91,22 @@ class FetchExtension extends AbstractExtension
         $firstKey = key($children);
 
         // Define specific parameters
-        $currParameters = $parameters;
-        $currParameters['params'] = $parameters;
-        $currParameters['params']['col'] = count($children);
+        $parameters['col'] = count($children);
 
         foreach ($children as $index => $child) {
-            $currParameters['params']['isFirst'] = $index === $firstKey;
-            $currParameters['params']['isLast'] = $index === $lastKey;
-            $currParameters['params']['index'] = $index;
+            $parameters['isFirst'] = $index === $firstKey;
+            $parameters['isLast'] = $index === $lastKey;
+            $parameters['index'] = $index;
 
             try {
                 $content = $child->getContent();
-                $currParameters['location'] = $child;
-                $currParameters['viewType'] = $viewType;
-                $currParameters['layout'] = false;
+                $parameters['location'] = $child;
+                $parameters['viewType'] = $viewType;
+                $parameters['layout'] = false;
                 $contentRender = $this->viewManager->renderContent(
                     $content,
                     $viewType,
-                    $currParameters
+                    $parameters
                 );
                 $render .= $contentRender;
             } catch (Exception $exception) {
